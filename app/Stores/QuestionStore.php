@@ -12,12 +12,15 @@ namespace App\Stores;
 use App\Options;
 use App\Question;
 
-class QuestionStore
-{
+class QuestionStore {
 
     static function create( $data ){
         $question = Question::create($data);
-        $question->options()->saveMany( QuestionStore::getOptions($data) );
+        $question->options()->saveMany(
+            QuestionStore::mapOptions(
+                Store::get($data['options'], [])
+            )
+        );
         return QuestionStore::find($question->id);
     }
 
@@ -25,7 +28,11 @@ class QuestionStore
         $question = Question::find($id);
         $question->options()->delete();         // delete the options every time
         $question->fill($data);
-        $question->options()->saveMany( QuestionStore::getOptions($data) );
+        $question->options()->saveMany(
+            self::mapOptions(
+                Store::get($data['options'], [])
+            )
+        );
         $question->save();
     }
 
@@ -39,9 +46,9 @@ class QuestionStore
         return Question::with('options')->get();
     }
 
-    private static function getOptions($data){
+    private static function mapOptions($strings){
         return array_map(function($opt){
             return new Options([ 'text' => $opt ]);
-        }, Store::get($data['options'], []));
+        }, $strings);
     }
 }

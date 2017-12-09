@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Stores\QuestionStore;
+use App\Stores\ResponseStore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -29,8 +30,16 @@ class DynamicQuestionsTest extends TestCase {
             'options' => ['changed option']
         ]);
 
-//        echo(json_encode(QuestionStore::find($question->id), JSON_PRETTY_PRINT));
+        $response = ResponseStore::create([
+            'question_id' => $question->id,
+            'text_val' => 'My text response',
+            'selections' => ['a', 'b']
+        ]);
+
+        echo json_encode($response, JSON_PRETTY_PRINT);
+        echo json_encode(QuestionStore::find($question->id), JSON_PRETTY_PRINT);
 
         $this->assertTrue(true);
     }
+
 }

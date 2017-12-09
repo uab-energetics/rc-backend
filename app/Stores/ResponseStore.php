@@ -8,39 +8,32 @@
 
 namespace App\Stores;
 
-
-use App\Options;
-use App\Question;
+use App\Response;
+use App\Selections;
+use Illuminate\Support\Facades\DB;
 
 class ResponseStore {
 
-    static function create( $data ){
-        $question = Question::create($data);
-        $question->options()->saveMany( QuestionStore::getOptions($data) );
-        return QuestionStore::find($question->id);
+    static function create( $data ): Response {
+        $res = Response::create($data);
+        $res->selections()->saveMany(self::mapSelections(Store::get($data['selections'], [])));
+        return ResponseStore::find($res->id);
     }
 
-    static function update( $id, $data ){
-        $question = Question::find($id);
-        $question->options()->delete();         // delete the options every time
-        $question->fill($data);
-        $question->options()->saveMany( QuestionStore::getOptions($data) );
-        $question->save();
+    static function find($id): Response {
+        $res = Response::find($id);
+        $res->load('selections');
+        return $res;
     }
 
-    static function find($id): Question {
-        $q = Question::find($id);
-        $q->load('options');
-        return $q;
+    static function all(): array {
+        return Response::with('selections')->get();
     }
 
-    static function all(){
-        return Question::with('options')->get();
+    private static function mapSelections($text_arr){
+        return array_map(function($sel){
+            return new Selections([ 'text' => $sel ]);
+        }, $text_arr);
     }
 
-    private static function getOptions($data){
-        return array_map(function($opt){
-            return new Options([ 'text' => $opt ]);
-        }, Store::get($data['options'], []));
-    }
 }
