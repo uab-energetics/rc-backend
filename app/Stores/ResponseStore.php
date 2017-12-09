@@ -16,7 +16,7 @@ class ResponseStore {
 
     static function create( $data ): Response {
         $res = Response::create($data);
-        $res->selections()->saveMany(self::mapSelections(Store::get($data['selections'], [])));
+        $res->selections()->saveMany(self::mapSelections(getOrDefault($data['selections'], [])));
         return ResponseStore::find($res->id);
     }
 

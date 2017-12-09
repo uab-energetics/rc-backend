@@ -18,7 +18,7 @@ class QuestionStore {
         $question = Question::create($data);
         $question->options()->saveMany(
             QuestionStore::mapOptions(
-                Store::get($data['options'], [])
+                getOrDefault($data['options'], [])
             )
         );
         return QuestionStore::find($question->id);
@@ -30,7 +30,7 @@ class QuestionStore {
         $question->fill($data);
         $question->options()->saveMany(
             self::mapOptions(
-                Store::get($data['options'], [])
+                getOrDefault($data['options'], [])
             )
         );
         $question->save();

@@ -1,7 +1,5 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: chris
- * Date: 12/8/17
- * Time: 11:47 PM
- */
+
+function getOrDefault(&$var, $default){
+    return isset($var)? $var : $default;
+}
