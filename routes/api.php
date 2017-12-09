@@ -16,3 +16,12 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/questions', function(Request $req){
+    try {
+        $question = \App\Models\Question::createWithRel($req->all());
+        return $question->toArray();
+    } catch (Exception $e) {
+        return response("Invalid Input", 400);
+    }
+});

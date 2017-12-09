@@ -7,7 +7,8 @@ use App\Models\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class QuestionsTest extends TestCase {
+class QuestionsTest extends TestCase
+{
 
     use RefreshDatabase;
 
@@ -16,26 +17,33 @@ class QuestionsTest extends TestCase {
      *
      * @return void
      */
-    public function testCreateQuestion() {
+    public function testCreateQuestion()
+    {
         $q = Question::createWithRel([
             'txt' => 'Demo Question',
             'options' => [
-                'A', 'B', 'C'
+                ['txt' => 'A']
             ],
-            'accepts' => [ 'txt', 'sel', 'multi-sel' ]
+            'accepts' => [
+                ['type' => 'sel'],
+                ['type' => 'multi-sel'],
+            ]
         ]);
 
         Response::createWithSelections([
             'question_id' => $q->id,
-            'selections' => [ 'B', 'C' ],
+            'selections' => [
+                ['txt' => 'B'],
+                ['txt' => 'C']
+            ],
             'type' => 'multi-sel'
         ]);
 
 //        echo json_encode( Question::with('responses')->get()->toArray(), JSON_PRETTY_PRINT);
 
         $this->assertEquals(1, $q->responses()->count());
-        $this->assertEquals(3, $q->accepts()->count());
-        $this->assertEquals(3, $q->options()->count());
+        $this->assertEquals(1, $q->options()->count());
+        $this->assertEquals(2, $q->accepts()->count());
     }
 
 }

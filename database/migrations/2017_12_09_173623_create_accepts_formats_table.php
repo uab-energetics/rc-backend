@@ -16,7 +16,7 @@ class CreateAcceptsFormatsTable extends Migration
             $table->increments('id');
             $table->integer('question_id')->unsigned();
             $table->foreign('question_id')->references('id')->on('questions');
-            $table->enum('type', ['txt', 'num', 'range', 'boo', 'sel', 'multi-sel']);
+            $table->string('type');
             $table->timestamps();
         });
     }
@@ -26,8 +26,7 @@ class CreateAcceptsFormatsTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('accepts_formats');
     }
 }

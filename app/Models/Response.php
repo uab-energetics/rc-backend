@@ -12,13 +12,10 @@ class Response extends Model {
         return $this->hasMany(Selections::class, 'response_id');
     }
 
-    function saveSelections( $str_arr ){
+    function saveSelections( $selections_arr ){
         parent::save();
         $this->selections()->delete();
-        $opts = array_map(function($str){
-            return [ 'txt' => $str ];
-        }, $str_arr );
-        $this->selections()->createMany($opts);
+        $this->selections()->createMany($selections_arr);
     }
 
     public static function createWithSelections($data){

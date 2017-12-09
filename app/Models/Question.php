@@ -23,22 +23,16 @@ class Question extends Model {
 
     /* helpers */
 
-    public function saveOptions( $str_arr ){
+    public function saveOptions( $opts_arr ){
         parent::save();                         // make sure the question exists in DB
         $this->options()->delete();             // delete any existing options
-        $opts = array_map(function($str){       // convert the string array to a column -> value array
-            return [ 'txt' => $str ];
-        }, $str_arr );
-        $this->options()->createMany($opts);    // create with FK references
+        $this->options()->createMany($opts_arr);    // create with FK references
     }
 
-    public function saveAccepts( $str_arr ){
+    public function saveAccepts( $accepts_arr ){
         parent::save();
         $this->accepts()->delete();
-        $formats = array_map(function($str){
-            return [ 'type' => $str ];
-        }, $str_arr);
-        $this->accepts()->createMany($formats);
+        $this->accepts()->createMany($accepts_arr);
     }
 
     public static function createWithRel($data){
