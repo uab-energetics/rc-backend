@@ -1,9 +1,9 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Selections extends Model {
-    protected $fillable = ['response_id', 'option_id', 'text'];
+    protected $fillable = ['response_id', 'option_id', 'txt'];
 }

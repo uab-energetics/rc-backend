@@ -17,10 +17,11 @@ class CreateResponsesTable extends Migration
             $table->increments('id');
             $table->integer('question_id')->unsigned();
             $table->foreign('question_id')->references('id')->on('questions');
-            $table->string('text_val')->nullable()->default(null);
-            $table->string('number_val')->nullable()->default(null);;
-            $table->string('selection_val')->nullable()->default(null);;
-            $table->string('bool_val')->nullable()->default(null);;
+            $table->string('type')->default('txt');
+            $table->string('txt')->nullable();
+            $table->string('num')->nullable();
+            $table->string('sel')->nullable();
+            $table->string('boo')->nullable();
             $table->timestamps();
         });
     }

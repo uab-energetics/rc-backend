@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateQuestionsTable extends Migration
+class CreateAcceptsFormatsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,11 @@ class CreateQuestionsTable extends Migration
      * @return void
      */
     public function up() {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('accepts_formats', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('default_format')->default('txt');
-            $table->string('txt');
-            $table->string('desc')->nullable();
+            $table->integer('question_id')->unsigned();
+            $table->foreign('question_id')->references('id')->on('questions');
+            $table->enum('type', ['txt', 'num', 'range', 'boo', 'sel', 'multi-sel']);
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateQuestionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists('accepts_formats');
     }
 }

@@ -17,7 +17,7 @@ class CreateSelectionsTable extends Migration
             $table->increments('id');
             $table->integer('response_id')->unsigned();
             $table->foreign('response_id')->references('id')->on('responses');
-            $table->string('text');
+            $table->string('txt');
             $table->timestamps();
         });
     }
