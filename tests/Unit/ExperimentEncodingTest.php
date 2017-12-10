@@ -10,13 +10,13 @@ use App\FormLayout;
 use App\Models\Question;
 use App\Models\Response;
 use App\Publication;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ExperimentEncodingTest extends TestCase
-{
+class ExperimentEncodingTest extends TestCase {
 
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function testExperiment() {
         $cat = Category::create([

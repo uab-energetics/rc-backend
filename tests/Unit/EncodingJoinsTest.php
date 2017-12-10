@@ -9,13 +9,12 @@ use App\FormLayout;
 use App\Models\Question;
 use App\Models\Response;
 use App\Publication;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class EncodingJoinsTest extends TestCase
 {
-
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function testFormJoins() {
         $cat = Category::create([
