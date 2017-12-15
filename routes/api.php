@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\QuestionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,11 +22,10 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('register', AuthController::class."@register");
 });
 
-Route::post('/questions', function(Request $req){
-    try {
-        $question = \App\Models\Question::createWithRel($req->all());
-        return $question->toArray();
-    } catch (Exception $e) {
-        return response("Invalid Input", 400);
-    }
+Route::group(['middleware' => 'jwt.auth'], function () {
+
+
+    Route::group(['prefix' => 'questions'], function () {
+        Route::post('/', QuestionController::class."@create");
+    });
 });
