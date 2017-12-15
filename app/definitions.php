@@ -6,4 +6,3 @@ const NUMBER = 'num';
 const SELECT = 'sel';
 const MULTI_SELECT = 'multi-sel';
 
-?>
