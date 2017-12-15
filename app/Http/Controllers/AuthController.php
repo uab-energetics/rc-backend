@@ -18,15 +18,15 @@ class AuthController extends Controller {
         //verify that the user exists
         $user = $this->findUser($credentials);
         if (!$user) {
-            return response()->json(self::INVALID, 401);
+            return response()->json(self::INVALID_CREDENTIALS, 401);
         }
 
         $userInfo = $this->getUserInfo($user);
 
         try {
             // attempt to verify the credentials and create a token for the user
-            if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(self::INVALID, 401);
+            if (!$token = $auth->attempt($credentials)) {
+                return response()->json(self::INVALID_CREDENTIALS, 401);
             }
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
@@ -43,7 +43,15 @@ class AuthController extends Controller {
     }
 
     public function register(Request $request, JWTAuth $auth) {
-        $this->validator($request->all())->validate();
+        $validator = $this->registerValidator($request->all());
+        if ( $validator->fails() ) {
+            $reasons = $validator->errors();
+            return response()->json([
+                'status' => 'INVALID',
+                'msg' => "Invalid registration data",
+                'errors' => $reasons,
+            ], 400);
+        }
 
         $user = $this->findUser($request->all());
 
@@ -75,11 +83,11 @@ class AuthController extends Controller {
      * @param  array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data) {
+    protected function registerValidator(array $data) {
         return Validator::make($data, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:6',
         ]);
     }
 
@@ -111,7 +119,7 @@ class AuthController extends Controller {
         ];
     }
 
-    const INVALID = [
+    const INVALID_CREDENTIALS = [
         'status' => 'INVALID_CREDENTIALS',
         'msg' => 'No user found with the specified credentials'
     ];
