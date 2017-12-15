@@ -4,13 +4,13 @@ namespace Tests\Unit;
 
 use App\Models\Question;
 use App\Models\Response;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class QuestionsTest extends TestCase
 {
 
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     /**
      * A basic test example.

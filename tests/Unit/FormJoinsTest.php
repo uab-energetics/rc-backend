@@ -5,13 +5,13 @@ namespace Tests\Unit;
 use App\Category;
 use App\Form;
 use App\FormLayout;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class FormJoinsTest extends TestCase
 {
 
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function testFormJoins() {
         $cat = Category::create([

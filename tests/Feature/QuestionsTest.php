@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class QuestionsTest extends TestCase
 {
 
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     /**
      * A basic test example.
@@ -16,7 +16,7 @@ class QuestionsTest extends TestCase
      * @return void
      */
     public function testPostQuestion() {
-        $response = $this->postJson('/api/questions', [
+        $response = $this->postJson('/questions', [
             'accepts' => [
                 ['type' => 'txt'],
                 ['type' => 'boo']
