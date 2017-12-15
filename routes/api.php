@@ -21,10 +21,6 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('register', AuthController::class."@register");
 });
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::post('/questions', function(Request $req){
     try {
         $question = \App\Models\Question::createWithRel($req->all());
