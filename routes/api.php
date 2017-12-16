@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProjectController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,8 +25,29 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['middleware' => 'jwt.auth'], function () {
 
+            ////    PROJECTS    ////
+    Route::group(['prefix' => 'projects'], function () {
+        Route::post('/', ProjectController::class."@create");
+    });
 
+            ////    FORMS       ////
+    Route::group(['prefix' => 'forms'], function () {
+
+    });
+
+            ////    ENCODINGS    ////
+    Route::group(['prefix' => 'encodings'], function () {
+
+    });
+
+            ////    RESPONSES    ////
+    Route::group(['prefix' => 'responses'], function () {
+
+    });
+
+            ////    QUESTIONS    ////
     Route::group(['prefix' => 'questions'], function () {
         Route::post('/', QuestionController::class."@create");
     });
+
 });
