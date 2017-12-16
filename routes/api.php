@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FormController;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
             ////    PROJECTS    ////
     Route::group(['prefix' => 'projects'], function () {
         Route::post('/', ProjectController::class."@create");
+        Route::post('/{project}/forms', FormController::class."@create");
     });
 
             ////    FORMS       ////

@@ -15,11 +15,14 @@ class CreateFormsTable extends Migration
     {
         Schema::create('forms', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('layout_id')->unsigned();
-            $table->foreign('layout_id')->references('id')->on('form_layouts');
+            $table->unsignedInteger('root_category_id');
+
+            $table->string('type');
             $table->string('name');
             $table->string('desc')->nullable();
             $table->boolean('published')->default(false);
+
+            $table->foreign('root_category_id')->references('id')->on('categories');
             $table->timestamps();
         });
     }

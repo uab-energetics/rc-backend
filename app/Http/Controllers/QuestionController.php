@@ -12,7 +12,10 @@ class QuestionController extends Controller {
             $question = Question::createWithRel($request->all());
             return $question->toArray();
         } catch (Exception $e) {
-            return response("Invalid Input", 400);
+            return response()->json([
+                'status' => 'INVALID_PARAMS',
+                'msg' => "Invalid form data"
+            ], 400);
         }
     }
 }

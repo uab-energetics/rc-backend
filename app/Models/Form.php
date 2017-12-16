@@ -5,11 +5,11 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 class Form extends Model {
-    protected $fillable = ['layout_id', 'name', 'desc', 'published'];
+    protected $fillable = ['root_category_id', 'name', 'desc', 'published'];
 
-    protected $with = ['layout'];
+    protected $with = ['rootCategory'];
 
-    function layout(){
-        return $this->belongsTo(FormLayout::class, 'layout_id');
+    function rootCategory(){
+        return $this->belongsTo(Category::class, 'root_category_id');
     }
 }
