@@ -8,26 +8,7 @@
 
 namespace App\Services\Exports;
 
-
-use App\Models\Question;
-
-class FormExportService {
-
-    const NO_RESPONSE = 'NO_RESPONSE';
-
-    /**
-     * @param $display
-     * @param $key - keys are used for row -> value lookup. They take the form: [ <key_id>, ...<additional params> ]
-     * @param $value
-     * @return array
-     */
-    static function header($display, $key, ...$params){
-        array_unshift($params, $key);
-        return [
-            'key' => $params,
-            'disp' => $display
-        ];
-    }
+class FormExportService extends AbstractExportService {
 
     public function exportFormData($headers, $form){
         $rows = [];
@@ -42,38 +23,28 @@ class FormExportService {
         return $rows;
     }
 
-    private function mapBranchToRow($headers, $branch){
-        $row = [];
-        for($i = 0; $i < count($headers); ++$i){
-            $cell = FormExportService::NO_RESPONSE;
-            $res = $this->lookupResponse($branch, $headers[$i]);
-            if($res) $cell = $res;
-            array_push($row, $cell);
-        }
-        return $row;
-    }
-
     private function mapEncodingToRows($headers, $encoding){
-        return array_map(function($branch) use ($headers) {
-            return $this->mapBranchToRow($headers, $branch);
+        return array_map(function($rowModel) use ($headers) {
+            return $this->mapModelToRow($headers, $rowModel);
         }, $encoding['branches']);
     }
 
-    // TODO - to make this service actually work, this method (and only this method) needs implemented
-    private function lookupResponse($branch, $header){
+    protected function lookupValue($rowModel, $header): string {
         switch ($header['key'][0]){
             case "question":
-                return $this->branchGetQuestion($branch, $header['key'][1]);
+                // This is an example lookup sub-routine. They could query the database, crunch some numbers, etc.
+                // This one requires the question ID as a parameter
+                return $this->branchGetQuestion($rowModel, $header['key'][1]);
             case "user":
-                return $branch['user_id'];
+                return $rowModel['user_id'];
             default:
                 return false;
         }
     }
 
     // TODO - Demo purposes only. Replace me.
-    private function branchGetQuestion( $branch, $question_id ){
-        foreach ($branch['responses'] as $response) {
+    private function branchGetQuestion( $rowModel, $question_id ){
+        foreach ($rowModel['responses'] as $response) {
             if($response['qid'] == $question_id){
                 return $response['data'];
             }
