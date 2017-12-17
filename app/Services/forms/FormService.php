@@ -24,6 +24,13 @@ class FormService {
         return $form;
     }
 
+    public function deleteForm(Form $form) {
+        $rootCategory = $form->rootCategory()->first();
+        $form->delete();
+        $rootCategory->delete();
+        return true;
+    }
+
     public function addQuestion(Form $form, Question $question, Category $category = null) {
         if ($category === null) {
             $category = $form->rootCategory()->first();

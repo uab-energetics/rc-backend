@@ -30,6 +30,11 @@ class FormController extends Controller {
         return $form->toArray();
     }
 
+    public function delete(Form $form, FormService $formService) {
+        $res = $formService->deleteForm($form);
+        return okMessage("Successfully deleted form");
+    }
+
     public function addQuestion(Form $form, Question $question, Request $request, FormService $formService) {
         $category = $this->findCategory($form, $request->category_id);
         if ($category === false) {

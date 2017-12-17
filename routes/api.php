@@ -35,6 +35,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
             ////    FORMS       ////
     Route::group(['prefix' => 'forms'], function () {
+        Route::delete('{form}', FormController::class."@delete");
         Route::post('{form}/questions/{question}', FormController::class."@addQuestion");
         Route::put('{form}/questions/{question}', FormController::class."@moveQuestion");
     });
