@@ -16,7 +16,7 @@ class Category extends Model
     }
 
     function parent() {
-        return $this->hasOne(Category::class, 'parent_id');
+        return $this->belongsTo(Category::class, 'parent_id');
     }
 
     function questions(){

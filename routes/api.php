@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Http\Request;
@@ -36,6 +37,11 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::group(['prefix' => 'forms'], function () {
         Route::post('{form}/questions/{question}', FormController::class."@addQuestion");
         Route::put('{form}/questions/{question}', FormController::class."@moveQuestion");
+    });
+
+    Route::group(['prefix' => 'categories'], function () {
+        Route::post('/', CategoryController::class."@create");
+        Route::put('/{category}', CategoryController::class."@update");
     });
 
             ////    ENCODINGS    ////
