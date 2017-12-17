@@ -17,3 +17,12 @@ function invalidParamMessage(\Illuminate\Contracts\Validation\Validator $validat
         'reasons' => $reasons
     ], 400);
 }
+
+function okMessage($message, $code = 200, $extra = []) {
+    $arr = [
+        'status' => 'ok',
+        'msg' => $message
+    ];
+    $arr = $extra + $arr;
+    return response()->json($arr, $code);
+}
