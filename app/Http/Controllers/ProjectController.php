@@ -14,7 +14,7 @@ class ProjectController extends Controller {
         $params = $request->all();
 
         $project = null;
-        DB::transaction(function () use($params, $user){
+        DB::transaction(function () use(&$params, &$user, &$project){
             $project = Project::create($params);
             $edge = ProjectResearcher::create([
                 'project_id' => $project->getKey(),
