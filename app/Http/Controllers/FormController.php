@@ -31,27 +31,47 @@ class FormController extends Controller {
     }
 
     public function addQuestion(Form $form, Question $question, Request $request, FormService $formService) {
-        $category = Category::find( $request->category_id );
-
-        if ($category === null) {
-            $category = $form->rootCategory()->first();
-        }
-
-        if ($form->getKey() !== $category->getForm()->getKey()) {
-            return response()->json([
-                'status' => 'INVALID_CATEGORY',
-                'msg' => "The specified category does not belong to the specified form"
-            ], 403);
+        $category = $this->findCategory($form, $request->category_id);
+        if ($category === false) {
+            return response()->json(static::INVALID_CATEGORY, 403);
         }
 
         DB::transaction( function() use (&$form, &$question, &$category, &$formService, $request) {
             $formService->addQuestion($form, $question, $category);
         });
 
-        return response()->json([
-            'status' => 'ok',
-            'msg' => "Successfully added question to form"
-        ], 200);
+        return okMessage("Successfully added question to form", 201);
+    }
+
+    public function moveQuestion (Form $form, Question $question, Request $request, FormService $formService) {
+        $category = $this->findCategory($form, $request->category_id);
+        if ($category === false) {
+            return response()->json(static::INVALID_CATEGORY, 403);
+        }
+
+        $res = $formService->moveQuestion($form, $question, $category);
+
+        if ($res === false) {
+            return response()->json(static::INVALID_QUESTION, 403);
+        }
+
+        return okMessage("Successfully moved question", 201);
+    }
+
+    /**
+     * @param Form $form
+     * @param $category_id
+     * @return Category | false
+     */
+    protected function findCategory(Form $form, $category_id) {
+        $category = Category::find( $category_id );
+        if ($category === null) {
+            $category = $form->rootCategory()->first();
+        }
+        if ($form->getKey() !== $category->getForm()->getKey()) {
+            return false;
+        }
+        return $category;
     }
 
     protected function createForm($params) {
@@ -69,4 +89,14 @@ class FormController extends Controller {
             'type' => ['required', new FormType()],
         ]);
     }
+
+    const INVALID_CATEGORY = [
+        'status' => 'INVALID_CATEGORY',
+        'msg' => "The specified category does not belong to the specified form"
+    ];
+
+    const INVALID_QUESTION = [
+        'status' => 'INVALID_QUESTION',
+        'msg' => "The specified question isn't already in the specified form."
+    ];
 }

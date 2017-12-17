@@ -8,7 +8,6 @@ use App\Category;
 use App\Form;
 use App\FormQuestion;
 use App\Models\Question;
-use App\CategoryQuestion;
 
 class FormService {
 
@@ -30,17 +29,28 @@ class FormService {
             $category = $form->rootCategory()->first();
         }
 
-        $categoryQuestion = CategoryQuestion::create([
-            'category_id' => $category->getKey(),
-            'question_id' => $question->getKey(),
-        ]);
-
         $formQuestion = FormQuestion::create([
             'form_id' => $form->getKey(),
             'question_id' => $question->getKey(),
+            'category_id' => $category->getKey(),
         ]);
 
         return $formQuestion;
+    }
+
+    public function moveQuestion(Form $form, Question $question, Category $category) {
+        $edge = FormQuestion::query()
+            ->where('form_id', '=', $form->getKey())
+            ->where('question_id', '=', $question->getKey())
+            ->first();
+
+        if ($edge === null) {
+            return false;
+        }
+
+        $edge->category_id = $category->getKey();
+        $edge->save();
+        return true;
     }
 
 }

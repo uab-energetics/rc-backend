@@ -10,7 +10,8 @@ class FormQuestion extends UniqueJunction {
     protected $fillable = [
         'form_id',
         'question_id',
-        'scope'
+        'category_id',
+        'scope',
     ];
 
     /** @return string[] */
