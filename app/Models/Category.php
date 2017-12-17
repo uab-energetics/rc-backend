@@ -15,7 +15,23 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id');
     }
 
+    function parent() {
+        return $this->hasOne(Category::class, 'parent_id');
+    }
+
     function questions(){
         return $this->belongsToMany(Question::class, 'question_in_category', 'category_id', 'question_id');
+    }
+
+    function form() {
+        return $this->hasOne(Form::class, 'root_category_id');
+    }
+
+    public function getForm() {
+        $form = $this->form()->first();
+        if ($form !== null) {
+            return $form;
+        }
+        return $this->parent()->first()->getForm();
     }
 }

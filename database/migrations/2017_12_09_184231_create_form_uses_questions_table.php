@@ -13,7 +13,7 @@ class CreateFormUsesQuestionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('form_uses_questions', function (Blueprint $table) {
+        Schema::create('form_question', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('form_id')->unsigned();
             $table->foreign('form_id')->references('id')->on('forms');
@@ -30,6 +30,6 @@ class CreateFormUsesQuestionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('form_uses_questions');
+        Schema::dropIfExists('form_question');
     }
 }

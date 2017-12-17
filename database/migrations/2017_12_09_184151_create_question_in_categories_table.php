@@ -13,7 +13,7 @@ class CreateQuestionInCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('question_in_category', function (Blueprint $table) {
+        Schema::create('category_question', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('question_id')->unsigned();
             $table->foreign('question_id')->references('id')->on('questions');
@@ -30,6 +30,6 @@ class CreateQuestionInCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('question_in_categories');
+        Schema::dropIfExists('category_question');
     }
 }

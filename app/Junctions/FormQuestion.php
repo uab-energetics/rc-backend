@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 class FormQuestion extends UniqueJunction {
-    protected $table = "form_uses_table";
+    protected $table = "form_question";
 
     protected $fillable = [
         'form_id',
