@@ -46,6 +46,18 @@ class CategoryController extends Controller {
         return okMessage("Successfully updated category");
     }
 
+    public function delete(Category $category, CategoryService $categoryService) {
+        $res = $categoryService->deleteCategory($category);
+        if ($res === false) {
+            return response()->json([
+                'status' => 'INVALID_CATEGORY',
+                'msg' => "Root categories may not be deleted"
+            ], 403);
+        }
+
+        return okMessage("Successfully deleted Category");
+    }
+
 
     /**
      * @param $data

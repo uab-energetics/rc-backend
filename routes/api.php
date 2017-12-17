@@ -42,6 +42,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::group(['prefix' => 'categories'], function () {
         Route::post('/', CategoryController::class."@create");
         Route::put('/{category}', CategoryController::class."@update");
+        Route::delete('/{category}', CategoryController::class."@delete");
     });
 
             ////    ENCODINGS    ////
