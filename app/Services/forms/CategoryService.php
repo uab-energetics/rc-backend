@@ -15,9 +15,13 @@ class CategoryService {
     public function updateCategory(Category $category, $params) {
         $parent = Category::find($params['parent_id']);
 
-        if ($category->getForm()->getKey() !== $parent->getForm()->getKey()) {
+        if ($category->getForm()->getKey() !== $parent->getForm()->getKey()
+            || $category->getKey() === $parent->getKey()) {
             return false;
         }
+
+        $category->update($params);
+
         return true;
     }
 
