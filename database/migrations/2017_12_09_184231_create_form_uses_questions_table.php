@@ -15,10 +15,17 @@ class CreateFormUsesQuestionsTable extends Migration
     {
         Schema::create('form_question', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('form_id')->unsigned();
-            $table->foreign('form_id')->references('id')->on('forms');
-            $table->integer('question_id')->unsigned();
-            $table->foreign('question_id')->references('id')->on('questions');
+            $table->unsignedInteger('form_id');
+            $table->unsignedInteger('question_id');
+            $table->unsignedInteger('category_id');
+
+            $table->foreign('form_id')->references('id')->on('forms')
+                ->onDelete('cascade');
+            $table->foreign('question_id')->references('id')->on('questions')
+                ->onDelete('cascade');
+            $table->foreign('category_id')->references('id')->on('categories')
+                ->onDelete('cascade');
+
             $table->timestamps();
         });
     }
