@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Routing\Router;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -54,6 +55,13 @@ class Handler extends ExceptionHandler
                 'msg' => 'Could not find the specified '.$class,
             ], 404);
         }
+        if ($e instanceof NotFoundHttpException) {
+            return response()->json([
+                'status' => "URL_NOT_FOUND",
+                'msg' => "This is not the route you are looking for"
+            ], 404);
+        }
+
         return $this->prepareJsonResponse($request, $e);
     }
 
