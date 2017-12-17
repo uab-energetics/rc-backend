@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Form;
+use App\Models\Question;
 use App\Project;
 use App\Rules\FormType;
 use App\Services\Forms\FormService;
@@ -26,6 +28,30 @@ class FormController extends Controller {
         });
 
         return $form->toArray();
+    }
+
+    public function addQuestion(Form $form, Question $question, Request $request, FormService $formService) {
+        $category = Category::find( $request->category_id );
+
+        if ($category === null) {
+            $category = $form->rootCategory()->first();
+        }
+
+        if ($form->getKey() !== $category->getForm()->getKey()) {
+            return response()->json([
+                'status' => 'INVALID_CATEGORY',
+                'msg' => "The specified category does not belong to the specified form"
+            ], 403);
+        }
+
+        DB::transaction( function() use (&$form, &$question, &$category, &$formService, $request) {
+            $formService->addQuestion($form, $question, $category);
+        });
+
+        return response()->json([
+            'status' => 'ok',
+            'msg' => "Successfully added question to form"
+        ], 200);
     }
 
     protected function createForm($params) {

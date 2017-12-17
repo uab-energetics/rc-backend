@@ -8,6 +8,7 @@ use App\Category;
 use App\Form;
 use App\FormQuestion;
 use App\Models\Question;
+use App\CategoryQuestion;
 
 class FormService {
 
@@ -24,11 +25,22 @@ class FormService {
         return $form;
     }
 
-    public function addQuestion(Form $form, Question $question) {
-        return FormQuestion::create([
+    public function addQuestion(Form $form, Question $question, Category $category = null) {
+        if ($category === null) {
+            $category = $form->rootCategory()->first();
+        }
+
+        $categoryQuestion = CategoryQuestion::create([
+            'category_id' => $category->getKey(),
+            'question_id' => $question->getKey(),
+        ]);
+
+        $formQuestion = FormQuestion::create([
             'form_id' => $form->getKey(),
             'question_id' => $question->getKey(),
         ]);
+
+        return $formQuestion;
     }
 
 }

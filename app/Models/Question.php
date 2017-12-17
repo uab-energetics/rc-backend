@@ -10,7 +10,7 @@ class Question extends Model {
     protected $with = ['options', 'accepts'];
 
     function options() {
-        return $this->hasMany(Options::class, 'question_id');
+        return $this->hasMany(QuestionOptions::class, 'question_id');
     }
 
     function responses() {

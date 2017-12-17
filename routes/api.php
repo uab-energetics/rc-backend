@@ -34,7 +34,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
             ////    FORMS       ////
     Route::group(['prefix' => 'forms'], function () {
-
+        Route::post('{form}/questions/{question}', FormController::class."@addQuestion");
     });
 
             ////    ENCODINGS    ////

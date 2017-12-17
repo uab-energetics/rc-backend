@@ -20,7 +20,7 @@ class Category extends Model
     }
 
     function questions(){
-        return $this->belongsToMany(Question::class, 'question_in_category', 'category_id', 'question_id');
+        return $this->belongsToMany(Question::class, 'category_question', 'category_id', 'question_id');
     }
 
     function form() {
