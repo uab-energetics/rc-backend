@@ -48,6 +48,16 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        return parent::render($request, $exception);
+        $trace = [];
+        foreach ($exception->getTrace() as $item) {
+            $trace[] = $item['file'] . ':' . $item['line'] . '     ' . $item['class'] . '::' . $item['function'];
+        }
+        $json = [
+            'exception' => get_class($exception),
+            'message' => $exception->getMessage(),
+            'file' => $exception->getFile() . ":" . $exception->getLine(),
+            'trace' => $trace
+        ];
+        return response()->json($json, 500);
     }
 }
