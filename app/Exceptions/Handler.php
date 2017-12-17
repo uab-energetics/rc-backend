@@ -3,7 +3,13 @@
 namespace App\Exceptions;
 
 use Exception;
+use HttpResponseException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Routing\Router;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -39,15 +45,20 @@ class Handler extends ExceptionHandler
         parent::report($exception);
     }
 
-    /**
-     * Render an exception into an HTTP response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
-     * @return \Illuminate\Http\Response
-     */
-    public function render($request, Exception $exception)
+    public function render($request, Exception $e)
     {
-        return $this->prepareJsonResponse($request, $exception);
+        if ($e instanceof ModelNotFoundException) {
+            $class = $this->getEndOfClassName($e->getModel());
+            return response()->json([
+                'status' => 'RESOURCE_NOT_FOUND',
+                'msg' => 'Could not find the specified '.$class,
+            ], 404);
+        }
+        return $this->prepareJsonResponse($request, $e);
+    }
+
+    protected function getEndOfClassName($className) {
+        preg_match('/\w+$/', $className, $matches);
+        return $matches[0];
     }
 }
