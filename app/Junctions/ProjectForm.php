@@ -11,6 +11,6 @@ class ProjectForm extends UniqueJunction {
 
     /** @return string[] */
     public function uniqueColumns() {
-        // TODO: Implement uniqueColumns() method.
+        return ['project_id', 'form_id'];
     }
 }
