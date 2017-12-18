@@ -27,6 +27,7 @@ class FormController extends Controller {
             $edge = $projService->addForm($project, $form);
         });
 
+        $form->refresh();
         return $form->toArray();
     }
 
@@ -45,7 +46,8 @@ class FormController extends Controller {
             $formService->addQuestion($form, $question, $category);
         });
 
-        return okMessage("Successfully added question to form", 201);
+        $form->refresh();
+        return $form->toArray();
     }
 
     public function moveQuestion (Form $form, Question $question, Request $request, FormService $formService) {
@@ -60,7 +62,8 @@ class FormController extends Controller {
             return response()->json(static::INVALID_QUESTION, 403);
         }
 
-        return okMessage("Successfully moved question", 201);
+        $form->refresh();
+        return $form->toArray();
     }
 
     /**
@@ -77,10 +80,6 @@ class FormController extends Controller {
             return false;
         }
         return $category;
-    }
-
-    protected function createForm($params) {
-        return Form::create($params);
     }
 
     /**
