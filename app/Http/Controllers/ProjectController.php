@@ -31,6 +31,10 @@ class ProjectController extends Controller {
         return $project->toArray();
     }
 
+    public function retrieveForms(Project $project, ProjectService $projectService) {
+        return $projectService->getForms($project)->toArray();
+    }
+
     /**
      * @param $data
      * @return \Illuminate\Contracts\Validation\Validator
