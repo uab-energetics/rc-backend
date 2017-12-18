@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,12 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::group(['middleware' => 'jwt.auth'], function () {
+
+    Route::group(['prefix' => 'users'], function() {
+        Route::get('projects', UserController::class."@retrieveResearcherProjects");
+        Route::get('projects/coder', UserController::class."@retrieveCoderProjects");
+        Route::get('projects/researcher', UserController::class."@retrieveResearcherProjects");
+    });
 
             ////    PROJECTS    ////
     Route::group(['prefix' => 'projects'], function () {
