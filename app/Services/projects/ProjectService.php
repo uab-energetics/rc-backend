@@ -5,6 +5,7 @@ namespace App\Services\Projects;
 use App\Form;
 use App\Project;
 use App\ProjectForm;
+use App\ProjectResearcher;
 use App\User;
 
 class ProjectService {
