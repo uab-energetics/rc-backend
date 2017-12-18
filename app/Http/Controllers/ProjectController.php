@@ -32,4 +32,8 @@ class ProjectController extends Controller {
         return $project->toArray();
     }
 
+    public function retrieve(Project $project) {
+        return $project->toArray();
+    }
+
 }

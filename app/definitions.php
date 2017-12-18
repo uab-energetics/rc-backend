@@ -1,10 +1,11 @@
 <?php
 
-const TEXT = 'txt';
-const RANGE = 'range';
-const NUMBER = 'num';
-const SELECT = 'sel';
-const MULTI_SELECT = 'multi-sel';
+const RESPONSE_TEXT = 'txt';
+const RESPONSE_RANGE = 'range';
+const RESPONSE_NUMBER = 'num';
+const RESPONSE_BOOL = 'boo';
+const RESPONSE_SELECT = 'sel';
+const RESPONSE_MULTI_SELECT = 'multi-sel';
 
 const FORM_SIMPLE = 'simple';
 const FORM_EXPERIMENT = 'experiment';

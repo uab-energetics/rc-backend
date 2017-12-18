@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Form;
 use App\Services\Forms\CategoryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -24,7 +25,11 @@ class CategoryController extends Controller {
         return $category->toArray();
     }
 
-    public function update(Category $category, Request $request, CategoryService $categoryService) {
+    public function retrieve(Category $category) {
+        return $category->toArray();
+    }
+
+    public function update(Form $form, Category $category, Request $request, CategoryService $categoryService) {
         $validator = $this->validator($request->all());
         if ($validator->fails()) {
             return invalidParamMessage($validator);
@@ -43,10 +48,11 @@ class CategoryController extends Controller {
             return response()->json(static::INVALID_PARENT, 400);
         }
 
-        return okMessage("Successfully updated category");
+        $form->refresh();
+        return $form->toArray();
     }
 
-    public function delete(Category $category, CategoryService $categoryService) {
+    public function delete(Form $form, Category $category, CategoryService $categoryService) {
         $res = $categoryService->deleteCategory($category);
         if ($res === false) {
             return response()->json([
@@ -55,7 +61,8 @@ class CategoryController extends Controller {
             ], 403);
         }
 
-        return okMessage("Successfully deleted Category");
+        $form->refresh();
+        return $form->toArray();
     }
 
 

@@ -60,4 +60,20 @@ class FormService {
         return true;
     }
 
+    /**
+     * @param Form $form
+     * @param $category_id
+     * @return Category | false
+     */
+    public function findCategory(Form $form, $category_id) {
+        $category = Category::find( $category_id );
+        if ($category === null) {
+            $category = $form->rootCategory()->first();
+        }
+        if ($form->getKey() !== $category->getForm()->getKey()) {
+            return false;
+        }
+        return $category;
+    }
+
 }

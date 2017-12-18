@@ -30,21 +30,29 @@ Route::group(['middleware' => 'jwt.auth'], function () {
             ////    PROJECTS    ////
     Route::group(['prefix' => 'projects'], function () {
         Route::post('/', ProjectController::class."@create");
+        Route::get('/{project}', ProjectController::class."@retrieve");
         Route::post('/{project}/forms', FormController::class."@create");
     });
 
             ////    FORMS       ////
     Route::group(['prefix' => 'forms'], function () {
+        Route::get('{form}', FormController::class."@retrieve");
         Route::delete('{form}', FormController::class."@delete");
-        Route::post('{form}/questions/{question}', FormController::class."@addQuestion");
-        Route::put('{form}/questions/{question}', FormController::class."@moveQuestion");
+
+        Route::group(['prefix' => '{form}/questions'], function() {
+            Route::post('/', QuestionController::class."@createQuestion");
+            Route::post('{question}', FormController::class."@addQuestion");
+            Route::put('{question}', FormController::class."@moveQuestion");
+        });
+
+        Route::group(['prefix' => '{form}/categories'], function () {
+            Route::post('/', CategoryController::class."@create");
+            Route::put('/{category}', CategoryController::class."@update");
+            Route::delete('/{category}', CategoryController::class."@delete");
+        });
     });
 
-    Route::group(['prefix' => 'categories'], function () {
-        Route::post('/', CategoryController::class."@create");
-        Route::put('/{category}', CategoryController::class."@update");
-        Route::delete('/{category}', CategoryController::class."@delete");
-    });
+
 
             ////    ENCODINGS    ////
     Route::group(['prefix' => 'encodings'], function () {
