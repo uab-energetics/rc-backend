@@ -48,7 +48,7 @@ class FormController extends Controller {
             return response()->json(static::INVALID_CATEGORY, 403);
         }
 
-        DB::startTransaction();
+        DB::beginTransaction();
             $formService->addQuestion($form, $question, $category);
         DB::commit();
 
