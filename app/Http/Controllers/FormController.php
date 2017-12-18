@@ -16,7 +16,8 @@ use Illuminate\Http\Request;
 
 class FormController extends Controller {
 
-    public function create(Project $project, Request $request, ProjectService $projService, FormService $formService) {
+    public function create(Project $project, Request $request,
+           ProjectService $projService, FormService $formService) {
         $validator = $this->createValidator($request->all());
         if ($validator->fails()) {
             return invalidParamMessage($validator);
