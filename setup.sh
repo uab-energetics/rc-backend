@@ -2,5 +2,5 @@
 chmod -R 755 .
 chmod -R 775 storage/
 chmod -R 775 bootstrap/cache/
-chown -R root:www-data .
+chown -R $1:$2 .
 composer dumpautoload -o
