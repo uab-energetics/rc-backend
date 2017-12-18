@@ -34,12 +34,10 @@ class AuthController extends Controller {
         }
 
         // all good so return the token
-        return response()->json([
-            'status' => 'ok',
-            'msg' => "Successfully logged in",
+        return okMessage("Successfully logged in", 200, [
             'token' => $token,
             'user' => $userInfo
-        ], 200);
+        ]);
     }
 
     public function register(Request $request, JWTAuth $auth) {
@@ -71,12 +69,10 @@ class AuthController extends Controller {
             return response()->json(self::FAILURE, 500);
         }
 
-        return response()->json([
-            'status' => 'ok',
-            'msg' => "Successfully registered",
+        return okMessage("Successfully registered", 200, [
             'token' => $token,
             'user' => $this->getUserInfo($user)
-        ], 200);
+        ]);
     }
 
     /** Get a validator for an incoming registration request.

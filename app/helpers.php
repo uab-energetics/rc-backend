@@ -23,6 +23,6 @@ function okMessage($message, $code = 200, $extra = []) {
         'status' => 'ok',
         'msg' => $message
     ];
-    $arr = $extra + $arr;
+    $arr += $extra;
     return response()->json($arr, $code);
 }
