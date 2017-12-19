@@ -29,17 +29,14 @@ class UpdateProfile extends JWTTestCase
 
         $this->asUser($user);
 
-        $response = $this->json('PUT', '/my-profile', [
+        $this->json('PUT', '/my-profile', [
             'name' => 'Caleb Falcione',
             'image' => 'abc'
-        ]);
+        ])->assertStatus(200)
+            ->assertJson([
+                'name' => 'Caleb Falcione',
+                'image' => 'abc'
+            ]);
 
-//        $response->dump();
-
-        $response->assertStatus(200);
-        $response->assertJson([
-            'name' => 'Caleb Falcione',
-            'image' => 'abc'
-        ]);
     }
 }

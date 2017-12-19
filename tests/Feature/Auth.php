@@ -13,7 +13,7 @@ use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\JWTTestCase;
 
-class Encodings extends JWTTestCase
+class Auth extends JWTTestCase
 {
     use DatabaseTransactions;
 
