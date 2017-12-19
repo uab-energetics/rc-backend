@@ -1,5 +1,7 @@
 <?php
 
+use App\Form;
+use App\User;
 use Faker\Generator as Faker;
 
 /*
@@ -13,11 +15,12 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(\App\EncodingExperimentBranch::class, function (Faker $faker) {
+$factory->define(\App\Encoding::class, function (Faker $faker) {
 
     return [
-        'encoding_id' => null,
-        'name' => $faker->words(2, true),
-        'description' => $faker->paragraph(2)
+        'form_id' => factory(Form::class)->create()->id,
+        'owner_id' => factory(User::class)->create()->id,
+        'type' => 'simple',
+        'publication_id' => factory(\App\Publication::class)->create()
     ];
 });

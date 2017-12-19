@@ -21,7 +21,7 @@ class EncodingService {
         $encoding->experimentBranches()
             ->save($branch);
 
-        return Encoding::find($encoding_id);
+        return Encoding::find($encoding_id)->toArray();
     }
 
     function recordResponse( $encoding_id, $branch_id, $body ){
@@ -36,6 +36,15 @@ class EncodingService {
         $response->fill($body);
         $branch->responses()->save($response);
 
-        return Encoding::find($encoding_id);
+        return Encoding::find($encoding_id)->toArray();
     }
+
+    function deleteBranch($encoding_id, $branch_id){
+        $branch = EncodingExperimentBranch::find($branch_id);
+        $branch->responses()
+            ->delete();
+        $branch->destroy();
+        return Encoding::find($encoding_id)->toArray();
+    }
+
 }
