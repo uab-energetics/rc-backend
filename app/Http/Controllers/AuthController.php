@@ -36,7 +36,8 @@ class AuthController extends Controller {
         // all good so return the token
         return okMessage("Successfully logged in", 200, [
             'token' => $token,
-            'user' => $userInfo
+//            'user' => $userInfo
+            'user' => $user
         ]);
     }
 
@@ -71,7 +72,8 @@ class AuthController extends Controller {
 
         return okMessage("Successfully registered", 200, [
             'token' => $token,
-            'user' => $this->getUserInfo($user)
+//            'user' => $this->getUserInfo($user)
+            'user' => $user
         ]);
     }
 
@@ -107,6 +109,7 @@ class AuthController extends Controller {
         event(new Registered($user), $request->callback);
     }
 
+    // Why..?
     protected function getUserInfo(User $user) {
         return [
             'id' => $user->id,

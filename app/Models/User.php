@@ -8,19 +8,20 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable {
     use Notifiable;
 
-    /** The attributes that are mass assignable.
-     * @var array
-     */
     protected $fillable = [
         'name', 'email', 'password', 'image'
     ];
 
-    /** The attributes that should be hidden for arrays.
-     * @var array
-     */
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function __construct(array $attributes = []) {
+        $this->attributes = [
+            'image' => config('custom.default_user_image')
+        ];
+        parent::__construct($attributes);
+    }
 
     public function researcherProjects() {
         return $this->belongsToMany(Project::class, 'project_researcher', 'researcher_id', 'project_id');
