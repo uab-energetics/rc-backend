@@ -13,7 +13,7 @@ class EncodingService {
 
     function recordBranch( $encoding_id, $branch ){
         $encoding = Encoding::find($encoding_id);
-        if(!$encoding) return false;
+        if(!$encoding || !$branch) return false;
 
         // get a branch DB model
         $_branch = null;
@@ -57,4 +57,37 @@ class EncodingService {
         return Encoding::find($encoding_id)->toArray();
     }
 
+    public function dispatch( $encoding_action ){
+        $result = false;
+        switch ($encoding_action['type']){
+            case EncodingActions::RECORD_BRANCH:
+                $result = $this->recordBranch(
+                    $encoding_action['encoding_id'],
+                    $encoding_action['branch']
+                );
+                break;
+            case EncodingActions::RECORD_RESPONSE:
+                $result = $this->recordResponse(
+                    $encoding_action['encoding_id'],
+                    $encoding_action['branch_id'],
+                    $encoding_action['response']
+                );
+                break;
+            case EncodingActions::DELETE_BRANCH:
+                $result = $this->deleteBranch(
+                    $encoding_action['encoding_id'],
+                    $encoding_action['branch_id']
+                );
+                break;
+        }
+        return $result;
+    }
+
+    public function dispatchAll( $encoding_actions ){
+        $results = [];
+        foreach ($encoding_actions as $action){
+            $results[] = $this->dispatch($action);
+        }
+        return $results;
+    }
 }
