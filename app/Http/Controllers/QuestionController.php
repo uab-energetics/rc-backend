@@ -56,7 +56,7 @@ class QuestionController extends Controller {
     protected function addToFormValidator($data) {
         return Validator::make($data, [
             'category_id' => 'nullable|exists:categories,id',
-            'question' => new QuestionRule()
+            'question' => ['required', new QuestionRule()]
         ]);
     }
 }
