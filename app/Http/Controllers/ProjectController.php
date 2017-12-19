@@ -31,6 +31,13 @@ class ProjectController extends Controller {
         return $project->toArray();
     }
 
+    public function delete(Project $project, ProjectService $projectService) {
+        DB::beginTransaction();
+            $projectService->deleteProject($project);
+        DB::commit();
+        return okMessage("Successfully deleted project");
+    }
+
     public function retrieveForms(Project $project, ProjectService $projectService) {
         return $projectService->getForms($project)->toArray();
     }
