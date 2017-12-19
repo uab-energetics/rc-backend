@@ -68,6 +68,14 @@ Route::group(['middleware' => 'jwt.auth'], function () {
         });
     });
 
+    ////    QUESTIONS    ////
+    Route::group(['prefix' => 'questions'], function () {
+        Route::post('/', QuestionController::class."@create");
+        Route::get('/{question}', QuestionController::class."@retrieve");
+        Route::put('/{question}', QuestionController::class."@update");
+        Route::delete('/{question}', QuestionController::class."@delete");
+    });
+
     Route::group(['prefix' => 'categories'], function () {
         Route::get('/{category}', CategoryController::class."@retrieve");
     });
@@ -79,14 +87,6 @@ Route::group(['middleware' => 'jwt.auth'], function () {
             ////    RESPONSES    ////
     Route::group(['prefix' => 'responses'], function () {
 
-    });
-
-            ////    QUESTIONS    ////
-    Route::group(['prefix' => 'questions'], function () {
-        Route::post('/', QuestionController::class."@create");
-        Route::get('/{question}', QuestionController::class."@retrieve");
-        Route::put('/{question}', QuestionController::class."@update");
-        Route::delete('/{question}', QuestionController::class."@delete");
     });
 
 });
