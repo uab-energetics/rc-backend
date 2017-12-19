@@ -25,7 +25,9 @@ class FormService {
     }
 
     public function updateForm(Form $form, $params) {
-
+        unset($params['root_category_id']);
+        unset($params['type']);
+        $form->update($params);
     }
 
     public function deleteForm(Form $form) {
