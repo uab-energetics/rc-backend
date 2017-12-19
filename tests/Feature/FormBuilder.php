@@ -35,8 +35,9 @@ class FormBuilder extends JWTTestCase
          */
 
         // Create project
-        $create_project_res = $this->json('POST', "projects", [ 'name' => 'test project' ]);
-        $create_project_res->assertStatus(200);
+        $create_project_res = $this->json('POST', "projects", [
+            'name' => 'test project'
+        ])->assertStatus(200);
         $project_id = $create_project_res->json()['id'];
 
         // Get project
@@ -46,8 +47,8 @@ class FormBuilder extends JWTTestCase
         $form_res = $this->json('POST', "projects/$project_id/forms", [
             'type' => 'simple',
             'name' => str_random(10),
-            'description' => str_random(10) ]);
-        $form_res->assertStatus(200);
+            'description' => str_random(10)
+        ])->assertStatus(200);
         $form_id = $form_res->json()['id'];
 
         // Get form
@@ -56,8 +57,8 @@ class FormBuilder extends JWTTestCase
         // Create categories
         $category_res = $this->json('POST', "forms/$form_id/categories", [
             'parent_id' => $form_res->json()['root_category_id'],
-            'name' => str_random(10) ]);
-        $category_res->assertStatus(200);
+            'name' => str_random(10)
+        ])->assertStatus(200);
         $category_id = $category_res->json()['id'];
 
         // Get category
@@ -70,8 +71,9 @@ class FormBuilder extends JWTTestCase
                 'name' => str_random(10),
                 'default_format' => 'txt',
                 'accepts' => [ 'txt' ],
-                'prompt' => 'default question prompt' ]]);
-        $question_res->assertStatus(200);
+                'prompt' => 'default question prompt'
+            ]
+        ])->assertStatus(200);
         $question_id = $question_res->json()['id'];
 
         // get question
