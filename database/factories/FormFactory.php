@@ -19,6 +19,6 @@ $factory->define(\App\Form::class, function (Faker $faker) {
         'name' => $faker->words(2, true),
         'type' => 'simple',
         'description' => $faker->paragraph(2),
-        'root_category_id' => null
+        'root_category_id' => factory(\App\Category::class)->create()->id
     ];
 });
