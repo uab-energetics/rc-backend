@@ -9,13 +9,15 @@ use App\Project;
 use App\Rules\FormType;
 use App\Services\Forms\FormService;
 use App\Services\Projects\ProjectService;
+use App\Services\Questions\QuestionService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class FormController extends Controller {
 
-    public function create(Project $project, Request $request, ProjectService $projService, FormService $formService) {
+    public function create(Project $project, Request $request,
+           ProjectService $projService, FormService $formService) {
         $validator = $this->createValidator($request->all());
         if ($validator->fails()) {
             return invalidParamMessage($validator);
@@ -27,24 +29,35 @@ class FormController extends Controller {
             $edge = $projService->addForm($project, $form);
         });
 
-        return $form->toArray();
+        $form->refresh();
+        return $form;
+    }
+
+    public function delete(Form $form, FormService $formService) {
+        $res = $formService->deleteForm($form);
+        return okMessage("Successfully deleted form");
+    }
+
+    public function retrieve(Form $form) {
+        return $form;
     }
 
     public function addQuestion(Form $form, Question $question, Request $request, FormService $formService) {
-        $category = $this->findCategory($form, $request->category_id);
+        $category = $formService->findCategory($form, $request->category_id);
         if ($category === false) {
             return response()->json(static::INVALID_CATEGORY, 403);
         }
 
-        DB::transaction( function() use (&$form, &$question, &$category, &$formService, $request) {
+        DB::beginTransaction();
             $formService->addQuestion($form, $question, $category);
-        });
+        DB::commit();
 
-        return okMessage("Successfully added question to form", 201);
+        $form->refresh();
+        return $form;
     }
 
     public function moveQuestion (Form $form, Question $question, Request $request, FormService $formService) {
-        $category = $this->findCategory($form, $request->category_id);
+        $category = $formService->findCategory($form, $request->category_id);
         if ($category === false) {
             return response()->json(static::INVALID_CATEGORY, 403);
         }
@@ -55,27 +68,19 @@ class FormController extends Controller {
             return response()->json(static::INVALID_QUESTION, 403);
         }
 
-        return okMessage("Successfully moved question", 201);
+        $form->refresh();
+        return $form;
     }
 
-    /**
-     * @param Form $form
-     * @param $category_id
-     * @return Category | false
-     */
-    protected function findCategory(Form $form, $category_id) {
-        $category = Category::find( $category_id );
-        if ($category === null) {
-            $category = $form->rootCategory()->first();
+    public function removeQuestion(Form $form, Question $question, FormService $formService) {
+        $res = $formService->removeQuestion($form, $question);
+        if ($res === false) {
+            return response()->json([
+                'status' => 'QUESTION_NOT_FOUND',
+                'msg' => "The specified question wasn't found in the specified form"
+            ], 404);
         }
-        if ($form->getKey() !== $category->getForm()->getKey()) {
-            return false;
-        }
-        return $category;
-    }
-
-    protected function createForm($params) {
-        return Form::create($params);
+        return okMessage("Successfully remove question from form");
     }
 
     /**

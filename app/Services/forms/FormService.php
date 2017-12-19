@@ -24,6 +24,17 @@ class FormService {
         return $form;
     }
 
+    public function updateForm(Form $form, $params) {
+
+    }
+
+    public function deleteForm(Form $form) {
+        $rootCategory = $form->rootCategory()->first();
+        $form->delete();
+        $rootCategory->delete();
+        return true;
+    }
+
     public function addQuestion(Form $form, Question $question, Category $category = null) {
         if ($category === null) {
             $category = $form->rootCategory()->first();
@@ -51,6 +62,35 @@ class FormService {
         $edge->category_id = $category->getKey();
         $edge->save();
         return true;
+    }
+
+    public function removeQuestion(Form $form, Question $question) {
+        $edge = FormQuestion::query()
+            ->where('form_id', '=', $form->getKey())
+            ->where('question_id', '=', $question->getKey())
+            ->first();
+
+        if ($edge === null) {
+            return false;
+        }
+        $edge->delete();
+        return true;
+    }
+
+    /**
+     * @param Form $form
+     * @param $category_id
+     * @return Category | false
+     */
+    public function findCategory(Form $form, $category_id) {
+        $category = Category::find( $category_id );
+        if ($category === null) {
+            $category = $form->rootCategory()->first();
+        }
+        if ($form->getKey() !== $category->getForm()->getKey()) {
+            return false;
+        }
+        return $category;
     }
 
 }

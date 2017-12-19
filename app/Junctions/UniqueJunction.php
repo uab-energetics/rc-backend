@@ -22,6 +22,7 @@ abstract class UniqueJunction extends Model {
         $columns = static::uniqueColumns();
         $existing = $this->findByExample($columns, $params);
         if ($existing !== null) {
+            $existing->update($params);
             return $existing;
         }
         $new = parent::create($params);
