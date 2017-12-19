@@ -67,8 +67,9 @@ Route::group(['middleware' => 'jwt.auth'], function () {
         });
     });
 
-
-
+    Route::group(['prefix' => 'categories'], function () {
+        Route::get('/{category}', CategoryController::class."@retrieve");
+    });
             ////    ENCODINGS    ////
     Route::group(['prefix' => 'encodings'], function () {
 
