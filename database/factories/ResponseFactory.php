@@ -16,7 +16,7 @@ use Faker\Generator as Faker;
 $factory->define(\App\Models\Response::class, function (Faker $faker) {
 
     return [
-        'question_id' => null,
+        'question_id' => factory(\App\Models\Question::class)->create()->id,
         'type' => 'txt',
         'txt' => $faker->sentence(1)
     ];

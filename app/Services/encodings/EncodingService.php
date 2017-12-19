@@ -27,7 +27,7 @@ class EncodingService {
         $encoding->experimentBranches()
             ->save($_branch);
 
-        return Encoding::find($encoding_id)->toArray();
+        return EncodingExperimentBranch::find($_branch->id)->toArray();
     }
 
     function recordResponse( $encoding_id, $branch_id, $response ){

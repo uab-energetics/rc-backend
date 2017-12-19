@@ -16,7 +16,7 @@ use Faker\Generator as Faker;
 $factory->define(\App\EncodingExperimentBranch::class, function (Faker $faker) {
 
     return [
-        'encoding_id' => null,
+        'encoding_id' => factory(\App\Encoding::class)->create()->id,
         'name' => $faker->words(2, true),
         'description' => $faker->paragraph(2)
     ];

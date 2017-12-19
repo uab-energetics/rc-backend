@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\EncodingController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserController;
@@ -92,7 +93,9 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     });
             ////    ENCODINGS    ////
     Route::group(['prefix' => 'encodings'], function () {
-
+        Route::post('/record-branch', EncodingController::class."@recordBranch");
+        Route::post('/record-response', EncodingController::class."@recordResponse");
+        Route::post('/delete-branch', EncodingController::class."@deleteBranch");
     });
 
             ////    RESPONSES    ////
