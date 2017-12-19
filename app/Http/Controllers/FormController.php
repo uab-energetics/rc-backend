@@ -24,13 +24,12 @@ class FormController extends Controller {
         }
 
         $form = null;
-        DB::transaction(function () use (&$form, &$request, &$project, &$projService, &$formService) {
+        DB::beginTransaction();
             $form = $formService->makeForm($request->all());
             $edge = $projService->addForm($project, $form);
-        });
+        DB::commit();
 
-        $form->refresh();
-        return $form;
+        return $form->refresh();
     }
 
     public function retrieve(Form $form) {
