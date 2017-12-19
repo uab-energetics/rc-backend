@@ -29,6 +29,7 @@ abstract class TestCase extends BaseTestCase {
 
 
     public function setUp() {
+        parent::setUp();
         $this->questionService = $this->app->make(QuestionService::class);
         $this->formService = $this->app->make(FormService::class);
         $this->categoryService = $this->app->make(CategoryService::class);
