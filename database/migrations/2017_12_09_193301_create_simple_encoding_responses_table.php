@@ -15,10 +15,14 @@ class CreateSimpleEncodingResponsesTable extends Migration
     {
         Schema::create('encoding_simple_responses', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('encoding_id')->unsigned();
-            $table->foreign('encoding_id')->references('id')->on('encodings');
-            $table->integer('response_id')->unsigned();
-            $table->foreign('response_id')->references('id')->on('responses');
+            $table->unsignedInteger('encoding_id');
+            $table->unsignedInteger('response_id');
+
+            $table->foreign('encoding_id')->references('id')->on('encodings')
+                ->onDelete('cascade');
+            $table->foreign('response_id')->references('id')->on('responses')
+                ->onDelete('cascade');
+
             $table->timestamps();
         });
     }

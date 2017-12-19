@@ -15,10 +15,14 @@ class CreateEncodingExperimentBranchesTable extends Migration
     {
         Schema::create('encoding_experiment_branches', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('encoding_id')->unsigned();
-            $table->foreign('encoding_id')->references('id')->on('encodings');
+            $table->unsignedInteger('encoding_id');
+
             $table->string('name')->nullable();
             $table->string('desc')->nullable();
+
+            $table->foreign('encoding_id')->references('id')->on('encodings')
+                ->onDelete('cascade');
+
             $table->timestamps();
         });
     }

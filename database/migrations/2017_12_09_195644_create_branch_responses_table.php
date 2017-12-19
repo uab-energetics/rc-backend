@@ -15,11 +15,16 @@ class CreateBranchResponsesTable extends Migration
     {
         Schema::create('branch_responses', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('branch_id')->unsigned();
-            $table->integer('response_id')->unsigned();
-            $table->foreign('branch_id')->references('id')->on('encoding_experiment_branches');
-            $table->foreign('response_id')->references('id')->on('responses');
+            $table->unsignedInteger('branch_id');
+            $table->unsignedInteger('response_id');
+
             $table->string('comments')->nullable();
+
+            $table->foreign('branch_id')->references('id')->on('encoding_experiment_branches')
+                ->onDelete('cascade');
+            $table->foreign('response_id')->references('id')->on('responses')
+                ->onDelete('cascade');
+
             $table->timestamps();
         });
     }
