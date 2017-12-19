@@ -24,22 +24,26 @@ class Encodings extends JWTTestCase
         $email = 'chris.rocco7@gmail.com';
         $password = 'password';
 
+        $expectedResponse = [
+            'user' => [
+                'name',
+                'email',
+                'image'
+            ],
+            'token'
+        ];
+
         $this->json("POST", "auth/register", [
             'name' => 'Chris Rocco',
             'email' => $email,
             'password' => $password
         ])->assertStatus(200)
-            ->assertJsonStructure([ 'user', 'token' ]);
+            ->assertJsonStructure($expectedResponse);
 
         $this->json("POST", "auth/login", [
             'email' => $email,
             'password' => $password
         ])->assertStatus(200)
-            ->assertJsonStructure([ 'user', 'token' ])
-            ->assertJsonStructure([
-                'user' => [
-                    'image'
-                ]
-            ]);
+            ->assertJsonStructure($expectedResponse);
     }
 }
