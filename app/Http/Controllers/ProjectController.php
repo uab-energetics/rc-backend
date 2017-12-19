@@ -27,6 +27,19 @@ class ProjectController extends Controller {
         return $project;
     }
 
+    public function update(Project $project, Request $request, ProjectService $projectService) {
+        $validator = $this->updateValidator($request->all());
+        if ($validator->fails()) {
+            return invalidParamMessage($validator);
+        }
+
+        DB::beginTransaction();
+            $projectService->updateProject($project, $request->all());
+        DB::commit();
+
+        return $project->refresh();
+    }
+
     public function retrieve(Project $project) {
         return $project;
     }
@@ -49,6 +62,12 @@ class ProjectController extends Controller {
     protected function createValidator($data) {
         return Validator::make($data, [
             'name' => 'required|string|max:255',
+            'description' => 'string',
+        ]);
+    }
+    protected function updateValidator($data) {
+        return Validator::make($data, [
+            'name' => 'string|max:255',
             'description' => 'string',
         ]);
     }

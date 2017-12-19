@@ -15,6 +15,10 @@ class ProjectService {
         return Project::create($params);
     }
 
+    public function updateProject(Project $project, $params) {
+        return $project->update($params);
+    }
+
     public function deleteProject(Project $project) {
         $forms = $project->forms()->get();
         foreach ($forms as $form) {
