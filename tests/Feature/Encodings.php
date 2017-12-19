@@ -18,7 +18,7 @@ class Encodings extends JWTTestCase
 
     use DatabaseTransactions;
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->asAnonymousUser();
@@ -32,7 +32,7 @@ class Encodings extends JWTTestCase
      *  deleteBranch: ( branch_id ) -> Encoding
      *  recordResponse: ( id, branch_id, Response ) -> Encoding
      */
-    public function testFormBuilder() {
+    public function testEncodings() {
 
         $form = factory(Form::class)->make();
         $form->rootCategory()->save(factory(Category::class));

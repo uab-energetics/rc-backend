@@ -34,7 +34,7 @@ class FormExportsTest extends TestCase {
         $this->assertEquals('Yes!', $output[1][2]);
         $this->assertEquals('No', $output[1][1]);
         $this->assertEquals(FormExportService::NO_RESPONSE, $output[2][2]);
-        echo json_encode($output, JSON_PRETTY_PRINT);
+        //echo json_encode($output, JSON_PRETTY_PRINT);
     }
 
 }

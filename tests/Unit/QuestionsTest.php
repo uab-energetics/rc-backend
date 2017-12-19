@@ -4,11 +4,11 @@ namespace Tests\Unit;
 
 use App\Models\Question;
 use App\Models\Response;
+use App\Services\Questions\QuestionService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
-class QuestionsTest extends TestCase
-{
+class QuestionsTest extends TestCase {
 
     use DatabaseTransactions;
 
@@ -17,10 +17,10 @@ class QuestionsTest extends TestCase
      *
      * @return void
      */
-    public function testCreateQuestion()
-    {
-        $q = Question::createWithRel([
-            'txt' => 'Demo Question',
+    public function testCreateQuestion() {
+        $q = $this->questionService->makeQuestion([
+            'name' => "Test Question",
+            'prompt' => 'What is a question?',
             'options' => [
                 ['txt' => 'A']
             ],
