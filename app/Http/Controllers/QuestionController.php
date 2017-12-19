@@ -48,6 +48,9 @@ class QuestionController extends Controller {
         return $form;
     }
 
+    public function retrieve(Question $question) {
+        return $question;
+    }
 
     protected function createValidator($data) {
         return QuestionRule::questionValidator($data);

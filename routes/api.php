@@ -84,6 +84,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
             ////    QUESTIONS    ////
     Route::group(['prefix' => 'questions'], function () {
         Route::post('/', QuestionController::class."@create");
+        Route::get('/{question}', QuestionController::class."@retrieve");
     });
 
 });
