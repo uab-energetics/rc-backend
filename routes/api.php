@@ -91,11 +91,17 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::group(['prefix' => 'categories'], function () {
         Route::get('/{category}', CategoryController::class."@retrieve");
     });
+
             ////    ENCODINGS    ////
     Route::group(['prefix' => 'encodings'], function () {
-        Route::post('/record-branch', EncodingController::class."@recordBranch");
-        Route::post('/record-response', EncodingController::class."@recordResponse");
-        Route::post('/delete-branch', EncodingController::class."@deleteBranch");
+        Route::group(['prefix' => '{encoding}/branches'], function () {
+            Route::post('/', EncodingController::class."@createBranch");
+//            Route::put('/{branch}', EncodingController::class."@updateBranch");
+            Route::delete('/{branch}', EncodingController::class."@deleteBranch");
+
+            Route::post('/{branch}/responses', EncodingController::class."@createBranchResponse");
+        });
+        Route::post('/{encoding}/responses', EncodingController::class."@createSimpleResponse");
     });
 
             ////    RESPONSES    ////

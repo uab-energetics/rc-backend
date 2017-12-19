@@ -41,32 +41,24 @@ class Encodings extends JWTTestCase
         ]);
 
         // make a branch
-        $this->json('POST', 'encodings/record-branch', [
-            'encoding_id' => $encoding->id,
+        $this->json('POST', 'encodings/'.$encoding->id.'/branches', [
             'branch' => $branch
         ])->assertStatus(200);
 
         // make another branch
-        $new_branch = $this->json('POST', 'encodings/record-branch', [
-            'encoding_id' => $encoding->id,
-            'branch' => factory(EncodingExperimentBranch::class)->make([
-                'encoding_id' => $encoding->id
-            ])
-        ])->assertStatus(200)->json();
+        $new_branch = $this->json('POST', 'encodings/'.$encoding->id.'/branches',
+            factory(EncodingExperimentBranch::class)->make([])->toArray()
+        )->assertStatus(200)->json();
 
         // record a response
-        $this->json('POST', 'encodings/record-response', [
-            'encoding_id' => $encoding->id,
-            'branch_id' => $new_branch['id'],
-            'response' => factory(Response::class)->make()
-        ])->assertStatus(200);
+        $this->json('POST', 'encodings/'.$encoding->id.'/branches/'.$new_branch['id'].'/responses',
+            factory(Response::class)->make()->toArray()
+        )->assertStatus(200);
 
         // delete a branch
-        $this->json('POST', 'encodings/delete-branch', [
-            'encoding_id' => $encoding->id,
-            'branch_id' => $branch->id
+        $this->json('DELETE', 'encodings/'.$encoding->id.'/branches/'.$branch->id, [
         ])->assertStatus(200);
 
-        echo json_encode(Encoding::find($encoding->id), JSON_PRETTY_PRINT);
+        //echo json_encode(Encoding::find($encoding->id), JSON_PRETTY_PRINT);
     }
 }

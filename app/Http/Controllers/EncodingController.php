@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Encoding;
+use App\EncodingExperimentBranch as Branch;
 use App\Services\Encodings\EncodingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -9,68 +11,50 @@ use Illuminate\Validation\Rule;
 
 class EncodingController extends Controller {
 
-    private $rules = [
-        'branch_exists' => [ 'branch_id' => 'required|exists:encoding_experiment_branches,id' ],
-        'encoding_exists' => [ 'encoding_id' => 'required|exists:encodings,id' ]
-    ];
+    function createBranch(Encoding $encoding, Request $request, EncodingService $encodingService){
+        $validator = $this->branchValidator($request->all());
+        if($validator->fails())  return invalidParamMessage($validator);
 
-    // TODO - use dependency injection
-    private $service;
+        $result = $encodingService->recordBranch($encoding->getKey(), $request->all());
 
-    public function __construct() {
-        $this->service = new EncodingService();
-    }
-
-    function recordBranch(Request $request){
-        $rules = array_merge(
-            [ 'branch' => 'required' ],
-            $this->rules['encoding_exists']
-        );
-        $validator = Validator::make($request->all(), $rules);
-        if($validator->fails())
-            return response()->json($validator->errors(), 400);
-
-        $result = $this->service->recordBranch($request->encoding_id, $request->branch);
-        if($result) return response()->json($result, 200);
+        if($result) return $result;
         return response("couldn't record branch", 500);
     }
 
-    function recordResponse(Request $request){
-        $rules = array_merge(
-            $this->rules['encoding_exists'],
-            $this->rules['branch_exists'],
-            [ 'response' => 'required' ]
-        );
-        $validator = Validator::make($request->all(), $rules);
-        if($validator->fails())
-            return response()->json($validator->errors(), 400);
+    function createBranchResponse(Encoding $encoding, Branch $branch, Request $request, EncodingService $encodingService){
+        $validator = $this->responseValidator($request->all());
+        if($validator->fails()) return invalidParamMessage($validator);
 
         /* valid. attempting operation */
-        $result = $this->service->recordResponse(
-            $request->encoding_id,
-            $request->branch_id,
-            $request->response
+        $result = $encodingService->recordResponse(
+            $encoding->getKey(),
+            $branch->getKey(),
+            $request->all()
         );
-        if($result) return response()->json($result, 200);
+        if($result) return $result;
         return response("couldn't record response", 500);
     }
 
-    function deleteBranch(Request $request){
-        $rules = array_merge(
-            $this->rules['encoding_exists'],
-            $this->rules['branch_exists']
-        );
-        $validator = Validator::make($request->all(), $rules);
-        if($validator->fails())
-            return response()->json($validator->errors(), 400);
-
+    function deleteBranch(Encoding $encoding, Branch $branch, Request $request, EncodingService $encodingService) {
         /* valid. attempting operation */
-        $result = $this->service->deleteBranch(
-            $request->encoding_id,
-            $request->branch_id
+        $result = $encodingService->deleteBranch(
+            $encoding->getKey(),
+            $branch->getKey()
         );
-        if($result) return response()->json($result, 200);
+        if($result) return $result;
         return response("couldn't delete branch", 500);
+    }
+
+    protected function branchValidator($data) {
+        return Validator::make($data, [
+
+        ]);
+    }
+
+    protected function responseValidator($data) {
+        return Validator::make($data, [
+
+        ]);
     }
 
 }
