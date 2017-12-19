@@ -22,11 +22,11 @@ class CategoryController extends Controller {
             $category = $categoryService->makeCategory($request->all());
         });
 
-        return $category->toArray();
+        return $category;
     }
 
     public function retrieve(Category $category) {
-        return $category->toArray();
+        return $category;
     }
 
     public function update(Form $form, Category $category, Request $request, CategoryService $categoryService) {
@@ -49,7 +49,7 @@ class CategoryController extends Controller {
         }
 
         $form->refresh();
-        return $form->toArray();
+        return $form;
     }
 
     public function delete(Form $form, Category $category, CategoryService $categoryService) {
@@ -62,7 +62,7 @@ class CategoryController extends Controller {
         }
 
         $form->refresh();
-        return $form->toArray();
+        return $form;
     }
 
 

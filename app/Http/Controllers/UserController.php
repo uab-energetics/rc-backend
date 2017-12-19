@@ -15,12 +15,12 @@ class UserController extends Controller {
 
     public function retrieveCoderProjects(Request $request, UserService $userService) {
         $user = $request->user();
-        return $userService->getCoderProjects($user)->toArray();
+        return $userService->getCoderProjects($user);
     }
 
     public function retrieveEncodings(Request $request, UserService $userService) {
         $user = $request->user();
-        return $userService->getEncodings($user)->toArray();
+        return $userService->getEncodings($user);
     }
 
 }

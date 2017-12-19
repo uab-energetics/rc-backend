@@ -24,11 +24,11 @@ class ProjectController extends Controller {
             $projectService->addResearcher($project, $user, true);
         DB::commit();
 
-        return $project->toArray();
+        return $project;
     }
 
     public function retrieve(Project $project) {
-        return $project->toArray();
+        return $project;
     }
 
     public function delete(Project $project, ProjectService $projectService) {
@@ -39,7 +39,7 @@ class ProjectController extends Controller {
     }
 
     public function retrieveForms(Project $project, ProjectService $projectService) {
-        return $projectService->getForms($project)->toArray();
+        return $projectService->getForms($project);
     }
 
     /**

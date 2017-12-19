@@ -23,7 +23,7 @@ class QuestionController extends Controller {
             $question = $questionService->makeQuestion($request->all());
         DB::commit();
 
-        return $question->toArray();
+        return $question;
     }
 
     public function createQuestion(Form $form, Request $request,
@@ -45,7 +45,7 @@ class QuestionController extends Controller {
         DB::commit();
 
         $form->refresh();
-        return $form->toArray();
+        return $form;
     }
 
 

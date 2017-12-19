@@ -30,7 +30,7 @@ class FormController extends Controller {
         });
 
         $form->refresh();
-        return $form->toArray();
+        return $form;
     }
 
     public function delete(Form $form, FormService $formService) {
@@ -39,7 +39,7 @@ class FormController extends Controller {
     }
 
     public function retrieve(Form $form) {
-        return $form->toArray();
+        return $form;
     }
 
     public function addQuestion(Form $form, Question $question, Request $request, FormService $formService) {
@@ -53,7 +53,7 @@ class FormController extends Controller {
         DB::commit();
 
         $form->refresh();
-        return $form->toArray();
+        return $form;
     }
 
     public function moveQuestion (Form $form, Question $question, Request $request, FormService $formService) {
@@ -69,7 +69,7 @@ class FormController extends Controller {
         }
 
         $form->refresh();
-        return $form->toArray();
+        return $form;
     }
 
     /**
