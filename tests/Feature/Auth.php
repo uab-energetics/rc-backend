@@ -21,7 +21,7 @@ class Auth extends JWTTestCase
         // register
         // login
 
-        $email = 'chris.rocco7@gmail.com';
+        $email = 'test@test.com';
         $password = 'password';
 
         $expectedResponse = [
