@@ -30,4 +30,8 @@ class User extends Authenticatable {
         return $this->belongsToMany(Project::class, 'project_coder', 'coder_id', 'project_id');
     }
 
+    public function encodings() {
+        return $this->hasMany(Encoding::class, 'owner_id');
+    }
+
 }

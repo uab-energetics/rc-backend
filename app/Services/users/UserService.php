@@ -15,4 +15,8 @@ class UserService {
     public function getCoderProjects(User $user) {
         return $user->researcherProjects()->get();
     }
+
+    public function getEncodings(User $user) {
+        return $user->encodings()->get();
+    }
 }

@@ -29,9 +29,14 @@ Route::group(['prefix' => 'auth'], function () {
 Route::group(['middleware' => 'jwt.auth'], function () {
 
     Route::group(['prefix' => 'users'], function() {
-        Route::get('projects', UserController::class."@retrieveResearcherProjects");
-        Route::get('projects/coder', UserController::class."@retrieveCoderProjects");
-        Route::get('projects/researcher', UserController::class."@retrieveResearcherProjects");
+        Route::group(['projects'], function() {
+            Route::get('/', UserController::class."@retrieveResearcherProjects");
+            Route::get('/coder', UserController::class."@retrieveCoderProjects");
+            Route::get('/researcher', UserController::class."@retrieveResearcherProjects");
+        });
+
+        Route::get('/encodings', UserController::class."@retrieveEncodings");
+
     });
 
             ////    PROJECTS    ////
