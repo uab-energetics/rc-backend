@@ -72,6 +72,17 @@ class FormController extends Controller {
         return $form;
     }
 
+    public function removeQuestion(Form $form, Question $question, FormService $formService) {
+        $res = $formService->removeQuestion($form, $question);
+        if ($res === false) {
+            return response()->json([
+                'status' => 'QUESTION_NOT_FOUND',
+                'msg' => "The specified question wasn't found in the specified form"
+            ], 404);
+        }
+        return okMessage("Successfully remove question from form");
+    }
+
     /**
      * @param $data
      * @return \Illuminate\Contracts\Validation\Validator

@@ -24,6 +24,10 @@ class FormService {
         return $form;
     }
 
+    public function updateForm(Form $form, $params) {
+
+    }
+
     public function deleteForm(Form $form) {
         $rootCategory = $form->rootCategory()->first();
         $form->delete();
@@ -57,6 +61,19 @@ class FormService {
 
         $edge->category_id = $category->getKey();
         $edge->save();
+        return true;
+    }
+
+    public function removeQuestion(Form $form, Question $question) {
+        $edge = FormQuestion::query()
+            ->where('form_id', '=', $form->getKey())
+            ->where('question_id', '=', $question->getKey())
+            ->first();
+
+        if ($edge === null) {
+            return false;
+        }
+        $edge->delete();
         return true;
     }
 
