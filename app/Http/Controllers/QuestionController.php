@@ -59,4 +59,14 @@ class QuestionController extends Controller {
             'question' => ['required', new QuestionRule()]
         ]);
     }
+
+    const INVALID_CATEGORY = [
+        'status' => 'INVALID_CATEGORY',
+        'msg' => "The specified category does not belong to the specified form"
+    ];
+
+    const INVALID_QUESTION = [
+        'status' => 'INVALID_QUESTION',
+        'msg' => "The specified question isn't already in the specified form."
+    ];
 }
