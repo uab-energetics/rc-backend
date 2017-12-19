@@ -51,8 +51,12 @@ Route::group(['middleware' => 'jwt.auth'], function () {
         Route::get('/{project}', ProjectController::class."@retrieve");
         Route::put('/{project}', ProjectController::class."@update");
         Route::delete('/{project}', ProjectController::class."@delete");
-        Route::get('/{project}/forms', ProjectController::class.'@retrieveForms');
-        Route::post('/{project}/forms', FormController::class."@create");
+
+        Route::group(['prefix' => '/{project'], function () {
+            Route::get('/forms', ProjectController::class.'@retrieveForms');
+            Route::post('/forms', FormController::class."@create");
+        });
+
     });
 
             ////    FORMS       ////
