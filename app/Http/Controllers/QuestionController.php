@@ -64,6 +64,11 @@ class QuestionController extends Controller {
         return $question->refresh();
     }
 
+    public function delete(Question $question, QuestionService $questionService) {
+        $questionService->deleteQuestion($question);
+        return okMessage("Successfully deleted question");
+    }
+
     protected function createValidator($data) {
         return QuestionRule::questionValidator($data);
     }
