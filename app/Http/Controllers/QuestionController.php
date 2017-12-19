@@ -77,6 +77,7 @@ class QuestionController extends Controller {
         //FIXME: Caleb lazily didn't extend QuestionRule::questionValidator to
         //FIXME: take a required parameter, resulting in code duplication
         return Validator::make($data, [
+            'name' => 'string',
             'prompt' => 'string',
             'default_format' =>  new ResponseType(),
             'options.*.txt' => 'distinct',

@@ -24,6 +24,7 @@ class Question implements Rule {
 
     public static function questionValidator($data) {
         return Validator::make($data, [
+            'name' => 'required|string',
             'prompt' => 'required|string',
             'default_format' => ['required', new ResponseType()],
             'options.*.txt' => 'distinct',
