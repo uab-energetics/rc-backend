@@ -95,6 +95,14 @@ class FormController extends Controller {
         ]);
     }
 
+    protected function updateValidator($data) {
+        return Validator::make($data, [
+            'name' => 'string|max:255',
+            'description' => 'string',
+            'type' => null,
+        ]);
+    }
+
     const INVALID_CATEGORY = [
         'status' => 'INVALID_CATEGORY',
         'msg' => "The specified category does not belong to the specified form"
