@@ -33,13 +33,27 @@ class FormController extends Controller {
         return $form;
     }
 
+    public function retrieve(Form $form) {
+        return $form;
+    }
+
+    public function update (Form $form, Request $request, FormService $formService) {
+        $params = $request->all();
+        $validator = $this->updateValidator($params);
+        if ($validator->fails()) {
+            return invalidParamMessage($validator);
+        }
+
+        DB::beginTransaction();
+            $formService->updateForm($form, $params);
+        DB::commit();
+
+        return $form->refresh();
+    }
+
     public function delete(Form $form, FormService $formService) {
         $res = $formService->deleteForm($form);
         return okMessage("Successfully deleted form");
-    }
-
-    public function retrieve(Form $form) {
-        return $form;
     }
 
     public function addQuestion(Form $form, Question $question, Request $request, FormService $formService) {
@@ -95,11 +109,14 @@ class FormController extends Controller {
         ]);
     }
 
+    /**
+     * @param $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
     protected function updateValidator($data) {
         return Validator::make($data, [
             'name' => 'string|max:255',
             'description' => 'string',
-            'type' => null,
         ]);
     }
 
