@@ -52,9 +52,33 @@ class QuestionController extends Controller {
         return $question;
     }
 
+    public function update(Question $question, Request $request, QuestionService $questionService) {
+        $validator = $this->updateValidator($request->all());
+        if ($validator->fails()) {
+            return invalidParamMessage($validator);
+        }
+        DB::beginTransaction();
+            $questionService->updateQuestion($question, $request->all());
+        DB::commit();
+
+        return $question->refresh();
+    }
+
     protected function createValidator($data) {
         return QuestionRule::questionValidator($data);
     }
+
+    protected function updateValidator($data) {
+        //FIXME: Caleb lazily didn't extend QuestionRule::questionValidator to
+        //FIXME: take a required parameter, resulting in code duplication
+        return Validator::make($data, [
+            'prompt' => 'string',
+            'default_format' =>  new ResponseType(),
+            'options.*.txt' => 'distinct',
+            'accepts.*.type' => ['distinct', new ResponseType()],
+        ]);
+    }
+
 
     protected function addToFormValidator($data) {
         return Validator::make($data, [

@@ -26,8 +26,8 @@ class Question implements Rule {
         return Validator::make($data, [
             'prompt' => 'required|string',
             'default_format' => ['required', new ResponseType()],
-            'accepts.*' => 'distinct',
-            'accepts.*.type' => new ResponseType(),
+            'options.*.txt' => 'distinct',
+            'accepts.*.type' => ['distinct', new ResponseType()],
         ]);
     }
 

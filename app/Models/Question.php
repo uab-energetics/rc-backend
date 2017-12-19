@@ -34,15 +34,4 @@ class Question extends Model {
         $this->accepts()->delete();
         $this->accepts()->createMany($accepts_arr);
     }
-
-    /**
-     * @param $data
-     * @return Question
-     */
-    public static function createWithRel($data){
-        $question = Question::create($data);
-        $question->saveOptions(getOrDefault($data['options'], []));
-        $question->saveAccepts(getOrDefault($data['accepts'], []));
-        return $question;
-    }
 }
