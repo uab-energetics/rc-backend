@@ -29,7 +29,7 @@ Route::group(['prefix' => 'auth'], function () {
 Route::group(['middleware' => 'jwt.auth'], function () {
 
     Route::group(['prefix' => 'users'], function() {
-        Route::group(['projects'], function() {
+        Route::group(['prefix' => 'projects'], function() {
             Route::get('/', UserController::class."@retrieveResearcherProjects");
             Route::get('/coder', UserController::class."@retrieveCoderProjects");
             Route::get('/researcher', UserController::class."@retrieveResearcherProjects");
