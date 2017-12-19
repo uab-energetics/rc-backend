@@ -17,38 +17,43 @@ class EncodingService extends TestCase
     public function testEncodingService() {
         $service = new \App\Services\Encodings\EncodingService();
 
-        // 1. need a form
-        // 2. need an encoding
 
+        /* start with a blank encoding */
         $encoding = factory(Encoding::class)->create();
 
         // create branches
-        $service->createBranch($encoding->id, [
+        $service->recordBranch($encoding->id, [
             'name' => 'Nunquam acquirere brodium.',
-            'desc' => 'Courage, dimension and a pictorial great unknown.'
+            'description' => 'Courage, dimension and a pictorial great unknown.'
         ]);
 
-        $encoding1 = $service->createBranch($encoding->id, [
+        $encoding1 = $service->recordBranch($encoding->id, [
             'name' => 'Damn yer kraken, feed the corsair.',
-            'desc' => 'All bung holes scrape coal-black, cold freebooters.'
+            'description' => 'All bung holes scrape coal-black, cold freebooters.'
         ]);
+        $this->assertEquals(2, count($encoding1['experiment_branches']));
 
         // create responses
         $branch_id = $encoding1['experiment_branches'][0]['id'];
-        $service->recordResponse( $encoding->id, $branch_id, [
+        $encoding3 = $service->recordResponse( $encoding->id, $branch_id, [
             'question_id' => factory(Question::class)->create()->id,
             'type' => RESPONSE_TEXT,
             'txt' => 'To some, a sun is an advice for inventing.'
         ]);
-        $encoding3 = $service->recordResponse( $encoding->id, $branch_id, [
+        $this->assertEquals(1, count($encoding3['experiment_branches'][0]['responses']));
+
+        // update a branch
+        $service->recordResponse( $encoding->id, $branch_id, [
             'question_id' => factory(Question::class)->create()->id,
             'type' => RESPONSE_BOOL,
             'boo' => 'Est bi-color calceus, cesaris.'
         ]);
 
-        echo json_encode($encoding3, JSON_PRETTY_PRINT);
+//        echo json_encode(Encoding::find($encoding->id), JSON_PRETTY_PRINT);
 
-        $service->deleteBranch($encoding->id, $branch_id);
+        // delete a branch
+        $encoding4 = $service->deleteBranch($encoding->id, $branch_id);
+        $this->assertEquals(1, count($encoding4['experiment_branches']));
     }
 
 }

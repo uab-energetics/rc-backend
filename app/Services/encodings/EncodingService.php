@@ -11,30 +11,40 @@ use Exception;
 
 class EncodingService {
 
-    function createBranch( $encoding_id, $body ){
+    function recordBranch( $encoding_id, $branch ){
         $encoding = Encoding::find($encoding_id);
         if(!$encoding) return false;
 
-        $branch = new EncodingExperimentBranch();
-        $branch->fill($body);
+        // get a branch DB model
+        $_branch = null;
+        if(isset($branch['id']))
+            $_branch = EncodingExperimentBranch::find($branch['id']);
+        else
+            $_branch = new EncodingExperimentBranch();
 
+        // update and save it
+        $_branch->fill($branch);
         $encoding->experimentBranches()
-            ->save($branch);
+            ->save($_branch);
 
         return Encoding::find($encoding_id)->toArray();
     }
 
-    function recordResponse( $encoding_id, $branch_id, $body ){
-        // delete if exists
-        if(isset($body['id']))
-            Response::destroy($body['id']);
-
+    function recordResponse( $encoding_id, $branch_id, $response ){
+        $encoding = Encoding::find($encoding_id);
         $branch = EncodingExperimentBranch::find($branch_id);
-        if(!$branch) return false;
+        if(!$encoding || !$branch) return false;
 
-        $response = new Response();
-        $response->fill($body);
-        $branch->responses()->save($response);
+        // get a response DB model
+        $_response = null;
+        if(isset($response['id']))
+            $_response = Response::find($response['id']);
+        else
+            $_response = new Response();
+
+        // update and save
+        $_response->fill($response);
+        $branch->responses()->save($_response);
 
         return Encoding::find($encoding_id)->toArray();
     }
@@ -43,7 +53,7 @@ class EncodingService {
         $branch = EncodingExperimentBranch::find($branch_id);
         $branch->responses()
             ->delete();
-        $branch->destroy();
+        $branch->delete();
         return Encoding::find($encoding_id)->toArray();
     }
 
