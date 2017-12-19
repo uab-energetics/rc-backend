@@ -23,4 +23,11 @@ class UserController extends Controller {
         return $userService->getEncodings($user);
     }
 
+    public function updateProfile(Request $request){
+        $user = $request->user();
+        $user->fill($request->all());
+        $user->save();
+        return User::find($user->getKey());
+    }
+
 }

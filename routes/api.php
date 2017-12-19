@@ -26,8 +26,14 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('register', AuthController::class."@register");
 });
 
+
 Route::group(['middleware' => 'jwt.auth'], function () {
 
+    /**
+     * USERS
+     * ===============
+     */
+    Route::put('/my-profile', UserController::class."@updateProfile");
     Route::group(['prefix' => 'users'], function() {
         Route::group(['prefix' => 'projects'], function() {
             Route::get('/', UserController::class."@retrieveResearcherProjects");
