@@ -10,6 +10,7 @@ class ResponseType extends Enum {
         RESPONSE_BOOL,
         RESPONSE_SELECT,
         RESPONSE_MULTI_SELECT,
+        RESPONSE_NOT_REPORTED,
     ];
 
     /** Create a new rule instance.

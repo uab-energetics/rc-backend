@@ -41,9 +41,9 @@ class Encodings extends JWTTestCase
         ]);
 
         // make a branch
-        $this->json('POST', 'encodings/'.$encoding->id.'/branches', [
-            'branch' => $branch
-        ])->assertStatus(200);
+        $this->json('POST', 'encodings/'.$encoding->id.'/branches',
+            $branch->toArray()
+        )->assertStatus(200);
 
         // make another branch
         $new_branch = $this->json('POST', 'encodings/'.$encoding->id.'/branches',
