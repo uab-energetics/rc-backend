@@ -27,8 +27,13 @@ class QuestionService {
     }
 
     public function addSubRelations(Question $question, $params) {
+        $accepts = getOrDefault($params['accepts'], []);
+        if (!in_array(['type' => RESPONSE_NOT_REPORTED], $accepts)) {
+            $accepts[] = ['type' => RESPONSE_NOT_REPORTED];
+        }
+
         $question->saveOptions(getOrDefault($params['options'], []));
-        $question->saveAccepts(getOrDefault($params['accepts'], []));
+        $question->saveAccepts($accepts);
     }
 
     public function deleteSubRelations(Question $question) {

@@ -23,7 +23,8 @@ class QuestionController extends Controller {
             $question = $questionService->makeQuestion($request->all());
         DB::commit();
 
-        return $question;
+        $question->load(['options', 'accepts']);
+        return $question->refresh();
     }
 
     public function createQuestion(Form $form, Request $request,
@@ -44,8 +45,7 @@ class QuestionController extends Controller {
             $formService->addQuestion($form, $question, $category);
         DB::commit();
 
-        $form->refresh();
-        return $form;
+        return $form->refresh();
     }
 
     public function retrieve(Question $question) {
