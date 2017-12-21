@@ -117,9 +117,10 @@ Route::group(['middleware' => 'jwt.auth'], function () {
         });
         Route::post('/{encoding}/responses', EncodingController::class."@createSimpleResponse");
 
-        Route::group(['prefix' => 'assignments'], function () {
-            Route::post('/manual', AssignmentController::class."@assignOne");
-        });
+    });
+
+    Route::group(['prefix' => 'assignments'], function () {
+        Route::post('/manual', AssignmentController::class."@assignOne");
     });
 
             ////    RESPONSES    ////
