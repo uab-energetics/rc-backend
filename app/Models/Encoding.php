@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Encoding extends Model
 {
-    protected $fillable = ['type', 'publication_id', 'form_id'];
+    protected $fillable = ['type', 'publication_id', 'form_id', 'owner_id'];
 
     protected $with = ['simpleResponses', 'experimentBranches'];
 

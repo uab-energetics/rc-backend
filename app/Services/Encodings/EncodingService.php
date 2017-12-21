@@ -6,10 +6,25 @@ namespace App\Services\Encodings;
 
 use App\Encoding;
 use App\EncodingExperimentBranch;
+use App\Form;
 use App\Models\Response;
 use Exception;
 
 class EncodingService {
+
+    public function makeEncoding($form_id, $publication_id, $user_id) {
+        $form = Form::find($form_id);
+        if ($form === null) return false;
+
+        $encoding = Encoding::create([
+            'form_id' => $form_id,
+            'publication_id' => $publication_id,
+            'owner_id' => $user_id,
+            'type' => $form->type,
+        ]);
+
+        return $encoding;
+    }
 
     function recordBranch( $encoding_id, $branch ){
         $encoding = Encoding::find($encoding_id);

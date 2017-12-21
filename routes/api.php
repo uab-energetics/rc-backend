@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EncodingController;
 use App\Http\Controllers\FormController;
@@ -112,10 +113,13 @@ Route::group(['middleware' => 'jwt.auth'], function () {
             Route::post('/', EncodingController::class."@createBranch");
 //            Route::put('/{branch}', EncodingController::class."@updateBranch");
             Route::delete('/{branch}', EncodingController::class."@deleteBranch");
-
             Route::post('/{branch}/responses', EncodingController::class."@createBranchResponse");
         });
         Route::post('/{encoding}/responses', EncodingController::class."@createSimpleResponse");
+
+        Route::group(['prefix' => 'assignments'], function () {
+            Route::post('/manual', AssignmentController::class."@assignOne");
+        });
     });
 
             ////    RESPONSES    ////
