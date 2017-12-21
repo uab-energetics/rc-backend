@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 class Form extends Model {
-    protected $fillable = ['root_category_id', 'name', 'desc', 'published', 'type'];
+    protected $fillable = ['root_category_id', 'name', 'description', 'published', 'type'];
 
     protected $with = ['rootCategory'];
 
