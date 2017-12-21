@@ -11,6 +11,14 @@ class Encoding extends Model
 
     protected $with = ['simpleResponses', 'experimentBranches'];
 
+    function publication() {
+        return $this->belongsTo(Publication::class, 'publication_id');
+    }
+
+    function form() {
+        return $this->belongsTo(Form::class, 'form_id');
+    }
+
     function simpleResponses(){
         return $this->belongsToMany(Response::class, 'encoding_simple_responses', 'encoding_id', 'response_id');
     }
