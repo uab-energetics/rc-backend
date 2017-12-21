@@ -27,7 +27,7 @@ class PublicationController extends Controller {
     }
 
     public function search(Request $request) {
-        $validator = $this->searchValidator($request->all());
+        $validator = simpleSearchValidator($request->all());
         if ($validator->fails()) return invalidParamMessage($validator);
         return $this->publicationService->search($request->search);
     }
@@ -64,11 +64,6 @@ class PublicationController extends Controller {
         ]);
     }
 
-    protected function searchValidator($data) {
-        return Validator::make($data, [
-            'search' => 'string|required'
-        ]);
-    }
 
     /** @var PublicationService  */
     protected $publicationService;

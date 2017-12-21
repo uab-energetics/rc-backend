@@ -26,3 +26,9 @@ function okMessage($message, $code = 200, $extra = []) {
     $arr += $extra;
     return response()->json($arr, $code);
 }
+
+function simpleSearchValidator($data) {
+    return \Illuminate\Support\Facades\Validator::make($data, [
+        'search' => 'required|string'
+    ]);
+}
