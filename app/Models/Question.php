@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model {
 
-    protected $fillable = ['name', 'prompt', 'description', 'true_option', 'false_option'];
+    protected $fillable = ['name', 'prompt', 'default_format', 'description', 'true_option', 'false_option'];
     protected $with = ['options', 'accepts'];
 
     function options() {
