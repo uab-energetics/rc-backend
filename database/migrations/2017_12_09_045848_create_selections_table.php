@@ -4,21 +4,22 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSelectionsTable extends Migration
-{
+class CreateSelectionsTable extends Migration {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::create('selections', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('response_id')->unsigned();
-            $table->foreign('response_id')->references('id')->on('responses');
+            $table->unsignedInteger('response_id');
+
             $table->string('txt');
-            $table->timestamps();
+
+            $table->foreign('response_id')->references('id')->on('responses')
+                ->onDelete('cascade');
+
         });
     }
 
@@ -27,8 +28,7 @@ class CreateSelectionsTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('selections');
     }
 }

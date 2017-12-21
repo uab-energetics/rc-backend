@@ -4,8 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAcceptsFormatsTable extends Migration
-{
+class CreateAcceptsFormatsTable extends Migration {
     /**
      * Run the migrations.
      *
@@ -14,10 +13,12 @@ class CreateAcceptsFormatsTable extends Migration
     public function up() {
         Schema::create('accepts_formats', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('question_id')->unsigned();
-            $table->foreign('question_id')->references('id')->on('questions');
+            $table->unsignedInteger('question_id');
+
             $table->string('type');
-            $table->timestamps();
+
+            $table->foreign('question_id')->references('id')->on('questions')
+                ->onDelete('cascade');
         });
     }
 
