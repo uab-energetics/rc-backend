@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Publication;
 use App\Services\Publications\PublicationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class PublicationController extends Controller {
@@ -14,7 +15,9 @@ class PublicationController extends Controller {
         $validator = $this->createValidator($params);
         if ($validator->fails()) return invalidParamMessage($validator);
 
-        $publication = $this->publicationService->makePublication($params);
+        DB::beginTransaction();
+            $publication = $this->publicationService->makePublication($params);
+        DB::commit();
 
         return $publication;
     }
@@ -33,14 +36,17 @@ class PublicationController extends Controller {
         $params = $request->all();
         $validator = $this->updateValidator($params);
         if ($validator->fails()) return invalidParamMessage($validator);
-
-        $this->publicationService->updatePublication($publication, $params);
+        DB::beginTransaction();
+            $this->publicationService->updatePublication($publication, $params);
+        DB::commit();
 
         return $publication->refresh();
     }
 
     public function delete(Publication $publication) {
-        $this->publicationService->deletePublication($publication);
+        DB::beginTransaction();
+            $this->publicationService->deletePublication($publication);
+        DB::commit();
         return okMessage("Successfully deleted publication");
     }
 
