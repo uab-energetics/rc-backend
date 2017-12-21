@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Project;
 use App\Publication;
+use App\Services\Projects\ProjectService;
 use App\Services\Publications\PublicationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +19,19 @@ class PublicationController extends Controller {
 
         DB::beginTransaction();
             $publication = $this->publicationService->makePublication($params);
+        DB::commit();
+
+        return $publication;
+    }
+
+    public function createInProject(Project $project, Request $request, ProjectService $projectService) {
+        $params = $request->all();
+        $validator = $this->createValidator($params);
+        if ($validator->fails()) return invalidParamMessage($validator);
+
+        DB::beginTransaction();
+            $publication = $this->publicationService->makePublication($params);
+            $projectService->addPublication($project, $publication);
         DB::commit();
 
         return $publication;
