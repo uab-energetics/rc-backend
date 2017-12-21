@@ -56,6 +56,10 @@ class ProjectController extends Controller {
         return $projectService->getForms($project);
     }
 
+    public function retrievePublications(Project $project, Request $request, ProjectService $projectService) {
+        return $projectService->getPublications($project, $request->search);
+    }
+
     public function addPublication(Project $project, Publication $publication, ProjectService $projectService) {
         $projectService->addPublication($project, $publication);
         return okMessage("Successfully added publication to project");

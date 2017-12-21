@@ -72,4 +72,8 @@ class ProjectService {
         $this->formService = $formService;
     }
 
+    public function getPublications(Project $project, $query = null) {
+        return $project->publications()->get();
+    }
+
 }

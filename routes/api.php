@@ -68,6 +68,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
             Route::get('/forms', ProjectController::class.'@retrieveForms');
             Route::post('/forms', FormController::class."@create");
 
+            Route::get('/publications', ProjectController::class."@retrievePublications");
+
             Route::group(['prefix' => 'publications'], function () {
                 Route::post('/{publication}', ProjectController::class."@addPublication");
                 Route::delete('/{publication}', ProjectController::class."@removePublication");
