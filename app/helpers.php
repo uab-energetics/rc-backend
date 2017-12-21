@@ -32,3 +32,11 @@ function simpleSearchValidator($data) {
         'search' => 'required|string'
     ]);
 }
+
+function batchUnset(&$array, array $keys) {
+    foreach ($keys as $key) {
+        if (isset($array[$key])) {
+            unset($array[$key]);
+        }
+    }
+}

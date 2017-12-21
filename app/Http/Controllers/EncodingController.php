@@ -7,6 +7,7 @@ use App\EncodingExperimentBranch as Branch;
 use App\Rules\ResponseType;
 use App\Services\Encodings\EncodingService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -14,6 +15,18 @@ class EncodingController extends Controller {
 
     public function retrieve(Encoding $encoding) {
         return $encoding;
+    }
+
+    public function update(Encoding $encoding, Request $request, EncodingService $encodingService) {
+        $params = $request->all();
+        $validator = $this->updateValidator($params);
+        if ($validator->fails()) return invalidParamMessage($validator);
+
+        DB::beginTransaction();
+            $encodingService->updateEncoding($encoding, $params);
+        DB::commit();
+
+        return $encoding->refresh();
     }
 
     public function createBranch(Encoding $encoding, Request $request, EncodingService $encodingService){
@@ -46,6 +59,10 @@ class EncodingController extends Controller {
             $branch->getKey()
         );
         return $encoding->refresh();
+    }
+
+    protected function updateValidator($data) {
+        return Validator::make($data, []);
     }
 
     protected function branchValidator($data) {

@@ -26,6 +26,11 @@ class EncodingService {
         return $encoding;
     }
 
+    public function updateEncoding(Encoding $encoding, $params) {
+        batchUnset($params, ['owner_id', 'publication_id', 'form_id', 'type']);
+        return $encoding->update($params);
+    }
+
     function recordBranch( $encoding_id, $branch ){
         $encoding = Encoding::find($encoding_id);
         if(!$encoding || !$branch) return false;
