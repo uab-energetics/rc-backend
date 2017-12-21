@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ProjectResearcher;
+use App\Publication;
 use App\Services\Projects\ProjectService;
 use Illuminate\Http\Request;
 use App\Project;
@@ -55,6 +56,19 @@ class ProjectController extends Controller {
         return $projectService->getForms($project);
     }
 
+    public function addPublication(Project $project, Publication $publication, ProjectService $projectService) {
+        $projectService->addPublication($project, $publication);
+        return okMessage("Successfully added publication to project");
+    }
+
+    public function removePublication(Project $project, Publication $publication, ProjectService $projectService) {
+        $res = $projectService->removePublication($project, $publication);
+        if ($res === false) {
+            return response()->json(static::PUBLICATION_NOT_FOUND, 404);
+        }
+        return okMessage("Successfully removed the publication");
+    }
+
     /**
      * @param $data
      * @return \Illuminate\Contracts\Validation\Validator
@@ -72,4 +86,8 @@ class ProjectController extends Controller {
         ]);
     }
 
+    const PUBLICATION_NOT_FOUND = [
+        'status' => 'RESOURCE_NOT_FOUND',
+        'msg' => 'The specified project does not have the specified publication'
+    ];
 }

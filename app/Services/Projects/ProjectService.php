@@ -5,7 +5,9 @@ namespace App\Services\Projects;
 use App\Form;
 use App\Project;
 use App\ProjectForm;
+use App\ProjectPublication;
 use App\ProjectResearcher;
+use App\Publication;
 use App\Services\Forms\FormService;
 use App\User;
 
@@ -39,6 +41,24 @@ class ProjectService {
             'project_id' => $project->getKey(),
             'form_id' => $form->getKey(),
         ]);
+    }
+
+    public function addPublication(Project $project, Publication $publication) {
+        $edge = ProjectPublication::create([
+            'project_id' => $project->getKey(),
+            'publication_id' => $publication->getKey(),
+        ]);
+        return $edge;
+    }
+
+    public function removePublication(Project $project, Publication $publication) {
+        $edge = ProjectPublication::query()
+            ->where('project_id', '=', $project->getKey())
+            ->where('publication_id', '=', $publication->getKey())
+            ->first();
+        if ($edge === null) return false;
+        $edge->delete();
+        return true;
     }
 
     public function getForms(Project $project) {
