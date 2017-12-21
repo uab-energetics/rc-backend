@@ -24,6 +24,10 @@ class FormService {
         return $form;
     }
 
+    public function search($query) {
+        return Form::search($query)->get();
+    }
+
     public function updateForm(Form $form, $params) {
         unset($params['root_category_id']);
         unset($params['type']);

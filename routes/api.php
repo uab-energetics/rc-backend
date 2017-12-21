@@ -78,6 +78,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
             ////    FORMS       ////
     Route::group(['prefix' => 'forms'], function () {
         Route::get('{form}', FormController::class."@retrieve");
+        Route::get('/', FormController::class."@search");
         Route::put('/{form}', FormController::class."@update");
         Route::delete('{form}', FormController::class."@delete");
 

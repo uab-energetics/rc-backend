@@ -36,6 +36,12 @@ class FormController extends Controller {
         return $form;
     }
 
+    public function search(Request $request, FormService $formService) {
+        $validator = simpleSearchValidator($request->all());
+        if ($validator->fails()) return invalidParamMessage($validator);
+        return $formService->search($request->search);
+    }
+
     public function update (Form $form, Request $request, FormService $formService) {
         $params = $request->all();
         $validator = $this->updateValidator($params);
