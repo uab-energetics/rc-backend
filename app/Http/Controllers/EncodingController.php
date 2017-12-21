@@ -12,7 +12,11 @@ use Illuminate\Validation\Rule;
 
 class EncodingController extends Controller {
 
-    function createBranch(Encoding $encoding, Request $request, EncodingService $encodingService){
+    public function retrieve(Encoding $encoding) {
+        return $encoding;
+    }
+
+    public function createBranch(Encoding $encoding, Request $request, EncodingService $encodingService){
         $validator = $this->branchValidator($request->all());
         if($validator->fails())  return invalidParamMessage($validator);
 
@@ -22,7 +26,7 @@ class EncodingController extends Controller {
         return response("couldn't record branch", 500);
     }
 
-    function createBranchResponse(Encoding $encoding, Branch $branch, Request $request, EncodingService $encodingService){
+    public function createBranchResponse(Encoding $encoding, Branch $branch, Request $request, EncodingService $encodingService){
         $validator = $this->responseValidator($request->all());
         if($validator->fails()) return invalidParamMessage($validator);
 
@@ -36,7 +40,7 @@ class EncodingController extends Controller {
         return response("couldn't record response", 500);
     }
 
-    function deleteBranch(Encoding $encoding, Branch $branch, EncodingService $encodingService) {
+    public function deleteBranch(Encoding $encoding, Branch $branch, EncodingService $encodingService) {
         $encodingService->deleteBranch(
             $encoding->getKey(),
             $branch->getKey()

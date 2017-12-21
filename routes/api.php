@@ -111,9 +111,9 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
             ////    ENCODINGS    ////
     Route::group(['prefix' => 'encodings'], function () {
+        Route::get('/{encoding}', EncodingController::class."@retrieve");
         Route::group(['prefix' => '{encoding}/branches'], function () {
             Route::post('/', EncodingController::class."@createBranch");
-//            Route::put('/{branch}', EncodingController::class."@updateBranch");
             Route::delete('/{branch}', EncodingController::class."@deleteBranch");
             Route::post('/{branch}/responses', EncodingController::class."@createBranchResponse");
         });

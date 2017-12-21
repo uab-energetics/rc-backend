@@ -10,16 +10,10 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class UpdateProfile extends JWTTestCase
-{
+class UpdateProfileTest extends JWTTestCase {
 
     use DatabaseTransactions;
 
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
     public function testUpdateProfile() {
 
         $user = factory(User::class)->create([

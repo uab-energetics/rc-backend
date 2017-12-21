@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 class CategoryController extends Controller {
 
     public function create(Request $request, CategoryService $categoryService) {
-        $validator = $this->validator($request->all());
+        $validator = $this->createValidator($request->all());
         if ($validator->fails()) {
             return invalidParamMessage($validator);
         }
@@ -30,7 +30,7 @@ class CategoryController extends Controller {
     }
 
     public function update(Form $form, Category $category, Request $request, CategoryService $categoryService) {
-        $validator = $this->validator($request->all());
+        $validator = $this->updateValidator($request->all());
         if ($validator->fails()) {
             return invalidParamMessage($validator);
         }
@@ -70,10 +70,21 @@ class CategoryController extends Controller {
      * @param $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator($data) {
+    protected function createValidator($data) {
         return Validator::make($data, [
             'name' => 'required|string|max:255',
             'parent_id' => 'required|int|exists:categories,id',
+        ]);
+    }
+
+    /**
+     * @param $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function updateValidator($data) {
+        return Validator::make($data, [
+            'name' => 'string|max:255',
+            'parent_id' => 'exists:categories,id',
         ]);
     }
 

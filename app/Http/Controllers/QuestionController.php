@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Form;
 use App\Models\Question;
-use App\Rules\Question as QuestionRule;
+use App\Rules\QuestionRule;
 use App\Rules\ResponseType;
 use App\Services\Forms\FormService;
 use App\Services\Questions\QuestionService;
@@ -70,19 +70,11 @@ class QuestionController extends Controller {
     }
 
     protected function createValidator($data) {
-        return QuestionRule::questionValidator($data);
+        return QuestionRule::newQuestionValidator($data);
     }
 
     protected function updateValidator($data) {
-        //FIXME: Caleb lazily didn't extend QuestionRule::questionValidator to
-        //FIXME: take a required parameter, resulting in code duplication
-        return Validator::make($data, [
-            'name' => 'string',
-            'prompt' => 'string',
-            'default_format' =>  new ResponseType(),
-            'options.*.txt' => 'distinct',
-            'accepts.*.type' => ['distinct', new ResponseType()],
-        ]);
+        return QuestionRule::existingQuestionValidator($data);
     }
 
 

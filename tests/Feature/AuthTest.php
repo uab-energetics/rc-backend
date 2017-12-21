@@ -8,12 +8,12 @@ use App\Form;
 use App\Models\Response;
 use App\Project;
 use App\Publication;
-use App\Rules\Question;
+use App\Rules\QuestionRule;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\JWTTestCase;
 
-class Auth extends JWTTestCase
+class AuthTest extends JWTTestCase
 {
     use DatabaseTransactions;
 

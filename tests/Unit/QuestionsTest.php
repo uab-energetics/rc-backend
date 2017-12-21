@@ -21,6 +21,7 @@ class QuestionsTest extends TestCase {
         $q = $this->questionService->makeQuestion([
             'name' => "Test Question",
             'prompt' => 'What is a question?',
+            'default_format' => 'sel',
             'options' => [
                 ['txt' => 'A']
             ],
@@ -43,7 +44,7 @@ class QuestionsTest extends TestCase {
 
         $this->assertEquals(1, $q->responses()->count());
         $this->assertEquals(1, $q->options()->count());
-        $this->assertEquals(2, $q->accepts()->count());
+        $this->assertEquals(3, $q->accepts()->count());
     }
 
 }

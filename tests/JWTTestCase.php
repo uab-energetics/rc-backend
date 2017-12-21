@@ -10,8 +10,12 @@ abstract class JWTTestCase extends TestCase {
 
     private $jwt = null;
 
+    /** @var User  */
+    protected $user = null;
+
     function asUser(User $user){
         $this->jwt = JWTAuth::fromUser($user);
+        $this->user = $user;
     }
 
     function asAnonymousUser(){

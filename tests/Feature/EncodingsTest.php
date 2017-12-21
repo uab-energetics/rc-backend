@@ -5,21 +5,19 @@ namespace Tests\Feature\api\users;
 use App\Category;
 use App\EncodingExperimentBranch;
 use App\Form;
+use App\Models\Question;
 use App\Models\Response;
 use App\Project;
 use App\Publication;
-use App\Rules\Question;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\JWTTestCase;
 
-class Encodings extends JWTTestCase
-{
+class EncodingsTest extends JWTTestCase {
 
     use DatabaseTransactions;
 
-    public function setUp()
-    {
+    public function setUp() {
         parent::setUp();
         $this->asAnonymousUser();
     }
@@ -33,38 +31,42 @@ class Encodings extends JWTTestCase
      *  recordResponse: ( id, branch_id, Response ) -> Encoding
      */
     public function testEncodings() {
+        /** @var Form $form */
 
         $form = factory(Form::class)->make();
-        $form->rootCategory()->save(factory(Category::class));
+        $publication = factory(Publication::class)->make();
         $form->save();
-        $publication = factory(Publication::class);
+        $publication->save();
 
 
-
-        $create = $this->json("POST", "encodings", [
+        $encoding = $this->json("POST", "assignments/manual", [
             'form_id' => $form->getKey(),
-            'publication_id' => $publication->getKey()
+            'publication_id' => $publication->getKey(),
+            'user_id' => $this->user->getKey(),
         ])->assertStatus(200);
-        $create_id = $create->json()['id'];
+        $encoding_id = $encoding->json()['id'];
 
-        $get = $this->json('GET', "encodings/$create_id")->assertStatus(200);
+        $get = $this->json('GET', "encodings/$encoding_id")->assertStatus(200);
 
-        $createBranch = $this->json("POST", "encodings/$create_id/branches", [
-            "branch" => factory(EncodingExperimentBranch::class)->make([
-                'encoding_id' => $create_id
-            ])
-        ])->assertStatus(200);
-        $branch_id = $createBranch->json()['id'];
+        $branch = $this->json("POST", "encodings/$encoding_id/branches",
+            factory(EncodingExperimentBranch::class)->make([
+                'encoding_id' => $encoding_id
+            ])->toArray()
+        )->assertStatus(200)->json();
+        $branch_id = $branch['id'];
 
-        $updateBranch = $this->json("PUT", "branches/$branch_id", [
-            'name' => 'Per guest prepare nine peaces of milk with chopped tuna for dessert.'
-        ])->assertStatus(200);
+        $branch['name'] = 'Per guest prepare nine peaces of milk with chopped tuna for dessert.';
 
-        $recordResponse = $this->json("POST", "encodings/$create_id/branches/$branch_id/responses",
+        $updateBranch = $this->json("POST", "encodings/$encoding_id/branches", $branch)->assertStatus(200)->json();
+
+        $this->assertEquals($branch, $updateBranch);
+
+        $recordResponse = $this->json("POST", "encodings/$encoding_id/branches/$branch_id/responses",
             factory(Response::class)->make([
                 'question_id' => factory(Question::class)->create()->id
-            ]));
+            ])->toArray()
+        );
 
-        $deleteBranch = $this->json("DELETE", "branches/$branch_id")->assertStatus(200);
+        $deleteBranch = $this->json("DELETE", "encodings/$encoding_id/branches/$branch_id")->assertStatus(200);
     }
 }

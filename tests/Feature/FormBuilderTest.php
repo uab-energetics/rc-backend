@@ -8,13 +8,11 @@ use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\JWTTestCase;
 
-class FormBuilder extends JWTTestCase
-{
+class FormBuilderTest extends JWTTestCase {
 
     use DatabaseTransactions;
 
-    protected function setUp()
-    {
+    public function setUp() {
         parent::setUp();
         $this->asAnonymousUser();
     }
@@ -65,19 +63,29 @@ class FormBuilder extends JWTTestCase
         $this->json('GET', "categories/$category_id")->assertStatus(200);
 
         // Create questions
-        $question_res = $this->json('POST', "forms/$form_id/questions", [
+        $question_json = [
+            'name' => str_random(10),
+            'default_format' => 'txt',
+            'accepts' => [
+                ['type' => 'txt'],
+            ],
+            'options' => [
+                ['txt' => 'Option 1']
+            ],
+            'prompt' => 'default question prompt',
+        ];
+
+        $form_res = $this->json('POST', "forms/$form_id/questions", [
             'category_id' => $category_id,
-            'question' => [
-                'name' => str_random(10),
-                'default_format' => 'txt',
-                'accepts' => [ 'txt' ],
-                'prompt' => 'default question prompt'
-            ]
+            'question' => $question_json,
         ])->assertStatus(200);
+
+        $question_res = $this->json('POST', "questions", $question_json)->assertStatus(200);
         $question_id = $question_res->json()['id'];
 
-        // get question
         $this->json('GET', "questions/$question_id")->assertStatus(200);
+
+        $add_res = $this->json('POST', "forms/$form_id/questions/$question_id")->assertStatus(200);
 
         // other category
         $other_category_id = $this->json('POST', "forms/$form_id/categories", [
@@ -96,7 +104,7 @@ class FormBuilder extends JWTTestCase
         ])->assertStatus(200);
 
         // delete everything
-        $this->json('DELETE', "categories/$category_id")->assertStatus(200);
+        $this->json('DELETE', "forms/$form_id/categories/$category_id")->assertStatus(200);
         $this->json('DELETE', "questions/$question_id")->assertStatus(200);
         $this->json('DELETE', "forms/$form_id")->assertStatus(200);
         $this->json('DELETE', "projects/$project_id")->assertStatus(200);

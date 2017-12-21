@@ -5,7 +5,7 @@ namespace App\Rules;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
-class Question implements Rule {
+class QuestionRule implements Rule {
 
     /**
      * Determine if the validation rule passes.
@@ -15,20 +15,30 @@ class Question implements Rule {
      * @return bool
      */
     public function passes($attribute, $value) {
-        $this->validator = static::questionValidator($value);
+        $this->validator = static::newQuestionValidator($value);
         return !$this->validator->fails();
     }
 
     /** @var \Illuminate\Contracts\Validation\Validator */
     private $validator = null;
 
-    public static function questionValidator($data) {
+    public static function newQuestionValidator($data) {
         return Validator::make($data, [
             'name' => 'required|string',
             'prompt' => 'required|string',
-            'default_format' => ['required', new ResponseType()],
-            'options.*.txt' => 'distinct',
-            'accepts.*.type' => ['distinct', new ResponseType()],
+            'default_format' => ['required', 'in_array:accepts.*.type', new ResponseType()],
+            'options.*.txt' => 'required|distinct',
+            'accepts.*.type' => ['required', 'distinct', new ResponseType()],
+        ]);
+    }
+
+    public static function existingQuestionValidator($data) {
+        return Validator::make($data, [
+            'name' => 'string',
+            'prompt' => 'string',
+            'default_format' =>  [new ResponseType(), 'in_array:accepts.*.type'],
+            'options.*.txt' => 'required|distinct',
+            'accepts.*.type' => ['required', 'distinct', new ResponseType()],
         ]);
     }
 
