@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Services\FormService\FormService;
+use App\Services\Forms\FormService;
 use Illuminate\Support\ServiceProvider;
 
 class FormServiceProvider extends ServiceProvider {
