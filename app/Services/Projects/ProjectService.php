@@ -73,7 +73,13 @@ class ProjectService {
     }
 
     public function getPublications(Project $project, $query = null) {
-        return $project->publications()->get();
+        if ($query === null) {
+            return $project->publications()->get();
+        }
+        return $project->publications()
+            ->where('publications.name', 'LIKE', "%$query%")
+            ->orWhere('publications.embedding_url', 'LIKE', "%$query%")
+            ->get();
     }
 
 }
