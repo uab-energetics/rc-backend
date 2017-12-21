@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller {
 
+    public function search(Request $request, UserService $userService) {
+        $validator = simpleSearchValidator($request->all());
+        if ($validator->fails()) return invalidParamMessage($validator);
+        return $userService->search($request->search);
+    }
+
     public function retrieveResearcherProjects(Request $request, UserService $userService) {
         $user = $request->user();
         return $userService->getResearcherProjects($user);

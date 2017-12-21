@@ -38,6 +38,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
      */
     Route::put('/my-profile', UserController::class."@updateProfile");
     Route::group(['prefix' => 'users'], function() {
+        Route::get('/', UserController::class."@search");
         Route::group(['prefix' => 'projects'], function() {
             Route::get('/', UserController::class."@retrieveResearcherProjects");
             Route::get('/coder', UserController::class."@retrieveCoderProjects");

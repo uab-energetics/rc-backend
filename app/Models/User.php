@@ -2,11 +2,17 @@
 
 namespace App;
 
+use App\Traits\SearchableColumns;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Scout\Searchable;
 
 class User extends Authenticatable {
     use Notifiable;
+
+    use Searchable, SearchableColumns {
+        SearchableColumns::toSearchableArray insteadof Searchable;
+    }
 
     protected $fillable = [
         'name', 'email', 'password', 'image'
@@ -15,6 +21,8 @@ class User extends Authenticatable {
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected $searchable = ['name', 'email'];
 
     public function __construct(array $attributes = []) {
         $this->attributes = [
