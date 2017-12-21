@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use App\Services\Forms\FormService;
+use App\Services\Publications\PublicationService;
 use Illuminate\Support\ServiceProvider;
 
-class FormServiceProvider extends ServiceProvider {
+class PublicationServiceProvider extends ServiceProvider {
     /**
      * Bootstrap the application services.
      *
@@ -21,8 +21,8 @@ class FormServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
-        $this->app->singleton(FormService::class, function ($app) {
-            return new FormService();
+        $this->app->singleton(PublicationService::class, function ($app) {
+            return new PublicationService();
         });
     }
 }

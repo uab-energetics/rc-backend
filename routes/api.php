@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EncodingController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,14 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
         Route::get('/encodings', UserController::class."@retrieveEncodings");
 
+    });
+
+    Route::group(['prefix' => 'publications'], function () {
+        Route::post('/', PublicationController::class."@create");
+        Route::get('/', PublicationController::class."@search");
+        Route::get('/{publication}', PublicationController::class."@retrieve");
+        Route::put('/{publication}', PublicationController::class."@update");
+        Route::delete('/{publication}', PublicationController::class."@delete");
     });
 
             ////    PROJECTS    ////
