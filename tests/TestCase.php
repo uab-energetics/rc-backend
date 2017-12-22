@@ -2,10 +2,13 @@
 
 namespace Tests;
 
+use App\Services\Encodings\AssignmentService;
 use App\Services\Encodings\EncodingService;
+use App\Services\Exports\FormExportService;
 use App\Services\Forms\CategoryService;
 use App\Services\Forms\FormService;
 use App\Services\Projects\ProjectService;
+use App\Services\Publications\PublicationService;
 use App\Services\Questions\QuestionService;
 use App\Services\Users\UserService;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -26,6 +29,12 @@ abstract class TestCase extends BaseTestCase {
     protected $userService;
     /** @var EncodingService */
     protected $encodingService;
+    /** @var FormExportService */
+    protected $formExportService;
+    /** @var AssignmentService */
+    protected $assignmentService;
+    /** @var PublicationService */
+    protected $publicationService;
 
 
     public function setUp() {
@@ -36,5 +45,8 @@ abstract class TestCase extends BaseTestCase {
         $this->projectService = $this->app->make(ProjectService::class);
         $this->userService = $this->app->make(UserService::class);
         $this->encodingService = $this->app->make(EncodingService::class);
+        $this->formExportService = $this->app->make(FormExportService::class);
+        $this->publicationService = $this->app->make(PublicationService::class);
+        $this->assignmentService = $this->app->make(AssignmentService::class);
     }
 }
