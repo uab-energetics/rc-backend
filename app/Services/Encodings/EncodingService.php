@@ -4,6 +4,7 @@
 namespace App\Services\Encodings;
 
 
+use App\BranchResponse;
 use App\Encoding;
 use App\EncodingExperimentBranch;
 use App\Form;
@@ -54,21 +55,21 @@ class EncodingService {
         return EncodingExperimentBranch::find($_branch->id)->toArray();
     }
 
-    function recordResponse( $encoding_id, $branch_id, $response ){
+    function recordResponse($encoding_id, $branch_id, $params ){
         $encoding = Encoding::find($encoding_id);
         $branch = EncodingExperimentBranch::find($branch_id);
         if(!$encoding || !$branch) return false;
 
         // get a response DB model
-        $_response = null;
-        if(isset($response['id']))
-            $_response = Response::find($response['id']);
+        $response = null;
+        if(isset($params['id']))
+            $response = Response::find($params['id']);
         else
-            $_response = new Response();
-
+            $response = new Response();
         // update and save
-        $_response->fill($response);
-        $branch->responses()->save($_response);
+        $response->fill($params);
+        $branch->responses()->save($response);
+        $response->saveSelections( getOrDefault($params['selections'], []) );
 
         return Encoding::find($encoding_id)->toArray();
     }
