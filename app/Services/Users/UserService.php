@@ -22,7 +22,9 @@ class UserService {
 
     public function getEncodings(User $user) {
         return $user->encodings()
-            ->with(['publication', 'form'])
+            ->with(['publication', 'form' => function ($query) {
+                $query->without('rootCategory');
+            }])
             ->get();
     }
 }

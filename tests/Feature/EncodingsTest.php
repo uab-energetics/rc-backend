@@ -38,6 +38,7 @@ class EncodingsTest extends JWTTestCase {
         $form->save();
         $publication->save();
 
+        $myEncodings1 = $this->json('GET', "users/encodings")->assertStatus(200)->json();
 
         $encoding = $this->json("POST", "assignments/manual", [
             'form_id' => $form->getKey(),
@@ -47,6 +48,10 @@ class EncodingsTest extends JWTTestCase {
         $encoding_id = $encoding->json()['id'];
 
         $get = $this->json('GET', "encodings/$encoding_id")->assertStatus(200);
+
+        $myEncodings2 = $this->json('GET', "users/encodings")->assertStatus(200)->json();
+
+        $this->assertEquals( count($myEncodings2), count($myEncodings1) + 1);
 
         $branch = $this->json("POST", "encodings/$encoding_id/branches",
             factory(EncodingExperimentBranch::class)->make([
