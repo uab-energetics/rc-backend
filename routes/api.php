@@ -60,6 +60,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
             ////    PROJECTS    ////
     Route::group(['prefix' => 'projects'], function () {
         Route::post('/', ProjectController::class."@create");
+        Route::get('/', ProjectController::class."@search");
         Route::get('/{project}', ProjectController::class."@retrieve");
         Route::put('/{project}', ProjectController::class."@update");
         Route::delete('/{project}', ProjectController::class."@delete");
