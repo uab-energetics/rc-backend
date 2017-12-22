@@ -15,7 +15,7 @@ class AssignmentController extends Controller {
         if ($validator->fails()) return invalidParamMessage($validator);
 
         DB::beginTransaction();
-            $encoding = $assignmentService->assignTo($request->form_id, $request->publication_id, $request->user_id, $request->project_id);
+            $encoding = $assignmentService->assignTo($request->form_id, $request->publication_id, $request->user_id);
         DB::commit();
 
         return $encoding;
@@ -26,7 +26,6 @@ class AssignmentController extends Controller {
         return Validator::make($data, [
             'user_id' => 'required|exists:users,id',
             'form_id' => 'required|exists:forms,id',
-            'publication_id' => 'required|exists:publications,id',
             'project_id' => 'exists:projects,id',
         ]);
     }
