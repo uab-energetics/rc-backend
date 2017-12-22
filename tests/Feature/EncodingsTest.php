@@ -68,5 +68,7 @@ class EncodingsTest extends JWTTestCase {
         );
 
         $deleteBranch = $this->json("DELETE", "encodings/$encoding_id/branches/$branch_id")->assertStatus(200);
+
+        $deleteEncoding = $this->json('DELETE', "encodings/$encoding_id")->assertStatus(200);
     }
 }

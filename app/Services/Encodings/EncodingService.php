@@ -31,6 +31,10 @@ class EncodingService {
         return $encoding->update($params);
     }
 
+    public function deleteEncoding(Encoding $encoding) {
+        return $encoding->delete();
+    }
+
     function recordBranch( $encoding_id, $branch ){
         $encoding = Encoding::find($encoding_id);
         if(!$encoding || !$branch) return false;

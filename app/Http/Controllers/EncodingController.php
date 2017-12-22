@@ -29,6 +29,13 @@ class EncodingController extends Controller {
         return $encoding->refresh();
     }
 
+    public function delete(Encoding $encoding, EncodingService $encodingService) {
+        DB::beginTransaction();
+            $encodingService->deleteEncoding($encoding);
+        DB::commit();
+        return okMessage("Successfully deleted encoding");
+    }
+
     public function createBranch(Encoding $encoding, Request $request, EncodingService $encodingService){
         $validator = $this->branchValidator($request->all());
         if($validator->fails())  return invalidParamMessage($validator);
