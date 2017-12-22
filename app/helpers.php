@@ -29,7 +29,7 @@ function okMessage($message, $code = 200, $extra = []) {
 
 function simpleSearchValidator($data) {
     return \Illuminate\Support\Facades\Validator::make($data, [
-        'search' => 'required|string'
+        'search' => 'string'
     ]);
 }
 
