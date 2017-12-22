@@ -8,6 +8,8 @@ class Response extends Model {
 
     protected $fillable = ['question_id', 'type', 'txt', 'num', 'sel', 'boo'];
 
+    protected $with = ['selections'];
+
     function selections(){
         return $this->hasMany(Selections::class, 'response_id');
     }

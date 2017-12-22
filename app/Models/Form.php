@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Question;
 use App\Traits\SearchableColumns;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,7 +22,11 @@ class Form extends Model {
 
     protected $searchable = ['name', 'description', 'type', 'published'];
 
-    function rootCategory(){
+    public function rootCategory(){
         return $this->belongsTo(Category::class, 'root_category_id');
+    }
+
+    public function questions() {
+        return $this->belongsToMany(Question::class, 'form_question', 'form_id', 'question_id');
     }
 }
