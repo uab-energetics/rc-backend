@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: chris
- * Date: 12/17/17
- * Time: 3:41 PM
- */
 
 namespace Tests\Unit;
 
@@ -15,12 +9,10 @@ use Tests\TestCase;
 
 class FormExportsTest extends TestCase {
 
-    private $exportService;
     private $headers;
 
     function setUp() {
         parent::setUp();
-        $this->exportService = new FormExportService();
         $this->headers = [
             FormExportService::header('User ID', 'user'),
             FormExportService::header('Question One', 'question', 1),
@@ -29,7 +21,7 @@ class FormExportsTest extends TestCase {
     }
 
     function testExportForm(){
-        $output = $this->exportService->exportFormData($this->headers, form);
+        $output = $this->formExportService->exportFormData($this->headers, form);
 
         $this->assertEquals('Yes!', $output[1][2]);
         $this->assertEquals('No', $output[1][1]);
