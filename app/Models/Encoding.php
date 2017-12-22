@@ -16,7 +16,7 @@ class Encoding extends Model
     }
 
     function form() {
-        return $this->belongsTo(Form::class, 'form_id');
+        return $this->belongsTo(Form::class, 'form_id')->withTrashed();
     }
 
     function simpleResponses(){
