@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: chris
- * Date: 12/17/17
- * Time: 3:39 PM
- */
 
 namespace App\Services\Exports;
 
@@ -46,5 +40,5 @@ abstract class AbstractExportService {
      * @param $header - the header to look for
      * @return string | null - returns the content of this cell for the given header. If 'false', the 'NO_RESPONSE' constant is used.
      */
-    abstract protected function lookupValue($rowModel, $header): string;
+    abstract protected function lookupValue($rowModel, $header);
 }

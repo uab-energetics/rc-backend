@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: chris
- * Date: 12/17/17
- * Time: 3:39 PM
- */
 
 namespace App\Services\Exports;
 
@@ -29,7 +23,7 @@ class FormExportService extends AbstractExportService {
         }, $encoding['branches']);
     }
 
-    protected function lookupValue($rowModel, $header): string {
+    protected function lookupValue($rowModel, $header) {
         switch ($header['key'][0]){
             case "question":
                 // This is an example lookup sub-routine. They could query the database, crunch some numbers, etc.
