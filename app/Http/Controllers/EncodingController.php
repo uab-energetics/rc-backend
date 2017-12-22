@@ -91,7 +91,9 @@ class EncodingController extends Controller {
             RESPONSE_BOOL => 'boolean|required_if:type,'.RESPONSE_BOOL,
             RESPONSE_RANGE.'_min' => 'number|required_if:type,'.RESPONSE_RANGE,
             RESPONSE_RANGE.'_max' => 'number|required_if:type,'.RESPONSE_RANGE,
-            RESPONSE_SELECT => 'string|required_if:type,'.RESPONSE_SELECT.'|required_if:type,'.RESPONSE_MULTI_SELECT
+            RESPONSE_SELECT => 'string|required_if:type,'.RESPONSE_SELECT,
+            RESPONSE_MULTI_SELECT => 'required_if:type,'.RESPONSE_MULTI_SELECT,
+            RESPONSE_MULTI_SELECT.'.*.txt' => 'required|distinct',
         ]);
     }
 
