@@ -21,6 +21,8 @@ class UserService {
     }
 
     public function getEncodings(User $user) {
-        return $user->encodings()->get();
+        return $user->encodings()
+            ->with(['publication', 'form'])
+            ->get();
     }
 }

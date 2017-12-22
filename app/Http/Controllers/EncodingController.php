@@ -14,7 +14,6 @@ use Illuminate\Validation\Rule;
 class EncodingController extends Controller {
 
     public function retrieve(Encoding $encoding) {
-        $encoding->load(['publication', 'form']);
         return $encoding;
     }
 
