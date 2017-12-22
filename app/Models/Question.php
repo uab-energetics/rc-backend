@@ -2,12 +2,19 @@
 
 namespace App\Models;
 
+use App\Traits\SearchableColumns;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Question extends Model {
 
+    use Searchable, SearchableColumns {
+        SearchableColumns::toSearchableArray insteadof Searchable;
+    }
+
     protected $fillable = ['name', 'prompt', 'default_format', 'description', 'true_option', 'false_option'];
     protected $with = ['options', 'accepts'];
+    protected $searchable = ['name', 'prompt', 'default_format', 'description'];
 
     function options() {
         return $this->hasMany(QuestionOptions::class, 'question_id');

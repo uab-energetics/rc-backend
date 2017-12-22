@@ -14,6 +14,10 @@ class QuestionService {
         return $question;
     }
 
+    public function search($query) {
+        return Question::search($query)->get();
+    }
+
     public function updateQuestion(Question $question, $params) {
         $question->update($params);
         $this->deleteSubRelations($question);

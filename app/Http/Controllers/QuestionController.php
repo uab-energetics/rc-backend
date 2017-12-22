@@ -48,6 +48,12 @@ class QuestionController extends Controller {
         return $form->refresh();
     }
 
+    public function search(Request $request, QuestionService $questionService) {
+        $validator = simpleSearchValidator($request->all());
+        if ($validator->fails()) return invalidParamMessage($validator);
+        return $questionService->search($request->search);
+    }
+
     public function retrieve(Question $question) {
         return $question;
     }
