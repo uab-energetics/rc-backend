@@ -56,7 +56,24 @@ class ConflictService {
      * @return bool
      */
     function compareAnswers($my_response, $their_response){
-        $this->fail_message = "always disagree";
+        if($my_response['type'] && $their_response['type']){
+            $this->fail_message = "different types";
+            return false;
+        }
+        switch ($my_response['type']){
+            case RESPONSE_TEXT:
+                return $my_response['txt'] === $their_response['txt'];
+            case RESPONSE_BOOL:
+                return $my_response['boo'] === $their_response['boo'];
+            case RESPONSE_NUMBER:
+                return $my_response['num'] === $their_response['num'];
+            case RESPONSE_SELECT:
+                return $my_response['sel'] === $their_response['sel'];
+            case RESPONSE_MULTI_SELECT:
+                $this->fail_message = "Didn't feel like comparing multi-selects";
+                return false;
+        }
+        $this->fail_message = "Unable to compare type";
         return false;
     }
 
