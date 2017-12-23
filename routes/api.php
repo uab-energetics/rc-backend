@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ConflictsController;
 use App\Http\Controllers\EncodingController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\ProjectController;
@@ -148,8 +149,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
             Route::post('/{branch}/responses', EncodingController::class."@createBranchResponse");
         });
         Route::post('/{encoding}/responses', EncodingController::class."@createSimpleResponse");
-
     });
+    Route::get('conflict-report/{encoding_id}', ConflictsController::class."@getConflictsReport");
 
     Route::group(['prefix' => 'assignments'], function () {
         Route::post('/manual', AssignmentController::class."@assignOne");

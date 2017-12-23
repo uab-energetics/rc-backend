@@ -29,4 +29,31 @@ class Encoding extends Model {
     function experimentBranches() {
         return $this->hasMany(EncodingExperimentBranch::class, 'encoding_id');
     }
+
+
+
+
+    /*
+     * Returns an associative array of the format:
+     * [
+     *      <branch_id>: [
+     *          <question_id>: <response>
+     *      ]
+     * ]
+     */
+    function getResponseTable(){
+        $encoding = $this->toArray();
+        $_encoding = [
+            'id' => $this->id,
+            'branches' => []
+        ];
+        foreach ($encoding['experiment_branches'] as $branch){
+            $_responses = [];
+            foreach ($branch['responses'] as $response){
+                $_responses[$response['question_id']] = $response;
+            }
+            $_encoding['branches'][$branch['id']] = $_responses;
+        }
+        return $_encoding;
+    }
 }

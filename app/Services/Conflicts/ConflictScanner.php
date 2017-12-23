@@ -9,43 +9,60 @@
 namespace App\Services\Conflicts;
 
 
+use App\ConflictRecord;
 use App\Encoding;
 
-class ConflictService {
+class ConflictScanner {
 
+    private $found_conflict = false;
     protected $fail_message;
 
-    function runConflictScan($encoding_id){
+    /**
+     * Runs a conflict scan and inserts the records in the DB.
+     * @param $encoding_id
+     * @return array
+     */
+    public function runConflictScan($encoding_id){
         $encoding = Encoding::find($encoding_id);
         $form = $encoding->form;
-        $other_encodings = $form->encodings()->where('id', '!=', $encoding_id)->get();
-        $questions = $form->questions;
+        $other_encoding_models = $form->encodings()->where('id', '!=', $encoding_id)->get();
+        /* map to more useful format */
+        $encoding = $encoding->getResponseTable();
+        $other_encodings = [];
+        foreach ($other_encoding_models as $_enc){
+            $other_encodings[] = $_enc->getResponseTable();
+        }
+        $questions = $form->questions->toArray();
 
         $conflict_records = [];
         foreach($other_encodings as $other_encoding){
             foreach($questions as $question){
-                $my_answer = $this->lookupResponse($encoding, $question);
-                $their_answer = $this->lookupResponse($other_encoding, $question);
+                $my_answer = $this->lookupResponse($encoding, $question['id']);
+                $their_answer = $this->lookupResponse($other_encoding, $question['id']);
                 if($my_answer && $their_answer){
                     $doesAgree = $this->compareAnswers($my_answer, $their_answer);
                     $status = true;
                     $message = '';
                     if(!$doesAgree){
+                        $this->found_conflict = true;
                         $status = false;
                         $message = $this->fail_message;
                     }
                     $conflict_records[] = [ // that push syntax though
-                        'user_encoding_id' => $encoding_id,
-                        'other_encoding_id' => $other_encoding->id,
-                        'question' => $question->id,
-                        'status' => $status,
-                        'msg' => $message
+                        'encoding_id' => $encoding['id'],
+                        'other_encoding_id' => $other_encoding['id'],
+                        'question_id' => $question['id'],
+                        'agrees' => $status,
+                        'message' => $message
                     ];
                     $this->fail_message = '';
                 }
             }
         }
         // save all conflict records in DB in one query.
+        ConflictRecord::where('encoding_id', '=', $encoding_id)->delete(); // must remove old ones.
+        ConflictRecord::insert($conflict_records);
+        return $conflict_records;
     }
 
     /**
@@ -56,7 +73,7 @@ class ConflictService {
      * @return bool
      */
     function compareAnswers($my_response, $their_response){
-        if($my_response['type'] && $their_response['type']){
+        if($my_response['type'] !== $their_response['type']){
             $this->fail_message = "different types";
             return false;
         }
@@ -77,8 +94,10 @@ class ConflictService {
         return false;
     }
 
-    protected function lookupResponse($encoding, $question){
-        return '';
+    protected function lookupResponse($encoding, $question_id){
+        // it's only comparing the first branch right now.
+        $branch_ids = array_keys($encoding['branches']);
+        return $encoding['branches'][$branch_ids[0]][$question_id];
     }
 
 }
