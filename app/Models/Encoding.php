@@ -5,8 +5,7 @@ namespace App;
 use App\Models\Response;
 use Illuminate\Database\Eloquent\Model;
 
-class Encoding extends Model
-{
+class Encoding extends Model {
     protected $fillable = ['type', 'publication_id', 'form_id', 'owner_id'];
 
     protected $with = ['simpleResponses', 'experimentBranches'];
@@ -19,11 +18,15 @@ class Encoding extends Model
         return $this->belongsTo(Form::class, 'form_id')->withTrashed();
     }
 
-    function simpleResponses(){
+    function owner() {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    function simpleResponses() {
         return $this->belongsToMany(Response::class, 'encoding_simple_responses', 'encoding_id', 'response_id');
     }
 
-    function experimentBranches(){
+    function experimentBranches() {
         return $this->hasMany(EncodingExperimentBranch::class, 'encoding_id');
     }
 }

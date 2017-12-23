@@ -87,6 +87,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
         Route::put('/{form}', FormController::class."@update");
         Route::delete('{form}', FormController::class."@delete");
 
+        Route::get('/{form}/export', FormController::class."@export");
+
         Route::group(['prefix' => '{form}/questions'], function() {
             Route::post('/', QuestionController::class."@createQuestion");
             Route::post('{question}', FormController::class."@addQuestion");

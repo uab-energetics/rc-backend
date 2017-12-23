@@ -29,4 +29,8 @@ class Form extends Model {
     public function questions() {
         return $this->belongsToMany(Question::class, 'form_question', 'form_id', 'question_id');
     }
+
+    public function encodings() {
+        return $this->hasMany(Encoding::class, 'form_id');
+    }
 }

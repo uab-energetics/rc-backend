@@ -13,4 +13,8 @@ class EncodingExperimentBranch extends Model {
     function responses() {
         return $this->belongsToMany(Response::class, 'branch_responses', 'branch_id', 'response_id');
     }
+
+    function encoding() {
+        return $this->belongsTo(Encoding::class, 'encoding_id');
+    }
 }

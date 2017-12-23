@@ -2,6 +2,9 @@
 
 namespace App\Services\Exports;
 
+use App\EncodingExperimentBranch;
+use App\Models\Response;
+
 class FormExportService extends AbstractExportService {
 
     public function exportFormData($headers, $form){
@@ -25,24 +28,31 @@ class FormExportService extends AbstractExportService {
 
     protected function lookupValue($rowModel, $header) {
         switch ($header['key'][0]){
+            case "branch":
+                return $rowModel['name'];
             case "question":
-                // This is an example lookup sub-routine. They could query the database, crunch some numbers, etc.
-                // This one requires the question ID as a parameter
-                return $this->branchGetQuestion($rowModel, $header['key'][1]);
-            case "user":
-                return $rowModel['user_id'];
+                return $this->branchGetResponse($rowModel, $header['key'][1]);
+            case "user_id":
+                return $this->branchGetUser($rowModel['id'])['id'];
+            case "user_name":
+                return $this->branchGetUser($rowModel['id'])['name'];
             default:
                 return false;
         }
     }
 
-    // TODO - Demo purposes only. Replace me.
-    private function branchGetQuestion( $rowModel, $question_id ){
-        foreach ($rowModel['responses'] as $response) {
-            if($response['qid'] == $question_id){
-                return $response['data'];
-            }
-        }
-        return false;
+    private function branchGetUser($branch_id) {
+        $branch = EncodingExperimentBranch::find($branch_id);
+        if ($branch === null) return false;
+        return $branch->encoding->owner->toArray();
+    }
+
+    private function branchGetResponse( $rowModel, $question_id ){
+        $branch = EncodingExperimentBranch::find($rowModel['id']);
+        if ($branch === null) return false;
+        /** @var Response $response */
+        $response = $branch->responses()->where('question_id', '=', $question_id)->first();
+        if ($response === null) return false;
+        return $response->toAtomic();
     }
 }

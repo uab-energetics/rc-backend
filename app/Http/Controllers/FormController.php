@@ -102,6 +102,10 @@ class FormController extends Controller {
         return okMessage("Successfully remove question from form");
     }
 
+    public function export(Form $form, FormService $formService) {
+        return $formService->exportForm($form);
+    }
+
     /**
      * @param $data
      * @return \Illuminate\Contracts\Validation\Validator
