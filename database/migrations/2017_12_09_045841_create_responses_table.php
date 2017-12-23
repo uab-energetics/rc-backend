@@ -17,7 +17,7 @@ class CreateResponsesTable extends Migration {
 
             $table->string('type');
             $table->string('txt')->nullable();
-            $table->string('num')->nullable();
+            $table->double('num')->nullable();
             $table->string('sel')->nullable();
             $table->string('boo')->nullable();
 
