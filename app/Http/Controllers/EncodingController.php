@@ -88,7 +88,7 @@ class EncodingController extends Controller {
             'type' => new ResponseType(),
             RESPONSE_TEXT => 'nullable|string|required_if:type,'.RESPONSE_TEXT,
             RESPONSE_NUMBER => 'nullable|numeric|required_if:type,'.RESPONSE_NUMBER,
-            RESPONSE_BOOL => 'nullable|boolean|required_if:type,'.RESPONSE_BOOL,
+            RESPONSE_BOOL => 'nullable|text|required_if:type,'.RESPONSE_BOOL,
             RESPONSE_RANGE.'_min' => 'nullable|numeric|required_if:type,'.RESPONSE_RANGE,
             RESPONSE_RANGE.'_max' => 'nullable|numeric|required_if:type,'.RESPONSE_RANGE,
             RESPONSE_SELECT => 'nullable|string|required_if:type,'.RESPONSE_SELECT,
