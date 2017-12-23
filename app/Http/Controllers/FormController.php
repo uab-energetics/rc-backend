@@ -112,7 +112,8 @@ class FormController extends Controller {
         $filename = preg_replace('/\s+/', "_", $filename);
         $filename .= '_'.Carbon::now()->toDateString();
 
-        return new StreamedResponse(
+        header("Access-Control-Expose-Headers: Content-Disposition");
+	return new StreamedResponse(
             getStreamWriter($headers, $export),
             200,
             csvResponseHeaders($filename)
