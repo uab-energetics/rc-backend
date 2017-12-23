@@ -23,7 +23,6 @@ use App\Http\Controllers\QuestionController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', AuthController::class."@login");
     Route::post('register', AuthController::class."@register");
@@ -33,8 +32,9 @@ Route::group(['prefix' => 'auth'], function () {
 Route::group(['middleware' => 'jwt.auth'], function () {
 
     /**
-     * USERS
-     * ===============
+     *  =================================
+     *  USERS
+     *  =================================
      */
     Route::put('/my-profile', UserController::class."@updateProfile");
     Route::group(['prefix' => 'users'], function() {
@@ -49,6 +49,11 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
     });
 
+    /**
+     *  ========================================================
+     *  PUBLICATIONS
+     *  ========================================================
+     */
     Route::group(['prefix' => 'publications'], function () {
         Route::post('/', PublicationController::class."@create");
         Route::get('/', PublicationController::class."@search");
@@ -57,7 +62,11 @@ Route::group(['middleware' => 'jwt.auth'], function () {
         Route::delete('/{publication}', PublicationController::class."@delete");
     });
 
-            ////    PROJECTS    ////
+    /**
+     * ===============================================
+     * PROJECTS
+     * ===============================================
+     */
     Route::group(['prefix' => 'projects'], function () {
         Route::post('/', ProjectController::class."@create");
         Route::get('/', ProjectController::class."@search");
@@ -80,7 +89,11 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
     });
 
-            ////    FORMS       ////
+    /**
+     *  ================================
+     *  FORMS
+     *  ================================
+     */
     Route::group(['prefix' => 'forms'], function () {
         Route::get('{form}', FormController::class."@retrieve");
         Route::get('/', FormController::class."@search");
@@ -103,7 +116,11 @@ Route::group(['middleware' => 'jwt.auth'], function () {
         });
     });
 
-    ////    QUESTIONS    ////
+    /**
+     * =================================
+     * QUESTIONS
+     * =================================
+     */
     Route::group(['prefix' => 'questions'], function () {
         Route::post('/', QuestionController::class."@create");
         Route::get('/{question}', QuestionController::class."@retrieve");
@@ -116,7 +133,11 @@ Route::group(['middleware' => 'jwt.auth'], function () {
         Route::get('/{category}', CategoryController::class."@retrieve");
     });
 
-            ////    ENCODINGS    ////
+    /**
+     *  ===========================================
+     *  ENCODINGS
+     *  ===========================================
+     */
     Route::group(['prefix' => 'encodings'], function () {
         Route::get('/{encoding}', EncodingController::class."@retrieve");
         Route::put('/{encoding}', EncodingController::class."@update");
@@ -134,7 +155,6 @@ Route::group(['middleware' => 'jwt.auth'], function () {
         Route::post('/manual', AssignmentController::class."@assignOne");
     });
 
-            ////    RESPONSES    ////
     Route::group(['prefix' => 'responses'], function () {
 
     });
