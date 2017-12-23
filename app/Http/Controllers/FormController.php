@@ -10,9 +10,11 @@ use App\Rules\FormType;
 use App\Services\Forms\FormService;
 use App\Services\Projects\ProjectService;
 use App\Services\Questions\QuestionService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FormController extends Controller {
 
@@ -103,7 +105,18 @@ class FormController extends Controller {
     }
 
     public function export(Form $form, FormService $formService) {
-        return $formService->exportForm($form);
+        $export = $formService->exportForm($form);
+        $headers = array_shift($export);
+
+        $filename = trim($form->name);
+        $filename = preg_replace('/\s+/', "_", $filename);
+        $filename .= '_'.Carbon::now()->toDateString();
+
+        return new StreamedResponse(
+            getStreamWriter($headers, $export),
+            200,
+            csvResponseHeaders($filename)
+        );
     }
 
     /**

@@ -40,3 +40,24 @@ function batchUnset(&$array, array $keys) {
         }
     }
 }
+
+function getStreamWriter($headers, $rows) {
+    return function() use (&$headers, &$rows) {
+        $file = fopen('php://output', 'w');
+        fputcsv($file, $headers);
+        foreach($rows as $row) {
+            fputcsv($file, $row);
+        }
+        fclose($file);
+    };
+}
+
+function csvResponseHeaders($file_name ){
+    return [
+        "Content-type" => "text/csv",
+        "Content-Disposition" => "attachment; filename=$file_name.csv",
+        "Pragma" => "no-cache",
+        "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+        "Expires" => "0"
+    ];
+}
