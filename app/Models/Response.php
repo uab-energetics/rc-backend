@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Response extends Model {
 
-    protected $fillable = ['question_id', 'type', 'txt', 'num', 'sel', 'boo'];
+    protected $fillable = ['question_id', 'type', 'txt', 'num', 'sel', 'boo', 'range_min', 'range_max'];
 
     protected $with = ['selections'];
 
