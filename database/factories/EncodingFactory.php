@@ -21,6 +21,6 @@ $factory->define(\App\Encoding::class, function (Faker $faker) {
         'form_id' => factory(Form::class)->create()->id,
         'owner_id' => factory(User::class)->create()->id,
         'type' => 'simple',
-        'publication_id' => factory(\App\Publication::class)->create()
+        'publication_id' => factory(\App\Publication::class)->create()->id
     ];
 });
