@@ -25,7 +25,7 @@ class ConflictScanner {
     public function runConflictScan($encoding_id){
         $encoding = Encoding::find($encoding_id);
         $form = $encoding->form;
-        $other_encoding_models = $form->encodings()->where('id', '!=', $encoding_id)->get();
+        $other_encoding_models = $encoding->collaborators;
         /* map to more useful format */
         $encoding = $encoding->getResponseTable();
         $other_encodings = [];
@@ -97,7 +97,10 @@ class ConflictScanner {
     protected function lookupResponse($encoding, $question_id){
         // it's only comparing the first branch right now.
         $branch_ids = array_keys($encoding['branches']);
-        return $encoding['branches'][$branch_ids[0]][$question_id];
+        if(!isset($encoding['branches'])) return null;
+        if(!isset($encoding['branches'][$branch_ids[0]])) return null;
+        if(!isset($encoding['branches'][$branch_ids[0]][$question_id.''])) return null;
+        return $encoding['branches'][$branch_ids[0]][$question_id.''];
     }
 
 }

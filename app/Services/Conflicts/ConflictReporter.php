@@ -10,13 +10,14 @@ namespace App\Services\Conflicts;
 
 
 use App\Encoding;
+use App\User;
 
 class ConflictReporter {
 
     static function getReport($encoding_id){
         $encoding = Encoding::find($encoding_id);
         $questions = $encoding->form->questions;
-        $other_encodings = $encoding->form->encodings()->where('id', '!=', $encoding_id)->get();
+        $other_encodings = $encoding->collaborators;
 
         $_encoding = $encoding->getResponseTable();
         $_others = [];
@@ -25,10 +26,16 @@ class ConflictReporter {
         }
         $_questions = $questions->toArray();
 
+        $other_users = [];
+        foreach ($_others as $other){
+            $other_users[$other['owner_id']] = User::find($other['owner_id'])->toArray();
+        }
+
         return [
             'encoding' => $_encoding,
             'other_encodings' => $_others,
-            'questions' => $_questions
+            'questions' => $_questions,
+            'other_users' => $other_users
         ];
     }
 

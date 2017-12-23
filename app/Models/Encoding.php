@@ -30,6 +30,14 @@ class Encoding extends Model {
         return $this->hasMany(EncodingExperimentBranch::class, 'encoding_id');
     }
 
+    function collaborators() {
+        return $this->form->encodings()
+            ->where([
+                ['id', '!=', $this->getKey()],
+                ['publication_id', '=', $this->publication_id]
+            ]);
+    }
+
 
 
 
@@ -45,6 +53,8 @@ class Encoding extends Model {
         $encoding = $this->toArray();
         $_encoding = [
             'id' => $this->id,
+            'owner_id' => $this->owner_id,
+            'publication_id' => $this->publication_id,
             'branches' => []
         ];
         foreach ($encoding['experiment_branches'] as $branch){
