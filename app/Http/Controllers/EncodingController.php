@@ -18,12 +18,9 @@ class EncodingController extends Controller {
     }
 
     public function update(Encoding $encoding, Request $request, EncodingService $encodingService) {
-        $params = $request->all();
-        $validator = $this->updateValidator($params);
-        if ($validator->fails()) return invalidParamMessage($validator);
 
         DB::beginTransaction();
-            $encodingService->updateEncoding($encoding, $params);
+            $encodingService->updateEncoding($encoding, $request->all());
         DB::commit();
 
         return $encoding->refresh();
@@ -40,8 +37,12 @@ class EncodingController extends Controller {
     // TODO - rename these 'create' methods to 'upsert', 'record', or something more accurate
 
     public function createBranch(Encoding $encoding, Request $request, EncodingService $encodingService){
-        $validator = $this->branchValidator($request->all());
-        if($validator->fails())  return invalidParamMessage($validator);
+        $request->validate([
+            'id' => 'exists:encoding_experiment_branches',
+            'encoding_id' => 'exists:encodings,id',
+            'name' => 'required|string',
+            'description' => 'string',
+        ]);
 
         $result = $encodingService->recordBranch($encoding->getKey(), $request->all());
 
@@ -52,8 +53,20 @@ class EncodingController extends Controller {
     }
 
     public function createBranchResponse(Encoding $encoding, Branch $branch, Request $request, EncodingService $encodingService){
-        $validator = $this->responseValidator($request->all());
-        if($validator->fails()) return invalidParamMessage($validator);
+
+        $request->validate([
+            'id' => 'exists:responses',
+            'question_id' => 'exists:questions,id',
+            'type' => new ResponseType(),
+            RESPONSE_TEXT => 'nullable|string|required_if:type,'.RESPONSE_TEXT,
+            RESPONSE_NUMBER => 'nullable|numeric|required_if:type,'.RESPONSE_NUMBER,
+            RESPONSE_BOOL => 'nullable|string|required_if:type,'.RESPONSE_BOOL,
+            RESPONSE_RANGE.'_min' => 'nullable|numeric|required_if:type,'.RESPONSE_RANGE,
+            RESPONSE_RANGE.'_max' => 'nullable|numeric|required_if:type,'.RESPONSE_RANGE,
+            RESPONSE_SELECT => 'nullable|string|required_if:type,'.RESPONSE_SELECT,
+            'selections' => 'nullable|required_if:type,'.RESPONSE_MULTI_SELECT,
+            'selections.*.txt' => 'required|distinct',
+        ]);
 
         /* valid. attempting operation */
         $result = $encodingService->recordResponse(
@@ -77,35 +90,6 @@ class EncodingController extends Controller {
         event(new EncodingChanged($encoding->id));
 
         return $encoding->refresh();
-    }
-
-    protected function updateValidator($data) {
-        return Validator::make($data, []);
-    }
-
-    protected function branchValidator($data) {
-        return Validator::make($data, [
-            'id' => 'exists:encoding_experiment_branches',
-            'encoding_id' => 'exists:encodings,id',
-            'name' => 'required|string',
-            'description' => 'string',
-        ]);
-    }
-
-    protected function responseValidator($data) {
-        return Validator::make($data, [
-            'id' => 'exists:responses',
-            'question_id' => 'exists:questions,id',
-            'type' => new ResponseType(),
-            RESPONSE_TEXT => 'nullable|string|required_if:type,'.RESPONSE_TEXT,
-            RESPONSE_NUMBER => 'nullable|numeric|required_if:type,'.RESPONSE_NUMBER,
-            RESPONSE_BOOL => 'nullable|string|required_if:type,'.RESPONSE_BOOL,
-            RESPONSE_RANGE.'_min' => 'nullable|numeric|required_if:type,'.RESPONSE_RANGE,
-            RESPONSE_RANGE.'_max' => 'nullable|numeric|required_if:type,'.RESPONSE_RANGE,
-            RESPONSE_SELECT => 'nullable|string|required_if:type,'.RESPONSE_SELECT,
-            'selections' => 'nullable|required_if:type,'.RESPONSE_MULTI_SELECT,
-            'selections.*.txt' => 'required|distinct',
-        ]);
     }
 
 }
