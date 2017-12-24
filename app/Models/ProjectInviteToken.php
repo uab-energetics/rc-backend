@@ -28,15 +28,12 @@ class ProjectInviteToken extends Model {
     }
 
     /**
-     * @return array | bool = The database record, or false if the token is invalid
+     * @return ProjectInviteToken | bool = The database record, or false if the token is invalid
      */
     public static function getToken($token_key){
-        $results = ProjectInviteToken::where([
+        return ProjectInviteToken::where([
             ['expires', ">", Carbon::now()],
             ['token_key', '=', $token_key]
-        ])->get();
-
-        if($results->count() === 0) return false;
-        return $results[0];
+        ])->first();
     }
 }

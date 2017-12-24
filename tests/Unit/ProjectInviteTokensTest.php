@@ -19,8 +19,11 @@ class ProjectInviteTokensTest extends TestCase {
         $generated_token = ProjectInviteToken::generateInviteToken($user_id);
 
         $token_record = ProjectInviteToken::getToken($generated_token);
+        $bad_token = ProjectInviteToken::getToken('boob');
 
         $this->assertEquals($generated_token, $token_record['token_key']);
+        $this->assertNull($bad_token);
+
     }
 
 }
