@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\InvitedToProject;
 use App\ProjectResearcher;
 use App\Publication;
 use App\Services\Projects\ProjectService;
+use App\User;
 use Illuminate\Http\Request;
 use App\Project;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +24,7 @@ class ProjectController extends Controller {
 
         DB::beginTransaction();
             $project = $projectService->makeProject($request->all());
-            $projectService->addResearcher($project, $user, true);
+            $projectService->addResearcher($project->getKey(), $user->getKey(), true);
         DB::commit();
 
         return $project;
@@ -77,6 +79,17 @@ class ProjectController extends Controller {
             return response()->json(static::PUBLICATION_NOT_FOUND, 404);
         }
         return okMessage("Successfully removed the publication");
+    }
+
+    public function inviteResearcher(Project $project, Request $request, ProjectService $projectService){
+        $user = User::find($request->user_id);
+        if(!$user) return response("no user with that id", 404);
+
+        // TODO - introduce access levels
+        $projectService->addResearcher($project->id, $request->user_id);
+        $user->notify(new InvitedToProject($project->id, $request->notification_payload));
+
+        return response('User invited to collaborate!', 200);
     }
 
     /**

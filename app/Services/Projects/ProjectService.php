@@ -13,7 +13,7 @@ use App\User;
 
 class ProjectService {
 
-    public function makeProject($params) {
+    public function makeProject($params): Project {
         return Project::create($params);
     }
 
@@ -33,10 +33,10 @@ class ProjectService {
         $project->delete();
     }
 
-    public function addResearcher(Project $project, User $user, $isOwner = false) {
+    public function addResearcher($project_id, $user_id, $isOwner = false) {
         return ProjectResearcher::create([
-            'project_id' => $project->getKey(),
-            'researcher_id' => $user->getKey()
+            'project_id' => $project_id,
+            'researcher_id' => $user_id
         ]);
     }
 
