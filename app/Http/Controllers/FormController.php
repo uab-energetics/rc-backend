@@ -18,17 +18,25 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FormController extends Controller {
 
-    public function create(Project $project, Request $request,
-           ProjectService $projService, FormService $formService) {
-        $validator = $this->createValidator($request->all());
-        if ($validator->fails()) {
-            return invalidParamMessage($validator);
-        }
+    private $formService;
+    private $projectService;
+
+    public function __construct(FormService $formService, ProjectService $projectService) {
+        $this->formService = $formService;
+        $this->projectService = $projectService;
+    }
+
+    public function create(Project $project, Request $request) {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'string',
+            'type' => ['required', new FormType()],
+        ]);
 
         $form = null;
         DB::beginTransaction();
-            $form = $formService->makeForm($request->all());
-            $edge = $projService->addForm($project, $form);
+            $form = $this->formService->makeForm($request->all());
+            $edge = $this->projectService->addForm($project, $form);
         DB::commit();
 
         return $form->refresh();

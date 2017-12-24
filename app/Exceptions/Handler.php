@@ -61,6 +61,13 @@ class Handler extends ExceptionHandler
                 'msg' => "This is not the route you are looking for"
             ], 404);
         }
+        if ($e instanceof ValidationException) {
+            return response()->json([
+                'status' => "INVALID_REQUEST",
+                'msg' => 'The given data was invalid',
+                'errors' => $e->validator->errors()
+            ], 400);
+        }
 
         return $this->prepareJsonResponse($request, $e);
     }
