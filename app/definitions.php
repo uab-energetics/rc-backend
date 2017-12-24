@@ -12,3 +12,4 @@ const FORM_SIMPLE = 'simple';
 const FORM_EXPERIMENT = 'experiment';
 const FORM_WIZARD = 'wizard';
 
+const NOTIFICATION_INVITE_TO_PROJECT = 'invited_to_project';
