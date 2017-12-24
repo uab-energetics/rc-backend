@@ -13,12 +13,13 @@ use Illuminate\Support\Facades\Validator;
 class PublicationController extends Controller {
 
     public function create(Request $request) {
-        $params = $request->all();
-        $validator = $this->createValidator($params);
-        if ($validator->fails()) return invalidParamMessage($validator);
+        $request->validate([
+            'name' => 'string|required',
+            'embedding_url' => 'url|required',
+        ]);
 
         DB::beginTransaction();
-            $publication = $this->publicationService->makePublication($params);
+            $publication = $this->publicationService->makePublication($request->all());
         DB::commit();
 
         return $publication;
@@ -48,11 +49,13 @@ class PublicationController extends Controller {
     }
 
     public function update(Publication $publication, Request $request) {
-        $params = $request->all();
-        $validator = $this->updateValidator($params);
-        if ($validator->fails()) return invalidParamMessage($validator);
+        $request->validate([
+            'name' => 'string',
+            'embedding_url' => 'url',
+        ]);
+
         DB::beginTransaction();
-            $this->publicationService->updatePublication($publication, $params);
+            $this->publicationService->updatePublication($publication, $request->all());
         DB::commit();
 
         return $publication->refresh();
@@ -63,20 +66,6 @@ class PublicationController extends Controller {
             $this->publicationService->deletePublication($publication);
         DB::commit();
         return okMessage("Successfully deleted publication");
-    }
-
-    protected function createValidator($data) {
-        return Validator::make($data, [
-            'name' => 'string|required',
-            'embedding_url' => 'url|required',
-        ]);
-    }
-
-    protected function updateValidator($data) {
-        return Validator::make($data, [
-            'name' => 'string',
-            'embedding_url' => 'url',
-        ]);
     }
 
 
