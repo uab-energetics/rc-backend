@@ -15,10 +15,10 @@ use Illuminate\Support\Facades\Validator;
 class ProjectController extends Controller {
 
     public function create(Request $request, ProjectService $projectService) {
-        $validator = $this->createValidator($request->all());
-        if ($validator->fails()) {
-            return invalidParamMessage($validator);
-        }
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'string',
+        ]);
 
         $user = $request->user();
 
@@ -31,10 +31,10 @@ class ProjectController extends Controller {
     }
 
     public function update(Project $project, Request $request, ProjectService $projectService) {
-        $validator = $this->updateValidator($request->all());
-        if ($validator->fails()) {
-            return invalidParamMessage($validator);
-        }
+        $request->validate([
+            'name' => 'string|max:255',
+            'description' => 'string',
+        ]);
 
         DB::beginTransaction();
             $projectService->updateProject($project, $request->all());
@@ -101,23 +101,6 @@ class ProjectController extends Controller {
 
     function getResearchers(Project $project){
         return $project->researchers;
-    }
-
-    /**
-     * @param $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function createValidator($data) {
-        return Validator::make($data, [
-            'name' => 'required|string|max:255',
-            'description' => 'string',
-        ]);
-    }
-    protected function updateValidator($data) {
-        return Validator::make($data, [
-            'name' => 'string|max:255',
-            'description' => 'string',
-        ]);
     }
 
     const PUBLICATION_NOT_FOUND = [
