@@ -15,43 +15,43 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\QuestionController;
 
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
 
 
-/**
- * To hell with the facades, I need my intelli-sense.
- *
- * @var $route \Illuminate\Routing\Router
- */
-$route = resolve(\Illuminate\Routing\Router::class);
 
 
-
-$route->group(['prefix' => 'auth'], function () use ($route) {
-    $route->post('login', AuthController::class."@login");
-    $route->post('register', AuthController::class."@register");
+Route::group(['prefix' => 'auth'], function () {
+    Route::post('login', AuthController::class."@login");
+    Route::post('register', AuthController::class."@register");
 });
 
 
-$route->group(['middleware' => 'jwt.auth'], function () use ($route) {
+Route::group(['middleware' => 'jwt.auth'], function () {
 
     /**
      *  =================================
-     *      USERS
+     *  USERS
      *  =================================
-     *
-     *  Routes dealing with user management
-     *
      */
-    $route->put('/my-profile', UserController::class."@updateProfile");
-    $route->group(['prefix' => 'users'], function() use ($route) {
-        $route->get('/', UserController::class."@search");
-        $route->group(['prefix' => 'projects'], function() use ($route) {
-            $route->get('/', UserController::class."@retrieveResearcherProjects");
-            $route->get('/coder', UserController::class."@retrieveCoderProjects");
-            $route->get('/researcher', UserController::class."@retrieveResearcherProjects");
+    Route::put('/my-profile', UserController::class."@updateProfile");
+    Route::group(['prefix' => 'users'], function() {
+        Route::get('/', UserController::class."@search");
+        Route::group(['prefix' => 'projects'], function() {
+            Route::get('/', UserController::class."@retrieveResearcherProjects");
+            Route::get('/coder', UserController::class."@retrieveCoderProjects");
+            Route::get('/researcher', UserController::class."@retrieveResearcherProjects");
         });
 
-        $route->get('/encodings', UserController::class."@retrieveEncodings");
+        Route::get('/encodings', UserController::class."@retrieveEncodings");
 
     });
 
@@ -60,13 +60,12 @@ $route->group(['middleware' => 'jwt.auth'], function () use ($route) {
      *  PUBLICATIONS
      *  ========================================================
      */
-    
-    $route->group(['prefix' => 'publications'], function () use ($route) {
-        $route->post('/', PublicationController::class."@create");
-        $route->get('/', PublicationController::class."@search");
-        $route->get('/{publication}', PublicationController::class."@retrieve");
-        $route->put('/{publication}', PublicationController::class."@update");
-        $route->delete('/{publication}', PublicationController::class."@delete");
+    Route::group(['prefix' => 'publications'], function () {
+        Route::post('/', PublicationController::class."@create");
+        Route::get('/', PublicationController::class."@search");
+        Route::get('/{publication}', PublicationController::class."@retrieve");
+        Route::put('/{publication}', PublicationController::class."@update");
+        Route::delete('/{publication}', PublicationController::class."@delete");
     });
 
     /**
@@ -74,27 +73,27 @@ $route->group(['middleware' => 'jwt.auth'], function () use ($route) {
      * PROJECTS
      * ===============================================
      */
-    $route->group(['prefix' => 'projects'], function () use ($route) {
-        $route->post('/', ProjectController::class."@create");
-        $route->get('/', ProjectController::class."@search");
-        $route->get('/{project}', ProjectController::class."@retrieve");
-        $route->put('/{project}', ProjectController::class."@update");
-        $route->delete('/{project}', ProjectController::class."@delete");
+    Route::group(['prefix' => 'projects'], function () {
+        Route::post('/', ProjectController::class."@create");
+        Route::get('/', ProjectController::class."@search");
+        Route::get('/{project}', ProjectController::class."@retrieve");
+        Route::put('/{project}', ProjectController::class."@update");
+        Route::delete('/{project}', ProjectController::class."@delete");
 
-        $route->group(['prefix' => '{project}'], function () use ($route) {
-            $route->get('/forms', ProjectController::class.'@retrieveForms');
-            $route->post('/forms', FormController::class."@create");
+        Route::group(['prefix' => '{project}'], function () {
+            Route::get('/forms', ProjectController::class.'@retrieveForms');
+            Route::post('/forms', FormController::class."@create");
 
-            $route->get('/publications', ProjectController::class."@retrievePublications");
+            Route::get('/publications', ProjectController::class."@retrievePublications");
 
-            $route->group(['prefix' => 'publications'], function () use ($route) {
-                $route->post('/', PublicationController::class."@createInProject");
-                $route->post('/{publication}', ProjectController::class."@addPublication");
-                $route->delete('/{publication}', ProjectController::class."@removePublication");
+            Route::group(['prefix' => 'publications'], function () {
+                Route::post('/', PublicationController::class."@createInProject");
+                Route::post('/{publication}', ProjectController::class."@addPublication");
+                Route::delete('/{publication}', ProjectController::class."@removePublication");
             });
 
-            $route->get('/researchers', ProjectController::class."@getResearchers");
-            $route->post('/invite-researcher', ProjectController::class."@inviteResearcher");
+            Route::get('/researchers', ProjectController::class."@getResearchers");
+            Route::post('/invite-researcher', ProjectController::class."@inviteResearcher");
         });
     });
 
@@ -103,25 +102,25 @@ $route->group(['middleware' => 'jwt.auth'], function () use ($route) {
      *  FORMS
      *  ================================
      */
-    $route->group(['prefix' => 'forms'], function () use ($route) {
-        $route->get('{form}', FormController::class."@retrieve");
-        $route->get('/', FormController::class."@search");
-        $route->put('/{form}', FormController::class."@update");
-        $route->delete('{form}', FormController::class."@delete");
+    Route::group(['prefix' => 'forms'], function () {
+        Route::get('{form}', FormController::class."@retrieve");
+        Route::get('/', FormController::class."@search");
+        Route::put('/{form}', FormController::class."@update");
+        Route::delete('{form}', FormController::class."@delete");
 
-        $route->get('/{form}/export', FormController::class."@export");
+        Route::get('/{form}/export', FormController::class."@export");
 
-        $route->group(['prefix' => '{form}/questions'], function() use ($route) {
-            $route->post('/', QuestionController::class."@createQuestion");
-            $route->post('{question}', FormController::class."@addQuestion");
-            $route->put('{question}', FormController::class."@moveQuestion");
-            $route->delete('{question}', FormController::class."@removeQuestion");
+        Route::group(['prefix' => '{form}/questions'], function() {
+            Route::post('/', QuestionController::class."@createQuestion");
+            Route::post('{question}', FormController::class."@addQuestion");
+            Route::put('{question}', FormController::class."@moveQuestion");
+            Route::delete('{question}', FormController::class."@removeQuestion");
         });
 
-        $route->group(['prefix' => '{form}/categories'], function () use ($route) {
-            $route->post('/', CategoryController::class."@create");
-            $route->put('/{category}', CategoryController::class."@update");
-            $route->delete('/{category}', CategoryController::class."@delete");
+        Route::group(['prefix' => '{form}/categories'], function () {
+            Route::post('/', CategoryController::class."@create");
+            Route::put('/{category}', CategoryController::class."@update");
+            Route::delete('/{category}', CategoryController::class."@delete");
         });
     });
 
@@ -130,16 +129,16 @@ $route->group(['middleware' => 'jwt.auth'], function () use ($route) {
      * QUESTIONS
      * =================================
      */
-    $route->group(['prefix' => 'questions'], function () use ($route) {
-        $route->post('/', QuestionController::class."@create");
-        $route->get('/{question}', QuestionController::class."@retrieve");
-        $route->get('/', QuestionController::class."@search");
-        $route->put('/{question}', QuestionController::class."@update");
-        $route->delete('/{question}', QuestionController::class."@delete");
+    Route::group(['prefix' => 'questions'], function () {
+        Route::post('/', QuestionController::class."@create");
+        Route::get('/{question}', QuestionController::class."@retrieve");
+        Route::get('/', QuestionController::class."@search");
+        Route::put('/{question}', QuestionController::class."@update");
+        Route::delete('/{question}', QuestionController::class."@delete");
     });
 
-    $route->group(['prefix' => 'categories'], function () use ($route) {
-        $route->get('/{category}', CategoryController::class."@retrieve");
+    Route::group(['prefix' => 'categories'], function () {
+        Route::get('/{category}', CategoryController::class."@retrieve");
     });
 
     /**
@@ -147,24 +146,24 @@ $route->group(['middleware' => 'jwt.auth'], function () use ($route) {
      *  ENCODINGS
      *  ===========================================
      */
-    $route->group(['prefix' => 'encodings'], function () use ($route) {
-        $route->get('/{encoding}', EncodingController::class."@retrieve");
-        $route->put('/{encoding}', EncodingController::class."@update");
-        $route->delete('/{encoding}', EncodingController::class."@delete");
-        $route->group(['prefix' => '{encoding}/branches'], function () use ($route) {
-            $route->post('/', EncodingController::class."@createBranch");
-            $route->delete('/{branch}', EncodingController::class."@deleteBranch");
-            $route->post('/{branch}/responses', EncodingController::class."@createBranchResponse");
+    Route::group(['prefix' => 'encodings'], function () {
+        Route::get('/{encoding}', EncodingController::class."@retrieve");
+        Route::put('/{encoding}', EncodingController::class."@update");
+        Route::delete('/{encoding}', EncodingController::class."@delete");
+        Route::group(['prefix' => '{encoding}/branches'], function () {
+            Route::post('/', EncodingController::class."@createBranch");
+            Route::delete('/{branch}', EncodingController::class."@deleteBranch");
+            Route::post('/{branch}/responses', EncodingController::class."@createBranchResponse");
         });
-        $route->post('/{encoding}/responses', EncodingController::class."@createSimpleResponse");
+        Route::post('/{encoding}/responses', EncodingController::class."@createSimpleResponse");
     });
-    $route->get('conflict-report/{encoding_id}', ConflictsController::class."@getConflictsReport");
+    Route::get('conflict-report/{encoding_id}', ConflictsController::class."@getConflictsReport");
 
-    $route->group(['prefix' => 'assignments'], function () use ($route) {
-        $route->post('/manual', AssignmentController::class."@assignOne");
+    Route::group(['prefix' => 'assignments'], function () {
+        Route::post('/manual', AssignmentController::class."@assignOne");
     });
 
-    $route->group(['prefix' => 'responses'], function () use ($route) {
+    Route::group(['prefix' => 'responses'], function () {
 
     });
 
@@ -175,7 +174,7 @@ $route->group(['middleware' => 'jwt.auth'], function () use ($route) {
      * ==========================================
      */
 
-    $route->get('/notifications', NotificationsController::class."@unreadNotifications");
-    $route->get('/notifications/mark-read', NotificationsController::class."@markAllRead");
+    Route::get('/notifications', NotificationsController::class."@unreadNotifications");
+    Route::get('/notifications/mark-read', NotificationsController::class."@markAllRead");
 
 });
