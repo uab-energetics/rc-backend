@@ -9,6 +9,7 @@
 namespace App\Services\Conflicts;
 
 
+use App\ConflictRecord;
 use App\Encoding;
 use App\User;
 
@@ -17,25 +18,22 @@ class ConflictReporter {
     static function getReport($encoding_id){
         $encoding = Encoding::find($encoding_id);
         $questions = $encoding->form->questions;
-        $other_encodings = $encoding->collaborators;
+        $other_encodings = $encoding->collaborators()->with('owner')->get();
+        $conflict_records = ConflictRecord::where('encoding_id', '=', $encoding_id)->get()->toArray();
 
-        $_encoding = $encoding->getResponseTable();
-        $_others = [];
-        foreach ($other_encodings as $_other){
-            $_others[] = $_other->getResponseTable();
-        }
-        $_questions = $questions->toArray();
-
-        $other_users = [];
-        foreach ($_others as $other){
-            $other_users[$other['owner_id']] = User::find($other['owner_id'])->toArray();
+        /* map conflict records to hash table */
+        $_conflict_records = [];
+        foreach ($conflict_records as $record){
+            $qid = $record['question_id'];
+            $other_encoding_id = $record['other_encoding_id'];
+            $_conflict_records[$qid][$other_encoding_id] = $record;
         }
 
         return [
-            'encoding' => $_encoding,
-            'other_encodings' => $_others,
-            'questions' => $_questions,
-            'other_users' => $other_users
+            'encoding' => $encoding,
+            'other_encodings' => $other_encodings,
+            'questions' => $questions,
+            'conflicts' => $_conflict_records
         ];
     }
 

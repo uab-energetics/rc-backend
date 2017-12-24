@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Encoding;
 use App\EncodingExperimentBranch as Branch;
+use App\Events\EncodingChanged;
 use App\Rules\ResponseType;
 use App\Services\Encodings\EncodingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class EncodingController extends Controller {
 
@@ -36,11 +36,16 @@ class EncodingController extends Controller {
         return okMessage("Successfully deleted encoding");
     }
 
+
+    // TODO - rename these 'create' methods to 'upsert', 'record', or something more accurate
+
     public function createBranch(Encoding $encoding, Request $request, EncodingService $encodingService){
         $validator = $this->branchValidator($request->all());
         if($validator->fails())  return invalidParamMessage($validator);
 
         $result = $encodingService->recordBranch($encoding->getKey(), $request->all());
+
+        event(new EncodingChanged($encoding->id));
 
         if($result) return $result;
         return response("couldn't record branch", 500);
@@ -56,6 +61,9 @@ class EncodingController extends Controller {
             $branch->getKey(),
             $request->all()
         );
+
+        event(new EncodingChanged($encoding->id));
+
         if($result) return $result;
         return response("couldn't record response", 500);
     }
@@ -65,6 +73,9 @@ class EncodingController extends Controller {
             $encoding->getKey(),
             $branch->getKey()
         );
+
+        event(new EncodingChanged($encoding->id));
+
         return $encoding->refresh();
     }
 
