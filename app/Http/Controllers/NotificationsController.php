@@ -15,7 +15,9 @@ class NotificationsController extends Controller {
 
     function markAllRead(Request $request){
         $request->user()->unreadNotifications->markAsRead();
-        return response('success', 200);
+        return response()->json([
+            'status' => 'ok'
+        ], 200);
     }
 
 }

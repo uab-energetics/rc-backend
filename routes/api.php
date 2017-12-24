@@ -170,7 +170,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
      * ==========================================
      */
 
-    Route::get('/notifications', NotificationsController::class."@markAllRead");
-    Route::get('/notifications/mark-read', NotificationsController::class."@unreadNotifications");
+    Route::get('/notifications', NotificationsController::class."@unreadNotifications");
+    Route::get('/notifications/mark-read', NotificationsController::class."@markAllRead");
 
 });
