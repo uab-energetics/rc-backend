@@ -86,10 +86,21 @@ class ProjectController extends Controller {
         if(!$user) return response("no user with that id", 404);
 
         // TODO - introduce access levels
-        $projectService->addResearcher($project->id, $request->user_id);
-        $user->notify(new InvitedToProject($project->id, $request->notification_payload));
+        $res = $projectService->addResearcher($project->id, $request->user_id);
+        if(!$res){
+            return response()->json([
+                'msg' => 'That user is already in this project!'
+            ], 409);
+        }
 
-        return response('User invited to collaborate!', 200);
+        $user->notify(new InvitedToProject($project->id, $request->notification_payload));
+        return response()->json([
+            'msg' => "User invited to collaborate!"
+        ], 200);
+    }
+
+    function getResearchers(Project $project){
+        return $project->researchers;
     }
 
     /**

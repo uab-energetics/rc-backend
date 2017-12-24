@@ -34,6 +34,12 @@ class ProjectService {
     }
 
     public function addResearcher($project_id, $user_id, $isOwner = false) {
+        $exists = ProjectResearcher::where([
+            ['project_id', '=', $project_id],
+            ['researcher_id', '=', $user_id]
+        ])->count();
+        if($exists > 0) return null;
+
         return ProjectResearcher::create([
             'project_id' => $project_id,
             'researcher_id' => $user_id

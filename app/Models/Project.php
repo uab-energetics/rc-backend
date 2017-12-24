@@ -25,4 +25,8 @@ class Project extends Model {
     public function publications() {
         return $this->belongsToMany(Publication::class, 'project_publication', 'project_id', 'publication_id');
     }
+
+    public function researchers(){
+        return $this->belongsToMany(User::class, 'project_researcher', 'project_id', 'researcher_id');
+    }
 }

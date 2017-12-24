@@ -88,6 +88,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
                 Route::delete('/{publication}', ProjectController::class."@removePublication");
             });
 
+            Route::get('/researchers', ProjectController::class."@getResearchers");
             Route::post('/invite-researcher', ProjectController::class."@inviteResearcher");
         });
     });
