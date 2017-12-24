@@ -12,7 +12,7 @@ class AddUsersBio extends Migration
             $table->text('bio')->nullable();
             $table->text('website')->nullable();
             $table->text('department')->nullable();
-            $table->string('theme', 64);
+            $table->string('theme', 64)->nullable();
         });
     }
 
