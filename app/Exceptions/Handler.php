@@ -63,8 +63,6 @@ class Handler extends ExceptionHandler
         }
         if ($e instanceof ValidationException) {
             return response()->json([
-                'status' => "INVALID_REQUEST",
-                'msg' => 'The given data was invalid',
                 'errors' => $e->validator->errors()
             ], 400);
         }

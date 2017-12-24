@@ -46,52 +46,54 @@ class FormController extends Controller {
         return $form;
     }
 
-    public function search(Request $request, FormService $formService) {
-        $validator = simpleSearchValidator($request->all());
-        if ($validator->fails()) return invalidParamMessage($validator);
-        return $formService->search($request->search);
+    public function search(Request $request) {
+
+        $request->validate([
+            'search' => 'string|nullable'
+        ]);
+
+        return $this->formService->search($request->search);
     }
 
-    public function update (Form $form, Request $request, FormService $formService) {
-        $params = $request->all();
-        $validator = $this->updateValidator($params);
-        if ($validator->fails()) {
-            return invalidParamMessage($validator);
-        }
+    public function update (Form $form, Request $request) {
+        $request->validate([
+            'name' => 'string|max:255',
+            'description' => 'string',
+        ]);
 
         DB::beginTransaction();
-            $formService->updateForm($form, $params);
+            $this->formService->updateForm($form, $request->all());
         DB::commit();
 
         return $form->refresh();
     }
 
-    public function delete(Form $form, FormService $formService) {
-        $res = $formService->deleteForm($form);
+    public function delete(Form $form) {
+        $this->formService->deleteForm($form);
         return okMessage("Successfully deleted form");
     }
 
-    public function addQuestion(Form $form, Question $question, Request $request, FormService $formService) {
-        $category = $formService->findCategory($form, $request->category_id);
+    public function addQuestion(Form $form, Question $question, Request $request) {
+        $category = $this->formService->findCategory($form, $request->category_id);
         if ($category === false) {
             return response()->json(static::INVALID_CATEGORY, 403);
         }
 
         DB::beginTransaction();
-            $formService->addQuestion($form, $question, $category);
+            $this->formService->addQuestion($form, $question, $category);
         DB::commit();
 
         $form->refresh();
         return $form;
     }
 
-    public function moveQuestion (Form $form, Question $question, Request $request, FormService $formService) {
-        $category = $formService->findCategory($form, $request->category_id);
+    public function moveQuestion (Form $form, Question $question, Request $request) {
+        $category = $this->formService->findCategory($form, $request->category_id);
         if ($category === false) {
             return response()->json(static::INVALID_CATEGORY, 403);
         }
 
-        $res = $formService->moveQuestion($form, $question, $category);
+        $res = $this->formService->moveQuestion($form, $question, $category);
 
         if ($res === false) {
             return response()->json(static::INVALID_QUESTION, 403);
@@ -101,8 +103,8 @@ class FormController extends Controller {
         return $form;
     }
 
-    public function removeQuestion(Form $form, Question $question, FormService $formService) {
-        $res = $formService->removeQuestion($form, $question);
+    public function removeQuestion(Form $form, Question $question) {
+        $res = $this->formService->removeQuestion($form, $question);
         if ($res === false) {
             return response()->json([
                 'status' => 'QUESTION_NOT_FOUND',
@@ -112,8 +114,8 @@ class FormController extends Controller {
         return okMessage("Successfully remove question from form");
     }
 
-    public function export(Form $form, FormService $formService) {
-        $export = $formService->exportForm($form);
+    public function export(Form $form) {
+        $export = $this->formService->exportForm($form);
         $headers = array_shift($export);
 
         $filename = trim($form->name);
@@ -121,34 +123,11 @@ class FormController extends Controller {
         $filename .= '_'.Carbon::now()->toDateString();
 
         header("Access-Control-Expose-Headers: Content-Disposition");
-	return new StreamedResponse(
+	    return new StreamedResponse(
             getStreamWriter($headers, $export),
             200,
             csvResponseHeaders($filename)
         );
-    }
-
-    /**
-     * @param $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function createValidator($data) {
-        return Validator::make($data, [
-            'name' => 'required|string|max:255',
-            'description' => 'string',
-            'type' => ['required', new FormType()],
-        ]);
-    }
-
-    /**
-     * @param $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function updateValidator($data) {
-        return Validator::make($data, [
-            'name' => 'string|max:255',
-            'description' => 'string',
-        ]);
     }
 
     const INVALID_CATEGORY = [
