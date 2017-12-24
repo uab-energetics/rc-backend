@@ -10,24 +10,17 @@ use Illuminate\Support\Facades\Validator;
 class AssignmentController extends Controller {
 
     public function assignOne(Request $request, AssignmentService $assignmentService) {
-        $params = $request->all();
-        $validator = $this->assignOneValidator($params);
-        if ($validator->fails()) return invalidParamMessage($validator);
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'form_id' => 'required|exists:forms,id',
+            'project_id' => 'exists:projects,id',
+        ]);
 
         DB::beginTransaction();
             $encoding = $assignmentService->assignTo($request->form_id, $request->publication_id, $request->user_id);
         DB::commit();
 
         return $encoding;
-    }
-
-
-    protected function assignOneValidator($data) {
-        return Validator::make($data, [
-            'user_id' => 'required|exists:users,id',
-            'form_id' => 'required|exists:forms,id',
-            'project_id' => 'exists:projects,id',
-        ]);
     }
 
 }
