@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ConflictsController;
 use App\Http\Controllers\EncodingController;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\UserController;
@@ -160,5 +161,15 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::group(['prefix' => 'responses'], function () {
 
     });
+
+
+    /**
+     * ==========================================
+     *  NOTIFICATIONS
+     * ==========================================
+     */
+
+    Route::get('/notifications', NotificationsController::class."@markAllRead");
+    Route::get('/notifications/mark-read', NotificationsController::class."@unreadNotifications");
 
 });
