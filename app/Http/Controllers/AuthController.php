@@ -42,15 +42,11 @@ class AuthController extends Controller {
     }
 
     public function register(Request $request, JWTAuth $auth) {
-        $validator = $this->registerValidator($request->all());
-        if ( $validator->fails() ) {
-            $reasons = $validator->errors();
-            return response()->json([
-                'status' => 'INVALID',
-                'msg' => "Invalid registration data",
-                'errors' => $reasons,
-            ], 400);
-        }
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6',
+        ]);
 
         $user = $this->findUser($request->all());
 
@@ -74,18 +70,6 @@ class AuthController extends Controller {
             'token' => $token,
 //            'user' => $this->getUserInfo($user)
             'user' => $user
-        ]);
-    }
-
-    /** Get a validator for an incoming registration request.
-     * @param  array $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function registerValidator(array $data) {
-        return Validator::make($data, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
         ]);
     }
 

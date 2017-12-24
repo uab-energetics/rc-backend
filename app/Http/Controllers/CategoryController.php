@@ -12,10 +12,10 @@ use Illuminate\Support\Facades\Validator;
 class CategoryController extends Controller {
 
     public function create(Request $request, CategoryService $categoryService) {
-        $validator = $this->createValidator($request->all());
-        if ($validator->fails()) {
-            return invalidParamMessage($validator);
-        }
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'parent_id' => 'required|int|exists:categories,id',
+        ]);
 
         $category = null;
         DB::transaction(function () use (&$category, &$request, &$categoryService) {
@@ -30,10 +30,10 @@ class CategoryController extends Controller {
     }
 
     public function update(Form $form, Category $category, Request $request, CategoryService $categoryService) {
-        $validator = $this->updateValidator($request->all());
-        if ($validator->fails()) {
-            return invalidParamMessage($validator);
-        }
+        $request->validate([
+            'name' => 'string|max:255',
+            'parent_id' => 'exists:categories,id',
+        ]);
 
         if ($category->parent_id === null) {
             return response()->json(static::INVALID_CATEGORY, 403);
@@ -63,29 +63,6 @@ class CategoryController extends Controller {
 
         $form->refresh();
         return $form;
-    }
-
-
-    /**
-     * @param $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function createValidator($data) {
-        return Validator::make($data, [
-            'name' => 'required|string|max:255',
-            'parent_id' => 'required|int|exists:categories,id',
-        ]);
-    }
-
-    /**
-     * @param $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function updateValidator($data) {
-        return Validator::make($data, [
-            'name' => 'string|max:255',
-            'parent_id' => 'exists:categories,id',
-        ]);
     }
 
 
