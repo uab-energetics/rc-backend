@@ -56,8 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => env('MAIL_FROM_ADDRESS', 'default_address_in_mail_config@change_me.com'),
+        'name' => env('MAIL_FROM_NAME', 'TODO - change default sender name'),
     ],
 
     /*

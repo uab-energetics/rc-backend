@@ -7,6 +7,7 @@ use App\Http\Controllers\EncodingController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectInvitesController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -177,6 +178,14 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/notifications', NotificationsController::class."@unreadNotifications");
     Route::get('/notifications/mark-read', NotificationsController::class."@markAllRead");
 
+
+    /**
+    *  ===========================================
+    *  INVITE TO PROJECT
+    *  ===========================================
+    */
+    Route::post('/invite-to-project', ProjectInvitesController::class."@sendInviteToken");
+    Route::get('/redeem-invite-token', ProjectInvitesController::class."@redeemInviteToken");
 });
 
 
@@ -195,7 +204,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
  *
 */
 
-Route::get('/mailable/invite-to-project', function(){
+Route::get('/mailables/invite-to-project', function(){
     return new \App\Mail\InvitedToProject([
         'user' => "Chris Rocco",
         'project' => "Dummy Project",

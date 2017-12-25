@@ -15,13 +15,24 @@ class ProjectInvitesController extends Controller
 {
 
     function redeemInviteToken(Request $request, ProjectService $projectService){
+        $request->validate([
+            'token' => 'required'
+        ]);
+
+
+        // get the token
         $token = $request->get('token');
 
+
+        // look for the token in database
         $invite = ProjectInviteToken::getToken($token);
         if(!$invite) abort(401);
 
+
+        // create the membership records in database
         $project = Project::find($invite->project_id);
         $projectService->addResearcher($project->getKey(), Auth::user()->getKey());
+
 
         return response()->json([
             'project' => $project,
