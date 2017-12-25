@@ -178,3 +178,27 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/notifications/mark-read', NotificationsController::class."@markAllRead");
 
 });
+
+
+
+
+
+
+
+
+/**
+*  ===========================================
+*  MAILABLE PREVIEWS
+*  ===========================================
+ *
+ * These will be removed in production
+ *
+*/
+
+Route::get('/mailable/invite-to-project', function(){
+    return new \App\Mail\InvitedToProject([
+        'user' => "Chris Rocco",
+        'project' => "Dummy Project",
+        'callback' => 'localhost:8000'
+    ]);
+});

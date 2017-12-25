@@ -16,11 +16,15 @@ class InviteTokens extends Migration
         Schema::create('project_invite_tokens', function(Blueprint $table){
             $table->increments('id');
             $table->unsignedInteger('creator_id');
+            $table->unsignedInteger('project_id');
             $table->string('token_key');
             $table->string('access_level');
             $table->dateTime('expires');
 
             $table->foreign('creator_id')->references('id')->on('users')
+                ->onDelete('cascade');
+
+            $table->foreign('project_id')->references('id')->on('projects')
                 ->onDelete('cascade');
 
             $table->timestamps();
