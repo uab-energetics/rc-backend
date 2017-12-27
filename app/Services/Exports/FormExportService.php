@@ -32,7 +32,9 @@ class FormExportService extends AbstractExportService {
                 return $rowModel['name'];
             case "question":
                 return $this->branchGetResponse($rowModel, $header['key'][1]);
-            case "publication":
+            case "publication_id":
+                return $this->branchGetPublication($rowModel['id'])['id'];
+            case "publication_name":
                 return $this->branchGetPublication($rowModel['id'])['name'];
             case "user_id":
                 return $this->branchGetUser($rowModel['id'])['id'];
