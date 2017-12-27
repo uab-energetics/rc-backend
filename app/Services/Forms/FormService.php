@@ -101,6 +101,7 @@ class FormService {
 
     protected function generateFormHeaders(Form $form) {
         $result = [
+            FormExportService::header("Publication", 'publication'),
             FormExportService::header("User ID", 'user_id'),
             FormExportService::header("User Name", 'user_name'),
             FormExportService::header("Branch", 'branch'),
