@@ -1,33 +1,36 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: Chris Rocco
- * Date: 2017-12-23
- * Time: 02:20
- */
 
 namespace App\Services\Comments;
 
 
-use App\ConflictRecord;
-use App\Encoding;
+use App\Comment;
 
 class CommentService {
 
-    function post($thread_id, $user_id, $message, $parent_id){
-
+    static function post($parent_id, $user_id, $message){
+        return Comment::create([
+            'parent_id' => $parent_id,
+            'user_id' => $user_id,
+            'message' => $message,
+        ]);
     }
 
-    function thread($thread_id){
-
+    static function getThread($root_comment_id){
+        return Comment::find($root_comment_id);
     }
 
-    function edit($comment_id, $message){
-
+    static function edit($comment_id, $message){
+        $comment = Comment::find($comment_id);
+        $comment->message = $message;
+        $comment->save();
+        return Comment::find($comment_id);
     }
 
-    function delete($comment_id){
-
+    static function delete($comment_id){
+        $comment = Comment::find($comment_id);
+        if(!$comment) return;
+        $comment->message = "deleted";
+        $comment->save();
     }
 
 }
