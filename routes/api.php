@@ -185,8 +185,11 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     *  ===========================================
     */
     Route::post('/invite-to-project', ProjectInvitesController::class."@sendInviteToken");
-    Route::get('/redeem-invite-token', ProjectInvitesController::class."@redeemInviteToken");
+    Route::post('/redeem-invite-token', ProjectInvitesController::class."@redeemInviteToken");
 });
+
+
+Route::get('/validate-invite', ProjectInvitesController::class."@validateInvitation");
 
 
 

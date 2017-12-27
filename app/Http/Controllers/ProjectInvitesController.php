@@ -49,6 +49,8 @@ class ProjectInvitesController extends Controller
 
         $invitee = Auth::user();
         $project = Project::find($request->input('project_id'));
+        $callback_url = $request->input('callback_url');
+        $callback_params = $request->input('callback_params', []);
 
 
 
@@ -57,19 +59,20 @@ class ProjectInvitesController extends Controller
             $invitee->getKey(),
             $project->getKey()
         );
-        // Generating the invitation
 
 
 
         // Sending the email
+        $token_param = [ 'token' => $token ];
+        $query_params = http_build_query(array_merge($callback_params, $token_param));
+
         $target_email = request()->get('to_email');
         $invite_email = new InvitedToProject([
             'project' => $project->name,
             'user' => $invitee->name,
-            'callback' => $request->input('callback_url')
+            'callback' => $callback_url . "?" . $query_params
         ]);
         Mail::to($target_email)->send($invite_email);
-        // Sending the email
 
 
 
@@ -79,4 +82,20 @@ class ProjectInvitesController extends Controller
         ]);
     }
 
+    function validateInvitation(Request $request){
+        $request->validate([
+            'token' => 'required'
+        ]);
+
+        $token = $request->input('token');
+
+        $invite = ProjectInviteToken::getToken($token);
+        if(!$invite) abort(404);
+
+        return response()->json([
+            'project' => Project::find($invite->project_id),
+            'user' => User::find($invite->creator_id),
+            'access_level' => $invite->access_level
+        ]);
+    }
 }

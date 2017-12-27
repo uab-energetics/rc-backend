@@ -21,7 +21,10 @@ class InviteViaEmailTest extends JWTTestCase
         $response = $this->json('POST', '/invite-to-project', [
             'project_id' => $project,
             'to_email' => $to_email,
-            'callback_url' => $callback
+            'callback_url' => $callback,
+            'callback_params' => [
+                'action' => 'redeem_invite'
+            ]
         ]);
 
         $response->dump();
