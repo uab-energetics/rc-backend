@@ -52,6 +52,6 @@ class CommentsTest extends JWTTestCase
 //        $res_create->dump();
 //        $res_edit->dump();
 //        $res_delete->dump();
-        $res_thread->dump();
+//        $res_thread->dump();
     }
 }
