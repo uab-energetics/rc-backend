@@ -2,18 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 class CommentsController extends Controller {
 
-    function post(){
+    function post(Request $request){
 
     }
 
-    function delete(){
+    /**
+     * Soft-Deletes a comment
+     */
+    function delete(Request $request){
 
     }
 
-    function edit(){
+    function edit(Request $request){
+    }
 
+    /**
+     * Returns a thread of comments using the specified root
+     */
+    function thread(Request $request){
     }
 
 }

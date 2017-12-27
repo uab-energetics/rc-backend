@@ -186,6 +186,19 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     */
     Route::post('/invite-to-project', ProjectInvitesController::class."@sendInviteToken");
     Route::post('/redeem-invite-token', ProjectInvitesController::class."@redeemInviteToken");
+
+
+    /**
+     *  ===========================================
+     *  COMMENTS
+     *  ===========================================
+     */
+
+    $comment_ctrl = \App\Http\Controllers\CommentsController::class;
+    Route::post('/comments', "$comment_ctrl@post");
+    Route::put('/comments/{comment}', "$comment_ctrl@edit");
+    Route::delete('/comments/{comment}', "$comment_ctrl@delete");
+    Route::get('/comments/{comment}', "$comment_ctrl@thread");
 });
 
 

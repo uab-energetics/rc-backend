@@ -2,10 +2,10 @@
 
 namespace App;
 
-use App\Models\Question;
+use Illuminate\Database\Eloquent\Model;
 
-class Comment extends Model{
-
+class Comment extends Model
+{
     protected $table = "comments";
 
     protected $fillable = [
@@ -14,4 +14,11 @@ class Comment extends Model{
         "message"
     ];
 
+    function children(){
+        // TODO
+    }
+
+    function childrenRecursive(){
+        // TODO
+    }
 }
