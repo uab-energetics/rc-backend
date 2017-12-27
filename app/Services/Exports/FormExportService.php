@@ -32,6 +32,10 @@ class FormExportService extends AbstractExportService {
                 return $rowModel['name'];
             case "question":
                 return $this->branchGetResponse($rowModel, $header['key'][1]);
+            case "publication_id":
+                return $this->branchGetPublication($rowModel['id'])['id'];
+            case "publication_name":
+                return $this->branchGetPublication($rowModel['id'])['name'];
             case "user_id":
                 return $this->branchGetUser($rowModel['id'])['id'];
             case "user_name":
@@ -54,5 +58,11 @@ class FormExportService extends AbstractExportService {
         $response = $branch->responses()->where('question_id', '=', $question_id)->first();
         if ($response === null) return false;
         return $response->toAtomic();
+    }
+
+    private function branchGetPublication($branch_id) {
+        $branch = EncodingExperimentBranch::find($branch_id);
+        if ($branch === null) return false;
+        return $branch->encoding->publication->toArray();
     }
 }
