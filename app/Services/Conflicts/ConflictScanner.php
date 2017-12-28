@@ -18,6 +18,7 @@ class ConflictScanner {
      */
     public function runConflictScan($encoding_id){
         $encoding = Encoding::find($encoding_id);
+        if(!$encoding) return null;
         $form = $encoding->form;
         $other_encoding_models = $encoding->collaborators;
         /* map to more useful format */

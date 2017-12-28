@@ -54,24 +54,24 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     // publications
     Route::post(    'publications/', "$publications_ctrl@create");
     Route::get(     'publications/', "$publications_ctrl@search");
-    Route::get(     'publications/{id}', getter(Publication::class));
-    Route::put(     'publications/{id}', "$publications_ctrl@update");
-    Route::delete(  'publications/{id}', "$publications_ctrl@delete");
+    Route::get(     'publications/{publication}', getter(Publication::class));
+    Route::put(     'publications/{publication}', "$publications_ctrl@update");
+    Route::delete(  'publications/{publication}', "$publications_ctrl@delete");
 
     // projects
     Route::post(    'projects', "$projects_ctrl@create");
     Route::get(     'projects', "$projects_ctrl@search");
-    Route::get(     'projects/{id}', getter(Project::class));
-    Route::put(     'projects/{id}', "$projects_ctrl@update");
-    Route::delete(  'projects/{id}', "$projects_ctrl@delete");
-    Route::get(     'projects/{id}/forms', "$projects_ctrl@retrieveForms");
-    Route::post(    'projects/{id}/forms', FormController::class."@create");
-    Route::get(     'projects/{id}/publications', "$projects_ctrl@retrievePublications");
-    Route::post(    'projects/{id}/publications', "$publications_ctrl@createInProject");
-    Route::post(    'projects/{id}/publications/{publication}', "$projects_ctrl@addPublication");
-    Route::delete(  'projects/{id}/publications/{publication}', "$projects_ctrl@removePublication");
-    Route::get(     'projects/{id}/researchers', "$projects_ctrl@getResearchers");
-    Route::post(    'projects/{id}/invite-researcher', "$projects_ctrl@inviteResearcher");
+    Route::get(     'projects/{project}', getter(Project::class));
+    Route::put(     'projects/{project}', "$projects_ctrl@update");
+    Route::delete(  'projects/{project}', "$projects_ctrl@delete");
+    Route::get(     'projects/{project}/forms', "$projects_ctrl@retrieveForms");
+    Route::post(    'projects/{project}/forms', FormController::class."@create");
+    Route::get(     'projects/{project}/publications', "$projects_ctrl@retrievePublications");
+    Route::post(    'projects/{project}/publications', "$publications_ctrl@createInProject");
+    Route::post(    'projects/{project}/publications/{publication}', "$projects_ctrl@addPublication");
+    Route::delete(  'projects/{project}/publications/{publication}', "$projects_ctrl@removePublication");
+    Route::get(     'projects/{project}/researchers', "$projects_ctrl@getResearchers");
+    Route::post(    'projects/{project}/invite-researcher', "$projects_ctrl@inviteResearcher");
 
 
     // forms
@@ -125,9 +125,9 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::post(    '/channels', "$comment_ctrl@createChannel");
     Route::get(     '/channels/{name}', "$comment_ctrl@getChannel");
     Route::post(    '/channels/{name}/comments', "$comment_ctrl@postInChannel");
-    Route::post(    '/comments/{id}/reply', "$comment_ctrl@reply");
-    Route::put(     '/comments/{id}', "$comment_ctrl@edit");
-    Route::delete(  '/comments/{id}', "$comment_ctrl@delete");
+    Route::post(    '/comments/{comment}/reply', "$comment_ctrl@reply");
+    Route::put(     '/comments/{comment}', "$comment_ctrl@edit");
+    Route::delete(  '/comments/{comment}', "$comment_ctrl@delete");
 });
 
 

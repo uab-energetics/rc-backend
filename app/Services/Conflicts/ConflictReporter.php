@@ -12,6 +12,7 @@ class ConflictReporter {
 
     static function getReport($encoding_id){
         $encoding = Encoding::find($encoding_id);
+        if(!$encoding) return null;
         $questions = $encoding->form->questions;
         $other_encodings = $encoding->collaborators()->with('owner')->get();
         $conflict_records = ConflictRecord::where('encoding_id', '=', $encoding_id)->get()->toArray();
