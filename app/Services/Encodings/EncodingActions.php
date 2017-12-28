@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: chris
- * Date: 12/19/17
- * Time: 3:55 PM
- */
 
 namespace App\Services\Encodings;
 

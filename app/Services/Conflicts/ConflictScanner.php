@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: Chris Rocco
- * Date: 2017-12-23
- * Time: 02:20
- */
 
 namespace App\Services\Conflicts;
 
