@@ -16,19 +16,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\QuestionController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-
-
 
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', AuthController::class."@login");
@@ -37,6 +24,13 @@ Route::group(['prefix' => 'auth'], function () {
 
 
 Route::group(['middleware' => 'jwt.auth'], function () {
+
+    $forms_ctrl = FormController::class;
+    $encodings_ctrl = EncodingController::class;
+    $notifications_ctrl = NotificationsController::class;
+    $project_invites = ProjectInvitesController::class;
+    $comment_ctrl = \App\Http\Controllers\CommentsController::class;
+
 
     // users
     Route::put(     '/my-profile', UserController::class."@updateProfile");
@@ -70,7 +64,6 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
 
     // forms
-    $forms_ctrl = FormController::class;
     Route::get(     'forms', "$forms_ctrl@search");
     Route::get(     'forms/{form}', "$forms_ctrl@retrieve");
     Route::put(     'forms/{form}', "$forms_ctrl@update");
@@ -95,7 +88,6 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get(     'categories/{category}', CategoryController::class."@retrieve");
 
     // encodings
-    $encodings_ctrl = EncodingController::class;
     Route::get(     'encodings/{encoding}', "$encodings_ctrl@retrieve");
     Route::put(     'encodings/{encoding}', "$encodings_ctrl@update");
     Route::delete(  'encodings/{encoding}', "$encodings_ctrl@delete");
@@ -111,17 +103,14 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::post(    'assignments/manual', AssignmentController::class."@assignOne");
 
     // notifications
-    $notifications_ctrl = NotificationsController::class;
     Route::get(     '/notifications', "$notifications_ctrl@unreadNotifications");
     Route::get(     '/notifications/mark-read', "$notifications_ctrl@markAllRead");
 
     // invites
-    $project_invites = ProjectInvitesController::class;
     Route::post(    '/invite-to-project', "$project_invites@sendInviteToken");
     Route::post(    '/redeem-invite-token', "$project_invites@redeemInviteToken");
 
     // comments
-    $comment_ctrl = \App\Http\Controllers\CommentsController::class;
     Route::post(    '/channels', "$comment_ctrl@createChannel");
     Route::get(     '/channels/{name}', "$comment_ctrl@getChannel");
     Route::post(    '/channels/{name}/comments', "$comment_ctrl@postInChannel");
