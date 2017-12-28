@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\ConflictsController;
 use App\Http\Controllers\EncodingController;
 use App\Http\Controllers\FormController;
@@ -17,6 +18,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\QuestionController;
 
 
+
+
+
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', AuthController::class."@login");
     Route::post('register', AuthController::class."@register");
@@ -25,42 +29,46 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['middleware' => 'jwt.auth'], function () {
 
+    $user_ctrl = UserController::class;
     $forms_ctrl = FormController::class;
     $encodings_ctrl = EncodingController::class;
     $notifications_ctrl = NotificationsController::class;
-    $project_invites = ProjectInvitesController::class;
-    $comment_ctrl = \App\Http\Controllers\CommentsController::class;
-
+    $project_invites_ctrl = ProjectInvitesController::class;
+    $comment_ctrl = CommentsController::class;
+    $publications_ctrl = PublicationController::class;
+    $projects_ctrl = ProjectController::class;
+    $questions_ctrl = QuestionController::class;
+    $categories_ctrl = CategoryController::class;
 
     // users
-    Route::put(     '/my-profile', UserController::class."@updateProfile");
-    Route::get(     'users', UserController::class."@search");
-    Route::get(     'users/projects', UserController::class."@retrieveResearcherProjects");
-    Route::get(     'users/projects/coder', UserController::class."@retrieveCoderProjects");
-    Route::get(     'users/projects/researcher', UserController::class."@retrieveResearcherProjects");
-    Route::get(     'users/encodings', UserController::class."@retrieveEncodings");
+    Route::put(     '/my-profile', "$user_ctrl@updateProfile");
+    Route::get(     'users', "$user_ctrl@search");
+    Route::get(     'users/projects', "$user_ctrl@retrieveResearcherProjects");
+    Route::get(     'users/projects/coder', "$user_ctrl@retrieveCoderProjects");
+    Route::get(     'users/projects/researcher', "$user_ctrl@retrieveResearcherProjects");
+    Route::get(     'users/encodings', "$user_ctrl@retrieveEncodings");
 
     // publications
-    Route::post(    'publications/', PublicationController::class."@create");
-    Route::get(     'publications/', PublicationController::class."@search");
-    Route::get(     'publications/{id}', getter(PublicationController::class));
-    Route::put(     'publications/{id}', PublicationController::class."@update");
-    Route::delete(  'publications/{id}', PublicationController::class."@delete");
+    Route::post(    'publications/', "$publications_ctrl@create");
+    Route::get(     'publications/', "$publications_ctrl@search");
+    Route::get(     'publications/{id}', getter($publications_ctrl));
+    Route::put(     'publications/{id}', "$publications_ctrl@update");
+    Route::delete(  'publications/{id}', "$publications_ctrl@delete");
 
     // projects
-    Route::post(    'projects', ProjectController::class."@create");
-    Route::get(     'projects', ProjectController::class."@search");
+    Route::post(    'projects', "$projects_ctrl@create");
+    Route::get(     'projects', "$projects_ctrl@search");
     Route::get(     'projects/{id}', getter(\App\Project::class));
-    Route::put(     'projects/{id}', ProjectController::class."@update");
-    Route::delete(  'projects/{id}', ProjectController::class."@delete");
-    Route::get(     'projects/{id}/forms', ProjectController::class.'@retrieveForms');
+    Route::put(     'projects/{id}', "$projects_ctrl@update");
+    Route::delete(  'projects/{id}', "$projects_ctrl@delete");
+    Route::get(     'projects/{id}/forms', '$projects_ctrl@retrieveForms');
     Route::post(    'projects/{id}/forms', FormController::class."@create");
-    Route::get(     'projects/{id}/publications', ProjectController::class."@retrievePublications");
-    Route::post(    'projects/{id}/publications', PublicationController::class."@createInProject");
-    Route::post(    'projects/{id}/publications/{publication}', ProjectController::class."@addPublication");
-    Route::delete(  'projects/{id}/publications/{publication}', ProjectController::class."@removePublication");
-    Route::get(     'projects/{id}/researchers', ProjectController::class."@getResearchers");
-    Route::post(    'projects/{id}/invite-researcher', ProjectController::class."@inviteResearcher");
+    Route::get(     'projects/{id}/publications', "$projects_ctrl@retrievePublications");
+    Route::post(    'projects/{id}/publications', "$publications_ctrl@createInProject");
+    Route::post(    'projects/{id}/publications/{publication}', "$projects_ctrl@addPublication");
+    Route::delete(  'projects/{id}/publications/{publication}', "$projects_ctrl@removePublication");
+    Route::get(     'projects/{id}/researchers', "$projects_ctrl@getResearchers");
+    Route::post(    'projects/{id}/invite-researcher', "$projects_ctrl@inviteResearcher");
 
 
     // forms
@@ -69,23 +77,23 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::put(     'forms/{form}', "$forms_ctrl@update");
     Route::delete(  'forms/{form}', "$forms_ctrl@delete");
     Route::get(     'forms/{form}/export', "$forms_ctrl@export");
-    Route::post(    'forms/{form}/questions', QuestionController::class."@createQuestion");
+    Route::post(    'forms/{form}/questions', "$questions_ctrl@createQuestion");
     Route::post(    'forms/{form}/questions/{question}', "$forms_ctrl@addQuestion");
     Route::put(     'forms/{form}/questions/{question}', "$forms_ctrl@moveQuestion");
     Route::delete(  'forms/{form}/questions/{question}', "$forms_ctrl@removeQuestion");
-    Route::post(    'forms/{form}/categories', CategoryController::class."@create");
-    Route::put(     'forms/{form}/categories/{category}', CategoryController::class."@update");
-    Route::delete(  'forms/{form}/categories/{category}', CategoryController::class."@delete");
+    Route::post(    'forms/{form}/categories', "$categories_ctrl@create");
+    Route::put(     'forms/{form}/categories/{category}', "$categories_ctrl@update");
+    Route::delete(  'forms/{form}/categories/{category}', "$categories_ctrl@delete");
 
     // questions
-    Route::post(    'questions/', QuestionController::class."@create");
-    Route::get(     'questions/{question}', QuestionController::class."@retrieve");
-    Route::get(     'questions/', QuestionController::class."@search");
-    Route::put(     'questions/{question}', QuestionController::class."@update");
-    Route::delete(  'questions/{question}', QuestionController::class."@delete");
+    Route::post(    'questions/', "$questions_ctrl@create");
+    Route::get(     'questions/{question}', "$questions_ctrl@retrieve");
+    Route::get(     'questions/', "$questions_ctrl@search");
+    Route::put(     'questions/{question}', "$questions_ctrl@update");
+    Route::delete(  'questions/{question}', "$questions_ctrl@delete");
 
     // categories
-    Route::get(     'categories/{category}', CategoryController::class."@retrieve");
+    Route::get(     'categories/{category}', "$categories_ctrl@retrieve");
 
     // encodings
     Route::get(     'encodings/{encoding}', "$encodings_ctrl@retrieve");
@@ -107,8 +115,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get(     '/notifications/mark-read', "$notifications_ctrl@markAllRead");
 
     // invites
-    Route::post(    '/invite-to-project', "$project_invites@sendInviteToken");
-    Route::post(    '/redeem-invite-token', "$project_invites@redeemInviteToken");
+    Route::post(    '/invite-to-project', "$project_invites_ctrl@sendInviteToken");
+    Route::post(    '/redeem-invite-token', "$project_invites_ctrl@redeemInviteToken");
 
     // comments
     Route::post(    '/channels', "$comment_ctrl@createChannel");
