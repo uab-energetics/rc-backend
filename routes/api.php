@@ -195,6 +195,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
      */
 
     $comment_ctrl = \App\Http\Controllers\CommentsController::class;
+    Route::post(    '/channels',                "$comment_ctrl@createChannel");
     Route::get(     '/channels/{id}',           "$comment_ctrl@getChannel");
     Route::post(    '/channels/{id}/comments',  "$comment_ctrl@postInChannel");
     Route::post(    '/comments/{id}/reply',     "$comment_ctrl@reply");
