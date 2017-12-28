@@ -10,7 +10,7 @@ class Comment extends Model
     use SoftDeletes;
 
     protected $table = "comments";
-    protected $with = ['children'];
+    protected $with = ['children', 'user'];
 
     protected $fillable = [
         "parent_id",
@@ -20,6 +20,10 @@ class Comment extends Model
 
     function children(){
         return $this->hasMany(Comment::class, 'parent_id');
+    }
+
+    function user(){
+        return $this->belongsTo(User::class, "user_id");
     }
 
 }

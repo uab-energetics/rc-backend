@@ -27,22 +27,21 @@ class CommentsController extends Controller {
         return $channel;
     }
 
-    function postInChannel(Request $request){
+    function postInChannel(Request $request, $channel_id){
         $request->validate([
-            'channel_id' => 'exists:channels,id',
             'message' => 'required'
         ]);
         $user = Auth::user();
 
         return CommentService::createCommentInChannel(
-            $request->input('channel_id'),
+            $channel_id,
             $user->getKey(),
             $request->input('message')
         );
     }
 
-    function getChannel($channel_id){
-        $channel = Channel::find($channel_id);
+    function getChannel($channel_name){
+        $channel = Channel::where('name', '=', $channel_name)->first();
         if(!$channel) abort(404);
         return $channel;
     }

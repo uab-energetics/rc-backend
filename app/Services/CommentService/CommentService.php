@@ -10,6 +10,7 @@ class CommentService {
 
     static function createCommentInChannel($channel_id, $user_id, $message){
         $channel = Channel::find($channel_id);
+        if(!$channel) abort(404);
         return CommentService::createComment($channel->root_comment_id, $user_id, $message);
     }
 
