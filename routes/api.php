@@ -38,169 +38,96 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['middleware' => 'jwt.auth'], function () {
 
-    /**
-     *  =================================
-     *  USERS
-     *  =================================
-     */
-    Route::put('/my-profile', UserController::class."@updateProfile");
-    Route::group(['prefix' => 'users'], function() {
-        Route::get('/', UserController::class."@search");
-        Route::group(['prefix' => 'projects'], function() {
-            Route::get('/', UserController::class."@retrieveResearcherProjects");
-            Route::get('/coder', UserController::class."@retrieveCoderProjects");
-            Route::get('/researcher', UserController::class."@retrieveResearcherProjects");
-        });
+    // users
+    Route::put(     '/my-profile', UserController::class."@updateProfile");
+    Route::get(     'users', UserController::class."@search");
+    Route::get(     'users/projects', UserController::class."@retrieveResearcherProjects");
+    Route::get(     'users/projects/coder', UserController::class."@retrieveCoderProjects");
+    Route::get(     'users/projects/researcher', UserController::class."@retrieveResearcherProjects");
+    Route::get(     'users/encodings', UserController::class."@retrieveEncodings");
 
-        Route::get('/encodings', UserController::class."@retrieveEncodings");
+    // publications
+    Route::post(    'publications/', PublicationController::class."@create");
+    Route::get(     'publications/', PublicationController::class."@search");
+    Route::get(     'publications/{id}', getter(PublicationController::class));
+    Route::put(     'publications/{id}', PublicationController::class."@update");
+    Route::delete(  'publications/{id}', PublicationController::class."@delete");
 
-    });
-
-    /**
-     *  ========================================================
-     *  PUBLICATIONS
-     *  ========================================================
-     */
-    Route::group(['prefix' => 'publications'], function () {
-        Route::post('/', PublicationController::class."@create");
-        Route::get('/', PublicationController::class."@search");
-        Route::get('/{publication}', PublicationController::class."@retrieve");
-        Route::put('/{publication}', PublicationController::class."@update");
-        Route::delete('/{publication}', PublicationController::class."@delete");
-    });
-
-    /**
-     * ===============================================
-     * PROJECTS
-     * ===============================================
-     */
-    Route::group(['prefix' => 'projects'], function () {
-        Route::post('/', ProjectController::class."@create");
-        Route::get('/', ProjectController::class."@search");
-        Route::get('/{project}', ProjectController::class."@retrieve");
-        Route::put('/{project}', ProjectController::class."@update");
-        Route::delete('/{project}', ProjectController::class."@delete");
-
-        Route::group(['prefix' => '{project}'], function () {
-            Route::get('/forms', ProjectController::class.'@retrieveForms');
-            Route::post('/forms', FormController::class."@create");
-
-            Route::get('/publications', ProjectController::class."@retrievePublications");
-
-            Route::group(['prefix' => 'publications'], function () {
-                Route::post('/', PublicationController::class."@createInProject");
-                Route::post('/{publication}', ProjectController::class."@addPublication");
-                Route::delete('/{publication}', ProjectController::class."@removePublication");
-            });
-
-            Route::get('/researchers', ProjectController::class."@getResearchers");
-            Route::post('/invite-researcher', ProjectController::class."@inviteResearcher");
-        });
-    });
-
-    /**
-     *  ================================
-     *  FORMS
-     *  ================================
-     */
-    Route::group(['prefix' => 'forms'], function () {
-        Route::get('{form}', FormController::class."@retrieve");
-        Route::get('/', FormController::class."@search");
-        Route::put('/{form}', FormController::class."@update");
-        Route::delete('{form}', FormController::class."@delete");
-
-        Route::get('/{form}/export', FormController::class."@export");
-
-        Route::group(['prefix' => '{form}/questions'], function() {
-            Route::post('/', QuestionController::class."@createQuestion");
-            Route::post('{question}', FormController::class."@addQuestion");
-            Route::put('{question}', FormController::class."@moveQuestion");
-            Route::delete('{question}', FormController::class."@removeQuestion");
-        });
-
-        Route::group(['prefix' => '{form}/categories'], function () {
-            Route::post('/', CategoryController::class."@create");
-            Route::put('/{category}', CategoryController::class."@update");
-            Route::delete('/{category}', CategoryController::class."@delete");
-        });
-    });
-
-    /**
-     * =================================
-     * QUESTIONS
-     * =================================
-     */
-    Route::group(['prefix' => 'questions'], function () {
-        Route::post('/', QuestionController::class."@create");
-        Route::get('/{question}', QuestionController::class."@retrieve");
-        Route::get('/', QuestionController::class."@search");
-        Route::put('/{question}', QuestionController::class."@update");
-        Route::delete('/{question}', QuestionController::class."@delete");
-    });
-
-    Route::group(['prefix' => 'categories'], function () {
-        Route::get('/{category}', CategoryController::class."@retrieve");
-    });
-
-    /**
-     *  ===========================================
-     *  ENCODINGS
-     *  ===========================================
-     */
-    Route::group(['prefix' => 'encodings'], function () {
-        Route::get('/{encoding}', EncodingController::class."@retrieve");
-        Route::put('/{encoding}', EncodingController::class."@update");
-        Route::delete('/{encoding}', EncodingController::class."@delete");
-        Route::group(['prefix' => '{encoding}/branches'], function () {
-            Route::post('/', EncodingController::class."@createBranch");
-            Route::delete('/{branch}', EncodingController::class."@deleteBranch");
-            Route::post('/{branch}/responses', EncodingController::class."@createBranchResponse");
-        });
-        Route::post('/{encoding}/responses', EncodingController::class."@createSimpleResponse");
-    });
-    Route::get('conflict-report/{encoding_id}', ConflictsController::class."@getConflictsReport");
-
-    Route::group(['prefix' => 'assignments'], function () {
-        Route::post('/manual', AssignmentController::class."@assignOne");
-    });
-
-    Route::group(['prefix' => 'responses'], function () {
-
-    });
+    // projects
+    Route::post(    'projects', ProjectController::class."@create");
+    Route::get(     'projects', ProjectController::class."@search");
+    Route::get(     'projects/{id}', getter(\App\Project::class));
+    Route::put(     'projects/{id}', ProjectController::class."@update");
+    Route::delete(  'projects/{id}', ProjectController::class."@delete");
+    Route::get(     'projects/{id}/forms', ProjectController::class.'@retrieveForms');
+    Route::post(    'projects/{id}/forms', FormController::class."@create");
+    Route::get(     'projects/{id}/publications', ProjectController::class."@retrievePublications");
+    Route::post(    'projects/{id}/publications', PublicationController::class."@createInProject");
+    Route::post(    'projects/{id}/publications/{publication}', ProjectController::class."@addPublication");
+    Route::delete(  'projects/{id}/publications/{publication}', ProjectController::class."@removePublication");
+    Route::get(     'projects/{id}/researchers', ProjectController::class."@getResearchers");
+    Route::post(    'projects/{id}/invite-researcher', ProjectController::class."@inviteResearcher");
 
 
-    /**
-     * ==========================================
-     *  NOTIFICATIONS
-     * ==========================================
-     */
+    // forms
+    $forms_ctrl = FormController::class;
+    Route::get(     'forms', "$forms_ctrl@search");
+    Route::get(     'forms/{form}', "$forms_ctrl@retrieve");
+    Route::put(     'forms/{form}', "$forms_ctrl@update");
+    Route::delete(  'forms/{form}', "$forms_ctrl@delete");
+    Route::get(     'forms/{form}/export', "$forms_ctrl@export");
+    Route::post(    'forms/{form}/questions', QuestionController::class."@createQuestion");
+    Route::post(    'forms/{form}/questions/{question}', "$forms_ctrl@addQuestion");
+    Route::put(     'forms/{form}/questions/{question}', "$forms_ctrl@moveQuestion");
+    Route::delete(  'forms/{form}/questions/{question}', "$forms_ctrl@removeQuestion");
+    Route::post(    'forms/{form}/categories', CategoryController::class."@create");
+    Route::put(     'forms/{form}/categories/{category}', CategoryController::class."@update");
+    Route::delete(  'forms/{form}/categories/{category}', CategoryController::class."@delete");
 
-    Route::get('/notifications', NotificationsController::class."@unreadNotifications");
-    Route::get('/notifications/mark-read', NotificationsController::class."@markAllRead");
+    // questions
+    Route::post(    'questions/', QuestionController::class."@create");
+    Route::get(     'questions/{question}', QuestionController::class."@retrieve");
+    Route::get(     'questions/', QuestionController::class."@search");
+    Route::put(     'questions/{question}', QuestionController::class."@update");
+    Route::delete(  'questions/{question}', QuestionController::class."@delete");
 
+    // categories
+    Route::get(     'categories/{category}', CategoryController::class."@retrieve");
 
-    /**
-    *  ===========================================
-    *  INVITE TO PROJECT
-    *  ===========================================
-    */
-    Route::post('/invite-to-project', ProjectInvitesController::class."@sendInviteToken");
-    Route::post('/redeem-invite-token', ProjectInvitesController::class."@redeemInviteToken");
+    // encodings
+    $encodings_ctrl = EncodingController::class;
+    Route::get(     'encodings/{encoding}', "$encodings_ctrl@retrieve");
+    Route::put(     'encodings/{encoding}', "$encodings_ctrl@update");
+    Route::delete(  'encodings/{encoding}', "$encodings_ctrl@delete");
+    Route::post(    'encodings/{encoding}/branches/', "$encodings_ctrl@createBranch");
+    Route::delete(  'encodings/{encoding}/branches/{branch}', "$encodings_ctrl@deleteBranch");
+    Route::post(    'encodings/{encoding}/branches/{branch}/responses', "$encodings_ctrl@createBranchResponse");
+    Route::post(    'encodings/{encoding}/responses', "$encodings_ctrl@createSimpleResponse");
 
+    // conflicts
+    Route::get(     'conflict-report/{encoding_id}', ConflictsController::class."@getConflictsReport");
 
-    /**
-     *  ===========================================
-     *  COMMENTS
-     *  ===========================================
-     */
+    // assignments
+    Route::post(    'assignments/manual', AssignmentController::class."@assignOne");
 
+    // notifications
+    $notifications_ctrl = NotificationsController::class;
+    Route::get(     '/notifications', "$notifications_ctrl@unreadNotifications");
+    Route::get(     '/notifications/mark-read', "$notifications_ctrl@markAllRead");
+
+    // invites
+    $project_invites = ProjectInvitesController::class;
+    Route::post(    '/invite-to-project', "$project_invites@sendInviteToken");
+    Route::post(    '/redeem-invite-token', "$project_invites@redeemInviteToken");
+
+    // comments
     $comment_ctrl = \App\Http\Controllers\CommentsController::class;
-    Route::post(    '/channels',                "$comment_ctrl@createChannel");
-    Route::get(     '/channels/{name}',           "$comment_ctrl@getChannel");
-    Route::post(    '/channels/{name}/comments',  "$comment_ctrl@postInChannel");
-    Route::post(    '/comments/{id}/reply',     "$comment_ctrl@reply");
-    Route::put(     '/comments/{id}',           "$comment_ctrl@edit");
-    Route::delete(  '/comments/{id}',           "$comment_ctrl@delete");
+    Route::post(    '/channels', "$comment_ctrl@createChannel");
+    Route::get(     '/channels/{name}', "$comment_ctrl@getChannel");
+    Route::post(    '/channels/{name}/comments', "$comment_ctrl@postInChannel");
+    Route::post(    '/comments/{id}/reply', "$comment_ctrl@reply");
+    Route::put(     '/comments/{id}', "$comment_ctrl@edit");
+    Route::delete(  '/comments/{id}', "$comment_ctrl@delete");
 });
 
 

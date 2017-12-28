@@ -35,7 +35,8 @@
         },
         "files": [
             "app/helpers.php",
-            "app/definitions.php"
+            "app/definitions.php",
+            "app/routeFactory.php"
         ]
     },
     "autoload-dev": {
