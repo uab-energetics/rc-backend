@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Channel;
 use App\Services\Comments\CommentService;
 use Auth;
 use Illuminate\Http\Request;
@@ -22,15 +23,20 @@ class CommentsController extends Controller {
         );
     }
 
-    function reply(Request $request){
+    function getChannel($channel_id){
+        $channel = Channel::find($channel_id);
+        if(!$channel) abort(404);
+        return $channel;
+    }
+
+    function reply(Request $request, $parent_id){
         $request->validate([
-            'parent_id' => 'exists:comments,id',
             'message' => 'required'
         ]);
         $user = Auth::user();
 
         CommentService::createComment(
-            $request->input('parent_id'),
+            $parent_id,
             $user->getKey(),
             $request->input('message')
         );
@@ -51,13 +57,6 @@ class CommentsController extends Controller {
             $comment_id,
             $request->input('message')
         );
-    }
-
-    /**
-     * Returns a thread of comments using the specified root
-     */
-    function channel($comment_id){
-        return CommentService::getThread($comment_id);
     }
 
 }

@@ -195,10 +195,11 @@ Route::group(['middleware' => 'jwt.auth'], function () {
      */
 
     $comment_ctrl = \App\Http\Controllers\CommentsController::class;
-    Route::post('/comments', "$comment_ctrl@post");
-    Route::put('/comments/{comment}', "$comment_ctrl@edit");
-    Route::delete('/comments/{comment}', "$comment_ctrl@delete");
-    Route::get('/comments/{comment}', "$comment_ctrl@thread");
+    Route::get(     '/channels/{id}',           "$comment_ctrl@getChannel");
+    Route::post(    '/channels/{id}/comments',  "$comment_ctrl@postInChannel");
+    Route::post(    '/comments/{id}/reply',     "$comment_ctrl@reply");
+    Route::put(     '/comments/{id}',           "$comment_ctrl@edit");
+    Route::delete(  '/comments/{id}',           "$comment_ctrl@delete");
 });
 
 
