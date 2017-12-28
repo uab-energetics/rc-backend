@@ -8,18 +8,36 @@ use Illuminate\Http\Request;
 
 class CommentsController extends Controller {
 
-    function post(Request $request){
+    function postInChannel(Request $request){
+        $request->validate([
+            'channel_id' => 'exists:channels,id',
+            'message' => 'required'
+        ]);
+        $user = Auth::user();
+
+        return CommentService::createCommentInChannel(
+            $request->input('channel_id'),
+            $user->getKey(),
+            $request->input('message')
+        );
+    }
+
+    function reply(Request $request){
         $request->validate([
             'parent_id' => 'exists:comments,id',
             'message' => 'required'
         ]);
         $user = Auth::user();
 
-        return CommentService::post($request->parent_id, $user->getKey(), $request->message);
+        CommentService::createComment(
+            $request->input('parent_id'),
+            $user->getKey(),
+            $request->input('message')
+        );
     }
 
     function delete(Request $request, $comment_id){
-        CommentService::delete($comment_id);
+        CommentService::deleteComment($comment_id);
         return response()->json([
             'msg' => 'comment removed'
         ]);
@@ -29,14 +47,16 @@ class CommentsController extends Controller {
         $request->validate([
             'message' => 'required'
         ]);
-
-        return CommentService::edit($comment_id, $request->message);
+        return CommentService::editComment(
+            $comment_id,
+            $request->input('message')
+        );
     }
 
     /**
      * Returns a thread of comments using the specified root
      */
-    function thread($comment_id){
+    function channel($comment_id){
         return CommentService::getThread($comment_id);
     }
 
