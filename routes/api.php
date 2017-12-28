@@ -1,5 +1,6 @@
 <?php
 
+use App\Form;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentsController;
@@ -11,6 +12,8 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectInvitesController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\UserController;
+use App\Project;
+use App\Publication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -51,17 +54,17 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     // publications
     Route::post(    'publications/', "$publications_ctrl@create");
     Route::get(     'publications/', "$publications_ctrl@search");
-    Route::get(     'publications/{id}', getter($publications_ctrl));
+    Route::get(     'publications/{id}', getter(Publication::class));
     Route::put(     'publications/{id}', "$publications_ctrl@update");
     Route::delete(  'publications/{id}', "$publications_ctrl@delete");
 
     // projects
     Route::post(    'projects', "$projects_ctrl@create");
     Route::get(     'projects', "$projects_ctrl@search");
-    Route::get(     'projects/{id}', getter(\App\Project::class));
+    Route::get(     'projects/{id}', getter(Project::class));
     Route::put(     'projects/{id}', "$projects_ctrl@update");
     Route::delete(  'projects/{id}', "$projects_ctrl@delete");
-    Route::get(     'projects/{id}/forms', '$projects_ctrl@retrieveForms');
+    Route::get(     'projects/{id}/forms', "$projects_ctrl@retrieveForms");
     Route::post(    'projects/{id}/forms', FormController::class."@create");
     Route::get(     'projects/{id}/publications', "$projects_ctrl@retrievePublications");
     Route::post(    'projects/{id}/publications', "$publications_ctrl@createInProject");
@@ -73,7 +76,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
     // forms
     Route::get(     'forms', "$forms_ctrl@search");
-    Route::get(     'forms/{form}', "$forms_ctrl@retrieve");
+    Route::get(     'forms/{form}', getter(Form::class));
     Route::put(     'forms/{form}', "$forms_ctrl@update");
     Route::delete(  'forms/{form}', "$forms_ctrl@delete");
     Route::get(     'forms/{form}/export', "$forms_ctrl@export");
