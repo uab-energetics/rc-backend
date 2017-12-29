@@ -33,7 +33,7 @@ class CommentsController extends Controller {
         ]);
         $user = Auth::user();
 
-        return CommentService::createCommentInChannel(
+        return $this->commentService->createCommentInChannel(
             $channel_id,
             $user->getKey(),
             $request->input('message')
@@ -52,7 +52,7 @@ class CommentsController extends Controller {
         ]);
         $user = Auth::user();
 
-        CommentService::createComment(
+        $this->commentService->createComment(
             $parent_id,
             $user->getKey(),
             $request->input('message')
@@ -60,7 +60,7 @@ class CommentsController extends Controller {
     }
 
     function delete(Request $request, $comment_id){
-        CommentService::deleteComment($comment_id);
+        $this->commentService->deleteComment($comment_id);
         return response()->json([
             'msg' => 'comment removed'
         ]);
@@ -70,10 +70,17 @@ class CommentsController extends Controller {
         $request->validate([
             'message' => 'required'
         ]);
-        return CommentService::editComment(
+        return $this->commentService->editComment(
             $comment_id,
             $request->input('message')
         );
+    }
+
+    /** @var CommentService  */
+    protected $commentService;
+
+    public function __construct(CommentService $commentService) {
+        $this->commentService = $commentService;
     }
 
 }
