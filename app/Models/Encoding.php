@@ -10,6 +10,8 @@ class Encoding extends Model {
 
     protected $with = ['simpleResponses', 'experimentBranches'];
 
+    protected $appends = ['channel_name'];
+
     function publication() {
         return $this->belongsTo(Publication::class, 'publication_id');
     }
@@ -38,8 +40,13 @@ class Encoding extends Model {
             ]);
     }
 
+    public function getChannelNameAttribute() {
+        return $this->encodeToChannelName();
+    }
 
-
+    public function encodeToChannelName() {
+        return "conflicts_pub:".$this->publication_id."_form:".$this->form_id;
+    }
 
     /*
      * Returns an associative array of the format:

@@ -5,10 +5,12 @@ namespace App\Services\Encodings;
 
 
 use App\BranchResponse;
+use App\Channel;
 use App\Encoding;
 use App\EncodingExperimentBranch;
 use App\Form;
 use App\Models\Response;
+use App\Services\Comments\CommentService;
 use Exception;
 
 class EncodingService {
@@ -24,6 +26,8 @@ class EncodingService {
             'type' => $form->type,
         ]);
 
+        $this->upsertEncodingChannel($encoding);
+
         return $encoding;
     }
 
@@ -34,6 +38,18 @@ class EncodingService {
 
     public function deleteEncoding(Encoding $encoding) {
         return $encoding->delete();
+    }
+
+    public function upsertEncodingChannel(Encoding $encoding) {
+        $existing = Channel::where('name', '=', $encoding->encodeToChannelName())->first();
+        if ($existing === null) {
+            $existing = $this->commentService->makeChannel([
+                'name' => $encoding->encodeToChannelName(),
+                'display_name' => "Whoops",
+                'topic' => "Conflict Resolution",
+            ]);
+        }
+        return $existing;
     }
 
     function recordBranch( $encoding_id, $branch ){
@@ -114,5 +130,12 @@ class EncodingService {
             $results[] = $this->dispatch($action);
         }
         return $results;
+    }
+
+    /** @var CommentService  */
+    protected $commentService;
+
+    public function __construct(CommentService $commentService) {
+        $this->commentService = $commentService;
     }
 }
