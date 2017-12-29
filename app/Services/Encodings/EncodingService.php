@@ -45,7 +45,7 @@ class EncodingService {
         if ($existing === null) {
             $existing = $this->commentService->makeChannel([
                 'name' => $encoding->encodeToChannelName(),
-                'display_name' => "Whoops",
+                'display_name' => "Discussion",
                 'topic' => "Conflict Resolution",
             ]);
         }
