@@ -11,6 +11,6 @@ class Channel extends Model {
     protected $with = ['rootComment'];
 
     function rootComment(){
-        return $this->belongsTo(Comment::class, 'root_comment_id');
+        return $this->belongsTo(Comment::class, 'root_comment_id')->withTrashed();
     }
 }
