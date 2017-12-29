@@ -5,12 +5,20 @@ namespace App\Services\Comments;
 
 use App\Channel;
 use App\Comment;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CommentService {
 
+    public function makeChannel($params) {
+        $root_comment = Comment::create([]);
+        $params['root_comment_id'] = $root_comment->getKey();
+        $channel = Channel::create($params);
+        return $channel;
+    }
+
     public function createCommentInChannel($channel_id, $user_id, $message){
         $channel = Channel::findOrFail($channel_id);
-        return CommentService::createComment($channel->root_comment_id, $user_id, $message);
+        return $this->createComment($channel->root_comment_id, $user_id, $message);
     }
 
     public function createComment($parent_id, $user_id, $message){
@@ -22,17 +30,22 @@ class CommentService {
     }
 
     public function editComment($comment_id, $message){
-        $comment = Comment::find($comment_id);
+        $comment = Comment::findOrFail($comment_id);
         $comment->message = $message;
         $comment->save();
-        return Comment::find($comment_id);
+        return $comment->refresh();
     }
 
-    public function deleteComment($comment_id){
-        $comment = Comment::find($comment_id);
-        if(!$comment) return;
-        $comment->message = "deleted";
-        $comment->save();
+    public function deleteComment(Comment $comment){
+        $comment->update(['message' => 'deleted']);
+        $comment->delete();
+        return true;
+    }
+
+    public function findChannel($channel_name) {
+        $channel = Channel::where('name', '=', $channel_name)->first();
+        if ($channel === null) throw (new ModelNotFoundException())->setModel(Channel::class);
+        return $channel;
     }
 
 }
