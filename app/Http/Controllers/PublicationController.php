@@ -26,12 +26,13 @@ class PublicationController extends Controller {
     }
 
     public function createInProject(Project $project, Request $request, ProjectService $projectService) {
-        $params = $request->all();
-        $validator = $this->createValidator($params);
-        if ($validator->fails()) return invalidParamMessage($validator);
+        $request->validate([
+            'name' => 'string|required',
+            'embedding_url' => 'url|required',
+        ]);
 
         DB::beginTransaction();
-            $publication = $this->publicationService->makePublication($params);
+            $publication = $this->publicationService->makePublication($request->all());
             $projectService->addPublication($project, $publication);
         DB::commit();
 
