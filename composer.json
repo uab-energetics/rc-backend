@@ -65,7 +65,7 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover"
         ],
-        "deploy": "envoy run deploy"
+        "deploy": "ssh researchcoder.com 'cd /var/www/v3/api.researchcoder.com; git pull; composer install; php artisan migrate'"
     },
     "config": {
         "preferred-install": "dist",
