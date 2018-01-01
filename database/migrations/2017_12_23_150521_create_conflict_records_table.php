@@ -15,14 +15,20 @@ class CreateConflictRecordsTable extends Migration
     {
         Schema::create('conflict_records', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('encoding_id');
+            $table->unsignedInteger('other_encoding_id');
+            $table->unsignedInteger('question_id');
+
             $table->boolean('agrees');
             $table->string('message')->nullable();
-            $table->unsignedInteger('encoding_id');
-            $table->foreign('encoding_id')->references('id')->on('encodings')->onDelete('cascade');
-            $table->unsignedInteger('other_encoding_id');
-            $table->foreign('other_encoding_id')->references('id')->on('encodings')->onDelete('cascade');
-            $table->unsignedInteger('question_id');
-            $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
+
+            $table->foreign('encoding_id')->references('id')->on('encodings')
+                ->onDelete('cascade');
+            $table->foreign('other_encoding_id')->references('id')->on('encodings')
+                ->onDelete('cascade');
+            $table->foreign('question_id')->references('id')->on('questions')
+                ->onDelete('cascade');
+
             $table->timestamps();
         });
     }
