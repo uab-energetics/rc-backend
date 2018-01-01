@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class EncodingExperimentBranch extends Model {
     protected $table = 'encoding_experiment_branches';
-    protected $fillable = ['encoding_id', 'name', 'description'];
+    protected $fillable = ['encoding_id', 'name', 'description', 'index'];
     protected $with = ['responses'];
 
     function responses() {

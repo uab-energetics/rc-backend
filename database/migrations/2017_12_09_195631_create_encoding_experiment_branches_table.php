@@ -17,6 +17,7 @@ class CreateEncodingExperimentBranchesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('encoding_id');
 
+            $table->integer('index')->default(0);
             $table->string('name')->nullable();
             $table->string('desc')->nullable();
 

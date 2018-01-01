@@ -42,6 +42,7 @@ class EncodingController extends Controller {
             'encoding_id' => 'exists:encodings,id',
             'name' => 'required|string',
             'description' => 'string',
+            'index' => 'integer'
         ]);
 
         $result = $encodingService->recordBranch($encoding->getKey(), $request->all());
