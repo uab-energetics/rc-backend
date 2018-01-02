@@ -23,12 +23,12 @@ class EncodingsTest extends JWTTestCase {
     }
 
     /**
-     *  create: ( form_id, publication_id ) -> Encoding
-     *  get: ( id ) -> Encoding
-     *  createBranch: ( id, Branch ) -> Encoding
+     *  create: ( form_id, publication_id ) -> Encodings
+     *  get: ( id ) -> Encodings
+     *  createBranch: ( id, Branch ) -> Encodings
      *  updateBranch: ( branch_id, Branch ) -> Branch
-     *  deleteBranch: ( branch_id ) -> Encoding
-     *  recordResponse: ( id, branch_id, Response ) -> Encoding
+     *  deleteBranch: ( branch_id ) -> Encodings
+     *  recordResponse: ( id, branch_id, Response ) -> Encodings
      */
     public function testEncodings() {
         /** @var Form $form */

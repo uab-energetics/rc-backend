@@ -2,6 +2,7 @@
 
 use App\Form;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\BranchQuestionsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\ConflictsController;
@@ -106,6 +107,10 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::delete(  'encodings/{encoding}/branches/{branch}', "$encodings_ctrl@deleteBranch");
     Route::post(    'encodings/{encoding}/branches/{branch}/responses', "$encodings_ctrl@createBranchResponse");
     Route::post(    'encodings/{encoding}/responses', "$encodings_ctrl@createSimpleResponse");
+
+    // branch question map
+    Route::post(    'branches/{branch}/questionMap/{question}', BranchQuestionsController::class.'@addQuestion');
+    Route::delete(  'branches/{branch}/questionMap/{question}', BranchQuestionsController::class.'@removeQuestion');
 
     // conflicts
     Route::get(     'conflict-report/{encoding_id}', ConflictsController::class."@getConflictsReport");

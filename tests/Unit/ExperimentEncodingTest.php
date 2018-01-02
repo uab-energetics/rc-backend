@@ -39,7 +39,7 @@ class ExperimentEncodingTest extends TestCase {
 //        $pub = Publication::create([ 'name' => 'demo pub' ]);
 //
 //
-//        $encoding = Encoding::create([
+//        $encoding = Encodings::create([
 //            'type' => 'experiment',
 //            'publication_id' => $pub->id,
 //            'form_id' => $form->id
@@ -54,7 +54,7 @@ class ExperimentEncodingTest extends TestCase {
 //        ]);
 //        $branch->responses()->save($response);
 //
-//        echo json_encode(Encoding::find($encoding->id), JSON_PRETTY_PRINT);
+//        echo json_encode(Encodings::find($encoding->id), JSON_PRETTY_PRINT);
 
         $this->assertTrue(true);
     }

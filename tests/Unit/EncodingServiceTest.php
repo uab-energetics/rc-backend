@@ -45,7 +45,7 @@ class EncodingServiceTest extends TestCase {
             RESPONSE_BOOL => 'Est bi-color calceus, cesaris.'
         ]);
 
-//        echo json_encode(Encoding::find($encoding->id), JSON_PRETTY_PRINT);
+//        echo json_encode(Encodings::find($encoding->id), JSON_PRETTY_PRINT);
 
         // delete a branch
         $encoding4 = $service->deleteBranch($encoding->id, $branch_id);

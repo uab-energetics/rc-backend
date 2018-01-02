@@ -37,7 +37,7 @@ class EncodingJoinsTest extends TestCase
 //        $pub = Publication::create([ 'name' => 'demo pub' ]);
 //
 //
-//        $encoding = Encoding::create([
+//        $encoding = Encodings::create([
 //            'type' => 'simple',
 //            'publication_id' => $pub->id,
 //            'form_id' => $form->id
@@ -48,7 +48,7 @@ class EncodingJoinsTest extends TestCase
 //        ]);
 //        $encoding->simpleResponses()->save($response);
 //
-//        echo json_encode(Encoding::find($encoding->id), JSON_PRETTY_PRINT);
+//        echo json_encode(Encodings::find($encoding->id), JSON_PRETTY_PRINT);
 
         $this->assertTrue(true);
     }

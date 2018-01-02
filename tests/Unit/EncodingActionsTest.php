@@ -40,14 +40,14 @@ class EncodingActionsTest extends TestCase {
             actions::recordResponse($encoding, $newBranches[2]['id'], $res_d),
         ]);
 
-//        echo json_encode(Encoding::find($encoding), JSON_PRETTY_PRINT);
+//        echo json_encode(Encodings::find($encoding), JSON_PRETTY_PRINT);
         $this->assertTrue(1 === 1); //"risky" test band-aid
 
         foreach ($newBranches as $branch) {
             $service->dispatch(actions::deleteBranch($encoding, $branch['id']));
         }
 
-//        echo json_encode(Encoding::find($encoding), JSON_PRETTY_PRINT);
+//        echo json_encode(Encodings::find($encoding), JSON_PRETTY_PRINT);
     }
 
 }

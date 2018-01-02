@@ -26,12 +26,12 @@ class Encodings extends JWTTestCase
     }
 
     /**
-     *  create: ( form_id, publication_id ) -> Encoding
-     *  get: ( id ) -> Encoding
-     *  createBranch: ( id, Branch ) -> Encoding
+     *  create: ( form_id, publication_id ) -> Encodings
+     *  get: ( id ) -> Encodings
+     *  createBranch: ( id, Branch ) -> Encodings
      *  updateBranch: ( branch_id, Branch ) -> Branch
-     *  deleteBranch: ( branch_id ) -> Encoding
-     *  recordResponse: ( id, branch_id, Response ) -> Encoding
+     *  deleteBranch: ( branch_id ) -> Encodings
+     *  recordResponse: ( id, branch_id, Response ) -> Encodings
      */
     public function testEncodings() {
 
@@ -59,6 +59,6 @@ class Encodings extends JWTTestCase
         $this->json('DELETE', 'encodings/'.$encoding->id.'/branches/'.$branch->id, [
         ])->assertStatus(200);
 
-        //echo json_encode(Encoding::find($encoding->id), JSON_PRETTY_PRINT);
+        //echo json_encode(Encodings::find($encoding->id), JSON_PRETTY_PRINT);
     }
 }
