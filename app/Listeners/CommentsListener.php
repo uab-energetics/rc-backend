@@ -19,6 +19,6 @@ class CommentsListener
     public function handle(CommentUpdate $event) {
         $channel = "comments." . $event->channel->id;
         $event = CommentUpdate::WEB_SOCKET_EVENT;
-        $this->pusher->trigger($channel, $event, (array)$event);
+        $this->pusher->trigger($channel, $event, []);
     }
 }

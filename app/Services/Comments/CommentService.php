@@ -2,7 +2,6 @@
 
 namespace App\Services\Comments;
 
-
 use App\Channel;
 use App\Comment;
 use App\Events\CommentUpdate;
