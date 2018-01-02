@@ -100,11 +100,11 @@ class ConflictScanner {
     protected function lookupResponse($encoding, $question_id, $branch_id = 0){
         // it's only comparing the first branch right now.
         $branch_ids = array_keys($encoding['branches']);
-        if(!isset($encoding['branches'])) return null;
-        if(!isset($branch_ids[$branch_id])) return null;
-        if(!isset($encoding['branches'][$branch_ids[$branch_id]])) return null;
-        if(!isset($encoding['branches'][$branch_ids[$branch_id]]['responses'][$question_id.''])) return null;
-        return $encoding['branches'][$branch_ids[$branch_id]]['responses'][$question_id.''];
+        try {
+            return $encoding['branches'][$branch_ids[$branch_id]]['responses'][$question_id.''];
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
 }
