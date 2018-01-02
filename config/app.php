@@ -180,6 +180,7 @@ return [
         Barryvdh\Cors\ServiceProvider::class,
         Yab\MySQLScout\Providers\MySQLScoutServiceProvider::class,
 
+        \App\Providers\PusherProvider::class
 
     ],
 

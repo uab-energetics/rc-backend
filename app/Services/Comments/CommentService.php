@@ -5,6 +5,7 @@ namespace App\Services\Comments;
 
 use App\Channel;
 use App\Comment;
+use App\Events\CommentUpdate;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CommentService {
@@ -18,7 +19,9 @@ class CommentService {
 
     public function createCommentInChannel($channel_id, $user_id, $message){
         $channel = Channel::findOrFail($channel_id);
-        return $this->createComment($channel->root_comment_id, $user_id, $message);
+        $comment = $this->createComment($channel->root_comment_id, $user_id, $message);
+        event(new CommentUpdate($channel, $comment));
+        return $comment;
     }
 
     public function createComment($parent_id, $user_id, $message){

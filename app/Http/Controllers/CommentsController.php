@@ -71,7 +71,6 @@ class CommentsController extends Controller {
         return okMessage("Comment removed");
     }
 
-    /** @var CommentService  */
     protected $commentService;
 
     public function __construct(CommentService $commentService) {

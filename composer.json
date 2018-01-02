@@ -15,6 +15,7 @@
         "laravel/scout": "^3.0",
         "laravel/tinker": "~1.0",
         "phpseclib/phpseclib": "^2.0",
+        "pusher/pusher-php-server": "^3.0",
         "tymon/jwt-auth": "^0.5.12",
         "yab/laravel-scout-mysql-driver": "^2.0"
     },

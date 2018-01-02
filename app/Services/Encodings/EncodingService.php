@@ -136,7 +136,7 @@ class EncodingService {
         return $results;
     }
 
-    /** @var CommentService  */
+    /** @var PusherService  */
     protected $commentService;
 
     public function __construct(CommentService $commentService) {

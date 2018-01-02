@@ -16,6 +16,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\EncodingChanged' => [
             'App\Listeners\RunConflictScan',
         ],
+        'App\Events\CommentUpdate' => [
+            'App\Listeners\CommentsListener'
+        ]
     ];
 
     /**
