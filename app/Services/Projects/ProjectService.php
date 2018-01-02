@@ -40,21 +40,21 @@ class ProjectService {
         ])->count();
         if($exists > 0) return null;
 
-        return ProjectResearcher::create([
+        return ProjectResearcher::upsert([
             'project_id' => $project_id,
             'researcher_id' => $user_id
         ]);
     }
 
     public function addForm (Project $project, Form $form) {
-        return ProjectForm::create([
+        return ProjectForm::upsert([
             'project_id' => $project->getKey(),
             'form_id' => $form->getKey(),
         ]);
     }
 
     public function addPublication(Project $project, Publication $publication) {
-        $edge = ProjectPublication::create([
+        $edge = ProjectPublication::upsert([
             'project_id' => $project->getKey(),
             'publication_id' => $publication->getKey(),
         ]);

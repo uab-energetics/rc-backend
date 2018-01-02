@@ -20,9 +20,10 @@ class ConflictReporter {
         /* map conflict records to hash table */
         $_conflict_records = [];
         foreach ($conflict_records as $record){
+            $bid = $record['branch_id'];
             $qid = $record['question_id'];
             $other_encoding_id = $record['other_encoding_id'];
-            $_conflict_records[$qid][$other_encoding_id] = $record;
+            $_conflict_records[$bid][$qid][$other_encoding_id] = $record;
         }
 
         return [

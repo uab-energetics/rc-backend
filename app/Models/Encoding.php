@@ -51,8 +51,11 @@ class Encoding extends Model {
     /*
      * Returns an associative array of the format:
      * [
-     *      <branch_id>: [
-     *          <question_id>: <response>
+     *      <branch_index>: [
+     *          id : <branch_id>
+     *          responses : [
+     *              <question_id>: <response>
+     *          ]
      *      ]
      * ]
      */
@@ -69,7 +72,10 @@ class Encoding extends Model {
             foreach ($branch['responses'] as $response){
                 $_responses[$response['question_id']] = $response;
             }
-            $_encoding['branches'][$branch['id']] = $_responses;
+            $_encoding['branches'][$branch['index']] = [
+                'id' => $branch['id'],
+                'responses' => $_responses,
+            ];
         }
         return $_encoding;
     }

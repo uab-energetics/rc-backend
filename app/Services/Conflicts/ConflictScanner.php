@@ -31,10 +31,13 @@ class ConflictScanner {
 
         $conflict_records = [];
         foreach($other_encodings as $other_encoding){
-            foreach($questions as $question){
-                $my_answer = $this->lookupResponse($encoding, $question['id']);
-                $their_answer = $this->lookupResponse($other_encoding, $question['id']);
-                if($my_answer && $their_answer){
+            foreach ($encoding['branches'] as $branch_idx => $branch) {
+                foreach($questions as $question){
+                    $my_answer = $this->lookupResponse($encoding, $question['id'], $branch_idx);
+                    $their_answer = $this->lookupResponse($other_encoding, $question['id'], $branch_idx);
+                    if(!$my_answer || !$their_answer) {
+                        continue;
+                    }
                     $doesAgree = $this->compareAnswers($my_answer, $their_answer);
                     $status = true;
                     $message = '';
@@ -46,6 +49,8 @@ class ConflictScanner {
                     $conflict_records[] = [ // that push syntax though
                         'encoding_id' => $encoding['id'],
                         'other_encoding_id' => $other_encoding['id'],
+                        'branch_id' => $branch['id'],
+                        'other_branch_id' => $other_encoding['branches'][$branch_idx]['id'],
                         'question_id' => $question['id'],
                         'agrees' => $status,
                         'message' => $message
@@ -53,6 +58,7 @@ class ConflictScanner {
                     $this->fail_message = '';
                 }
             }
+
         }
         // save all conflict records in DB in one query.
         ConflictRecord::where('encoding_id', '=', $encoding_id)->delete(); // must remove old ones.
@@ -89,13 +95,13 @@ class ConflictScanner {
         return false;
     }
 
-    protected function lookupResponse($encoding, $question_id){
+    protected function lookupResponse($encoding, $question_id, $branch_id = 0){
         // it's only comparing the first branch right now.
         $branch_ids = array_keys($encoding['branches']);
         if(!isset($encoding['branches'])) return null;
-        if(!isset($encoding['branches'][$branch_ids[0]])) return null;
-        if(!isset($encoding['branches'][$branch_ids[0]][$question_id.''])) return null;
-        return $encoding['branches'][$branch_ids[0]][$question_id.''];
+        if(!isset($encoding['branches'][$branch_ids[$branch_id]])) return null;
+        if(!isset($encoding['branches'][$branch_ids[$branch_id]]['responses'][$question_id.''])) return null;
+        return $encoding['branches'][$branch_ids[$branch_id]]['responses'][$question_id.''];
     }
 
 }

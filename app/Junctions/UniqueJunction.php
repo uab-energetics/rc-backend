@@ -14,11 +14,11 @@ abstract class UniqueJunction extends Model {
 
     //This would ideally use the same pattern that Eloquent models use,
     // but __callStatic() wasn't working as expected.
-    public static function create($params) {
-        return (new static)->doCreate($params);
+    public static function upsert($params) {
+        return (new static)->doUpsert($params);
     }
 
-    public function doCreate($params) {
+    public function doUpsert($params) {
         $columns = static::uniqueColumns();
         $existing = $this->findByExample($columns, $params);
         if ($existing !== null) {

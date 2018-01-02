@@ -81,10 +81,12 @@ class EncodingService {
         if(isset($params['id']))
             $response = Response::find($params['id']);
         else
-            $response = new Response();
+            $response = Response::create($params);
         // update and save
-        $response->fill($params);
-        $branch->responses()->save($response);
+        BranchResponse::upsert([
+            'branch_id' => $branch->getKey(),
+            'response_id' => $response->getKey(),
+        ]);
         $response->saveSelections( getOrDefault($params['selections'], []) );
 
         return Encoding::find($encoding_id)->toArray();

@@ -52,7 +52,7 @@ class FormService {
             $category = $form->rootCategory()->first();
         }
 
-        $formQuestion = FormQuestion::create([
+        $formQuestion = FormQuestion::upsert([
             'form_id' => $form->getKey(),
             'question_id' => $question->getKey(),
             'category_id' => $category->getKey(),
