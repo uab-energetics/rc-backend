@@ -88,8 +88,10 @@ class ConflictScanner {
             case RESPONSE_SELECT:
                 return $my_response['sel'] === $their_response['sel'];
             case RESPONSE_MULTI_SELECT:
-                $this->fail_message = "Didn't feel like comparing multi-selects";
-                return false;
+                $mySel = collect($my_response['selections'])->pluck('txt')->toArray();
+                $theirSel = collect($their_response['selections'])->pluck('txt')->toArray();
+                //added because array_diff only goes one way
+                return count(array_diff($mySel, $theirSel))  + count(array_diff($theirSel, $mySel)) === 0;
         }
         $this->fail_message = "Unable to compare type";
         return false;

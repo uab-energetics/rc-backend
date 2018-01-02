@@ -11,7 +11,7 @@ class Response extends Model {
     protected $with = ['selections'];
 
     function selections(){
-        return $this->hasMany(Selections::class, 'response_id');
+        return $this->hasMany(Selections::class, 'response_id')->orderBy('txt');
     }
 
     function saveSelections( $selections_arr ){
