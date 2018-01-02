@@ -101,6 +101,7 @@ class ConflictScanner {
         // it's only comparing the first branch right now.
         $branch_ids = array_keys($encoding['branches']);
         if(!isset($encoding['branches'])) return null;
+        if(!isset($branch_ids[$branch_id])) return null;
         if(!isset($encoding['branches'][$branch_ids[$branch_id]])) return null;
         if(!isset($encoding['branches'][$branch_ids[$branch_id]]['responses'][$question_id.''])) return null;
         return $encoding['branches'][$branch_ids[$branch_id]]['responses'][$question_id.''];
