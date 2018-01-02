@@ -72,8 +72,9 @@ class Encoding extends Model {
             foreach ($branch['responses'] as $response){
                 $_responses[$response['question_id']] = $response;
             }
-            $_encoding['branches'][$branch['index']] = [
+            $_encoding['branches'][$branch['name']] = [
                 'id' => $branch['id'],
+                'encoding_id' => $this->getKey(),
                 'responses' => $_responses,
             ];
         }

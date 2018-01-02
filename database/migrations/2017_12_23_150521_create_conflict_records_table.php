@@ -15,20 +15,15 @@ class CreateConflictRecordsTable extends Migration {
             $table->increments('id');
             $table->unsignedInteger('encoding_id');
             $table->unsignedInteger('other_encoding_id');
-            $table->unsignedInteger('branch_id')->nullable();
-            $table->unsignedInteger('other_branch_id')->nullable();
             $table->unsignedInteger('question_id');
 
             $table->boolean('agrees');
+            $table->string('branch_name');
             $table->string('message')->nullable();
 
             $table->foreign('encoding_id')->references('id')->on('encodings')
                 ->onDelete('cascade');
             $table->foreign('other_encoding_id')->references('id')->on('encodings')
-                ->onDelete('cascade');
-            $table->foreign('branch_id')->references('id')->on('encoding_experiment_branches')
-                ->onDelete('cascade');
-            $table->foreign('other_branch_id')->references('id')->on('encoding_experiment_branches')
                 ->onDelete('cascade');
             $table->foreign('question_id')->references('id')->on('questions')
                 ->onDelete('cascade');

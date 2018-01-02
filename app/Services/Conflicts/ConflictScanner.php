@@ -31,10 +31,10 @@ class ConflictScanner {
 
         $conflict_records = [];
         foreach($other_encodings as $other_encoding){
-            foreach ($encoding['branches'] as $branch_idx => $branch) {
+            foreach ($encoding['branches'] as $branch_name => $branch) {
                 foreach($questions as $question){
-                    $my_answer = $this->lookupResponse($encoding, $question['id'], $branch_idx);
-                    $their_answer = $this->lookupResponse($other_encoding, $question['id'], $branch_idx);
+                    $my_answer = $this->lookupResponse($encoding, $question['id'], $branch_name);
+                    $their_answer = $this->lookupResponse($other_encoding, $question['id'], $branch_name);
                     if(!$my_answer || !$their_answer) {
                         continue;
                     }
@@ -49,8 +49,7 @@ class ConflictScanner {
                     $conflict_records[] = [ // that push syntax though
                         'encoding_id' => $encoding['id'],
                         'other_encoding_id' => $other_encoding['id'],
-                        'branch_id' => $branch['id'],
-                        'other_branch_id' => $other_encoding['branches'][$branch_idx]['id'],
+                        'branch_name' => $branch_name,
                         'question_id' => $question['id'],
                         'agrees' => $status,
                         'message' => $message
@@ -97,14 +96,8 @@ class ConflictScanner {
         return false;
     }
 
-    protected function lookupResponse($encoding, $question_id, $branch_id = 0){
-        // it's only comparing the first branch right now.
-        $branch_ids = array_keys($encoding['branches']);
-        try {
-            return $encoding['branches'][$branch_ids[$branch_id]]['responses'][$question_id.''];
-        } catch (\Exception $e) {
-            return null;
-        }
+    protected function lookupResponse($encoding, $question_id, $branch_id){
+        return array_get($encoding, "branches.$branch_id.responses.$question_id", null);
     }
 
 }
