@@ -30,17 +30,18 @@ class BranchQuestionMapTest extends JWTTestCase {
             factory(Question::class)->create()
         ];
 
-        $res = $this->json('POST', "branches/".$branch->id."/questionMap/".$questions[1]->id, []);
-        $res = $this->json('POST', "branches/".$branch->id."/questionMap/".$questions[1]->id, []);
-        $res = $this->json('POST', "branches/".$branch->id."/questionMap/".$questions[1]->id, []);
-        $res = $this->json('POST', "branches/".$branch->id."/questionMap/".$questions[1]->id, []);
-        $res = $this->json('POST', "branches/".$branch->id."/questionMap/".$questions[0]->id, []);
-        $res = $this->json('POST', "branches/".$branch->id."/questionMap/".$questions[0]->id, []);
-        $res = $this->json('POST', "branches/".$branch->id."/questionMap/".$questions[2]->id, []);
-        $res = $this->json('DELETE', "branches/".$branch->id."/questionMap/".$questions[1]->id, []);
+        $this->json('POST', "branches/".$branch->id."/questionMap/".$questions[1]->id, []);
+        $this->json('POST', "branches/".$branch->id."/questionMap/".$questions[1]->id, []);
+        $this->json('POST', "branches/".$branch->id."/questionMap/".$questions[1]->id, []);
+        $this->json('POST', "branches/".$branch->id."/questionMap/".$questions[1]->id, []);
+        $this->json('POST', "branches/".$branch->id."/questionMap/".$questions[0]->id, []);
+        $this->json('POST', "branches/".$branch->id."/questionMap/".$questions[0]->id, []);
+        $this->json('POST', "branches/".$branch->id."/questionMap/".$questions[2]->id, []);
+        $this->json('DELETE', "branches/".$branch->id."/questionMap/".$questions[1]->id, []);
 
+
+        $res = $this->json('GET', "branches/".$branch->id."/questionMap");
 //        $res->dump();
-
 
 
         /*

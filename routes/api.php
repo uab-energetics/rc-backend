@@ -111,6 +111,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     // branch question map
     Route::post(    'branches/{branch}/questionMap/{question}', BranchQuestionsController::class.'@addQuestion');
     Route::delete(  'branches/{branch}/questionMap/{question}', BranchQuestionsController::class.'@removeQuestion');
+    Route::get(     'branches/{branch}/questionMap', BranchQuestionsController::class.'@getQuestions');
 
     // conflicts
     Route::get(     'conflict-report/{encoding_id}', ConflictsController::class."@getConflictsReport");

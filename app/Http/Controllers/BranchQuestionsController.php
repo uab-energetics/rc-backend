@@ -19,6 +19,11 @@ class BranchQuestionsController extends Controller {
      * removeQuestion ( branch_id, question_id ) -> branch
      */
 
+    function getQuestions($branch_id){
+        $branch = Branch::find($branch_id);
+        return $branch->questionmap;
+    }
+
     function addQuestion($branch_id, $question_id){
         $branch = Branch::find($branch_id);
 
