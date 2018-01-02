@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Question;
 use App\Models\Response;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,6 +13,10 @@ class EncodingExperimentBranch extends Model {
 
     function responses() {
         return $this->belongsToMany(Response::class, 'branch_responses', 'branch_id', 'response_id');
+    }
+
+    function questionMap() {
+        return $this->belongsToMany(Question::class, 'branch_questions', 'branch_id', 'question_id');
     }
 
     function encoding() {
