@@ -78,8 +78,10 @@ class EncodingService {
 
         // get a response DB model
         $response = null;
-        if(isset($params['id']))
+        if(isset($params['id'])) {
             $response = Response::find($params['id']);
+            $response->update($params);
+        }
         else
             $response = Response::create($params);
         // update and save
