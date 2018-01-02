@@ -41,7 +41,7 @@ class BranchQuestionMapTest extends JWTTestCase {
 
 
         $res = $this->json('GET', "branches/".$branch->id."/questionMap");
-        $res->dump();
+//        $res->dump();
 
 
         /*
