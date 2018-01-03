@@ -11,7 +11,7 @@ class FormEncoder extends UniqueJunction {
 
     /** @return string[] */
     public function uniqueColumns() {
-        return ['project_form_id', 'project_encoder_id'];
+        return ['project_form_id', 'encoder_id'];
     }
 
     public function form() {

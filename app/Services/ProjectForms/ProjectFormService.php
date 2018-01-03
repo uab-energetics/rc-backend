@@ -18,18 +18,36 @@ use Illuminate\Support\Facades\DB;
 
 class ProjectFormService {
 
-    public function retrievePublications(Form $form, $query = "") {
-        $projectForm = $this->getProjectForm($form);
+    //TODO: add priority to output
+    public function retrievePublications(Project $project, Form $form, $query = "") {
+        $projectForm = $this->getProjectForm($project, $form);
         return $projectForm->publications()->get();
     }
 
-    public function retrieveEncoders(Form $form, $query = "") {
-        $projectForm = $this->getProjectForm($form);
+    public function retrieveEncoders(Project $project, Form $form, $query = "") {
+        $projectForm = $this->getProjectForm($project, $form);
         return $projectForm->encoders()->get();
     }
 
-    public function addPublication(Form $form, Publication $publication, $priority = null) {
-        $projectForm = $this->getProjectForm($form);
+    /**
+     * @param Project $project
+     * @param Form $form
+     * @param Publication[]|Collection $publications
+     * @param null|integer $priority
+     */
+    public function addPublications(Project $project, Form $form, $publications, $priority = null) {
+        $projectForm = $this->getProjectForm($project, $form);
+        foreach($publications as $publication) {
+            $this->doAddPublication($projectForm, $publication, $priority);
+        }
+    }
+
+    public function addPublication(Project $project, Form $form, Publication $publication, $priority = null) {
+        $projectForm = $this->getProjectForm($project, $form);
+        return $this->doAddPublication($projectForm, $publication, $priority);
+    }
+
+    protected function doAddPublication(ProjectForm $projectForm, Publication $publication, $priority = null) {
         $params = [
             'project_form_id' => $projectForm->getKey(),
             'publication_id' => $publication->getKey(),
@@ -38,23 +56,44 @@ class ProjectFormService {
         return FormPublication::upsert($params);
     }
 
-    public function addEncoder(Form $form, User $encoder) {
-        $projectForm = $this->getProjectForm($form);
-        return FormEncoder::upsert([
+    public function addEncoders(Project $project, Form $form, $encoders) {
+        $projectForm = $this->getProjectForm($project, $form);
+        foreach($encoders as $encoder) {
+            $this->doAddEncoder($projectForm, $encoder);
+        }
+    }
+
+    public function addEncoder(Project $project, Form $form, User $encoder) {
+        $projectForm = $this->getProjectForm($project, $form);
+        return $this->doAddEncoder($projectForm, $encoder);
+    }
+
+    protected function doAddEncoder(ProjectForm $projectForm, User $encoder) {
+        $edge = FormEncoder::upsert([
             'project_form_id' => $projectForm->getKey(),
             'encoder_id' => $encoder->getKey(),
         ]);
+        $this->assignNextTasks($projectForm, $encoder, $projectForm->task_target_encoder);
+        return $edge;
     }
 
     /**
+     * @param Project $project
      * @param Form $form
      * @param User $encoder
      * @param null|integer $count
      * @return Collection|EncodingTask[]
      */
-    public function getNextTasks(Form $form, User $encoder, $count = null) {
-        $projectForm = $this->getProjectForm($form);
-        $publications = $this->getNextPublications($projectForm, $encoder, $count);
+    public function requestTasks(Project $project, Form $form, User $encoder, $count = null) {
+        $projectForm = $this->getProjectForm($project, $form);
+        if ($count === null) $count = $projectForm->task_target_encoder;
+        $count = min($count, $projectForm->task_target_encoder);
+        return $this->assignNextTasks($projectForm, $encoder, $count);
+    }
+
+    protected function assignNextTasks(ProjectForm $projectForm, User $encoder, $count) {
+        $target = $projectForm->task_target_publication;
+        $publications = $this->getNextPublications($projectForm, $encoder, $count, $target);
 
         $tasks = collect();
         foreach($publications as $publication) {
@@ -67,16 +106,16 @@ class ProjectFormService {
     /**
      * @param ProjectForm $projectForm
      * @param User $encoder
-     * @param null $count
+     * @param integer $count
+     * @param integer $target
      * @return Collection | Publication[]
      */
-    public function getNextPublications(ProjectForm $projectForm, User $encoder, $count = null) {
-        if ($count === null) $count = $projectForm->task_target_encoder;
+    public function getNextPublications(ProjectForm $projectForm, User $encoder, $count, $target) {
         $query = DB::select(self::SQL_PAPER_QUEUE, [
                 $projectForm->getKey(),
                 $projectForm->getKey(),
                 $encoder->getKey(),
-                $projectForm->task_target_publication,
+                $target,
                 $count
         ]);
         return Publication::hydrate($query);
@@ -93,12 +132,13 @@ class ProjectFormService {
     }
 
     /**
+     * @param Project $project
      * @param Form $form
      * @return ProjectForm
      */
-    protected function getProjectForm(Form $form) {
+    protected function getProjectForm(Project $project, Form $form) {
         return ProjectForm::query()
-            ->where('project_id', '=', $this->project->getKey())
+            ->where('project_id', '=', $project->getKey())
             ->where('form_id', '=', $form->getKey())
             ->firstOrFail();
     }
@@ -108,11 +148,7 @@ class ProjectFormService {
     /** @var AssignmentService  */
     protected $assignmentService;
 
-    public function __construct($project, AssignmentService $assignmentService) {
-        if (!($project instanceof  Project)) {
-            $project = Project::findOrFail($project);
-        }
-        $this->project = $project;
+    public function __construct(AssignmentService $assignmentService) {
         $this->assignmentService = $assignmentService;
     }
 
