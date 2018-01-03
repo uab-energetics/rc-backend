@@ -18,10 +18,9 @@ use Illuminate\Support\Facades\DB;
 
 class ProjectFormService {
 
-    //TODO: add priority to output
     public function retrievePublications(Project $project, Form $form, $query = "") {
         $projectForm = $this->getProjectForm($project, $form);
-        return $projectForm->publications()->get();
+        return $projectForm->formPublications()->get();
     }
 
     public function retrieveEncoders(Project $project, Form $form, $query = "") {
@@ -34,12 +33,15 @@ class ProjectFormService {
      * @param Form $form
      * @param Publication[]|Collection $publications
      * @param null|integer $priority
+     * @return Collection|FormPublication[]
      */
     public function addPublications(Project $project, Form $form, $publications, $priority = null) {
         $projectForm = $this->getProjectForm($project, $form);
+        $result = collect();
         foreach($publications as $publication) {
-            $this->doAddPublication($projectForm, $publication, $priority);
+            $result->push($this->doAddPublication($projectForm, $publication, $priority));
         }
+        return $result;
     }
 
     public function addPublication(Project $project, Form $form, Publication $publication, $priority = null) {

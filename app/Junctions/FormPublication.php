@@ -9,6 +9,8 @@ class FormPublication extends UniqueJunction {
 
     protected $fillable = ['project_form_id', 'publication_id', 'priority'];
 
+    protected $with = ['publication'];
+
     /** @return string[] */
     public function uniqueColumns() {
         return ['project_form_id', 'publication_id'];

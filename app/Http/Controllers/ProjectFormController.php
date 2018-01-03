@@ -37,8 +37,7 @@ class ProjectFormController extends Controller {
         $publications = $publications->map(function($pubID) use ($pubService) {
             return $pubService->getPublication($pubID);
         });
-        $this->service->addPublications($project, $form, $publications, $request->priority);
-        return okMessage("Successfully added publications");
+        return $this->service->addPublications($project, $form, $publications, $request->priority);
     }
 
     public function addEncoder(Project $project, Form $form, User $user) {
