@@ -31,7 +31,7 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 
-Route::group(['middleware' => 'jwt.auth'], function () {
+Route::group(['middleware' => ['jwt.auth', 'project_form']], function () {
 
     $user_ctrl = UserController::class;
     $forms_ctrl = FormController::class;
