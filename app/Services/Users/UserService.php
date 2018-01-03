@@ -8,6 +8,10 @@ use App\User;
 
 class UserService {
 
+    public function retrieve($user_id) {
+        return User::findOrFail($user_id);
+    }
+
     public function search($query) {
         return User::search($query)->get();
     }
