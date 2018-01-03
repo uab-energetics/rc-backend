@@ -13,6 +13,7 @@ use App\ProjectForm;
 use App\Publication;
 use App\Services\Encodings\AssignmentService;
 use App\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ProjectFormService {
@@ -45,8 +46,31 @@ class ProjectFormService {
         ]);
     }
 
-    public function getNextAssignments(Form $form, User $encoder, $count = null) {
+    /**
+     * @param Form $form
+     * @param User $encoder
+     * @param null|integer $count
+     * @return Collection|EncodingTask[]
+     */
+    public function getNextTasks(Form $form, User $encoder, $count = null) {
         $projectForm = $this->getProjectForm($form);
+        $publications = $this->getNextPublications($projectForm, $encoder, $count);
+
+        $tasks = collect();
+        foreach($publications as $publication) {
+            $task = $this->assignTask($projectForm, $publication, $encoder);
+            $tasks->push($task);
+        }
+        return $tasks;
+    }
+
+    /**
+     * @param ProjectForm $projectForm
+     * @param User $encoder
+     * @param null $count
+     * @return Collection | Publication[]
+     */
+    public function getNextPublications(ProjectForm $projectForm, User $encoder, $count = null) {
         if ($count === null) $count = $projectForm->task_target_encoder;
         $query = DB::select(self::SQL_PAPER_QUEUE, [
                 $projectForm->getKey(),
@@ -55,13 +79,7 @@ class ProjectFormService {
                 $projectForm->task_target_publication,
                 $count
         ]);
-
-        $tasks = collect();
-        foreach(Publication::hydrate($query) as $publication) {
-            $task = $this->assignTask($projectForm, $publication, $encoder);
-            $tasks->push($task);
-        }
-        return $tasks->pluck('id');
+        return Publication::hydrate($query);
     }
 
     public function assignTask(ProjectForm $projectForm, Publication $publication, User $encoder) {
