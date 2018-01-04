@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Project;
 use App\Publication;
 use App\Services\Projects\ProjectService;
+use App\Services\Publications\CsvUploadService;
 use App\Services\Publications\PublicationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -67,6 +68,23 @@ class PublicationController extends Controller {
             $this->publicationService->deletePublication($publication);
         DB::commit();
         return okMessage("Successfully deleted publication");
+    }
+
+    public function uploadFromCSV(Project $project, Request $request){
+        $service = new CsvUploadService();
+
+        $records = $service->parse($request->data);
+        if(!$records){
+            return response()->json([
+                'msg' => 'Failed to parse csv. Please check to format and try again.',
+                'details' => $service->fail_message,
+                'original_data' => $request->data
+            ], 400);
+        }
+
+        $project->publications()->createMany($records);
+
+        return $records;
     }
 
 
