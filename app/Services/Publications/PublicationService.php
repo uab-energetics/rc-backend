@@ -9,7 +9,7 @@ use App\Publication;
 class PublicationService {
 
     public function search($query) {
-        return Publication::search($query)->get();
+        return Publication::search($query)->paginate(getPaginationLimit())->get();
     }
 
     public function makePublication($params) {

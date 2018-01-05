@@ -71,6 +71,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::post(    'projects/{project}/forms', FormController::class."@create");
     Route::get(     'projects/{project}/publications', "$projects_ctrl@retrievePublications");
     Route::post(    'projects/{project}/publications', "$publications_ctrl@createInProject");
+    Route::post(    'projects/{project}/publications/csv', "$publications_ctrl@uploadFromCSV");
     Route::post(    'projects/{project}/publications/{publication}', "$projects_ctrl@addPublication");
     Route::delete(  'projects/{project}/publications/{publication}', "$projects_ctrl@removePublication");
     Route::get(     'projects/{project}/researchers', "$projects_ctrl@getResearchers");
