@@ -13,7 +13,7 @@ class UserService {
     }
 
     public function search($query) {
-        return User::search($query)->paginate(getPaginationLimit())->get();
+        return User::search($query)->paginate(getPaginationLimit())->toArray()['data'];
     }
 
     public function getResearcherProjects(User $user) {

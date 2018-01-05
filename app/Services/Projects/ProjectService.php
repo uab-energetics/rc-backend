@@ -19,7 +19,7 @@ class ProjectService {
     }
 
     public function search($query) {
-        return Project::search($query)->paginate(getPaginationLimit())->get();
+        return Project::search($query)->paginate(getPaginationLimit())->toArray()['data'];
     }
 
     public function updateProject(Project $project, $params) {
