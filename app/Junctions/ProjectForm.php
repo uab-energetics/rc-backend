@@ -33,10 +33,4 @@ class ProjectForm extends UniqueJunction {
     public function encoders() {
         return $this->belongsToMany(User::class, 'form_encoder', 'project_form_id', 'encoder_id');
     }
-
-    public function jsonSerialize() {
-        $result = $this->toArray();
-        batchUnset($result, ['id', 'project_id', 'form_id', 'created_at', 'updated_at']);
-        return $result;
-    }
 }
