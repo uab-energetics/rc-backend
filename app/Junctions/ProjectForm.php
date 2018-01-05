@@ -18,6 +18,14 @@ class ProjectForm extends UniqueJunction {
         return $this->hasMany(FormPublication::class, 'project_form_id')->with('publication');
     }
 
+    public function project() {
+        return $this->belongsTo(Project::class, 'project_id');
+    }
+
+    public function form() {
+        return $this->belongsTo(Form::class, 'form_id')->without('rootCategory');
+    }
+
     public function publications() {
         return $this->belongsToMany(Publication::class, 'form_publication', 'project_form_id', 'publication_id');
     }

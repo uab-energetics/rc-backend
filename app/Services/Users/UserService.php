@@ -31,4 +31,11 @@ class UserService {
             }])
             ->get();
     }
+
+    public function getFormsEncoder(User $user) {
+        return $user->projectFormsEncoder()
+            ->with('form')
+            ->get()
+            ->pluck('form');
+    }
 }

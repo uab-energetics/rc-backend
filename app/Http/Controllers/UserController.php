@@ -29,6 +29,11 @@ class UserController extends Controller {
         return $userService->getEncodings($user);
     }
 
+    public function retrieveForms(Request $request, UserService $userService) {
+        $user = $request->user();
+        return $userService->getFormsEncoder($user);
+    }
+
     public function updateProfile(Request $request){
         $user = $request->user();
         $user->fill($request->all());

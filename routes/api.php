@@ -53,6 +53,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get(     'users/projects/coder', "$user_ctrl@retrieveCoderProjects");
     Route::get(     'users/projects/researcher', "$user_ctrl@retrieveResearcherProjects");
     Route::get(     'users/encodings', "$user_ctrl@retrieveEncodings");
+    Route::get(     'users/forms',  "$user_ctrl@retrieveForms");
 
     // publications
     Route::post(    'publications/', "$publications_ctrl@create");
