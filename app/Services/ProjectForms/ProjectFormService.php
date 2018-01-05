@@ -49,13 +49,9 @@ class ProjectFormService {
         return $this->doAddPublication($projectForm, $publication, $priority);
     }
 
-    protected function doAddPublication(ProjectForm $projectForm, Publication $publication, $priority = null) {
-        $params = [
-            'project_form_id' => $projectForm->getKey(),
-            'publication_id' => $publication->getKey(),
-        ];
-        if ($priority !== null) $params['priority'] = $priority;
-        return FormPublication::upsert($params);
+    public function removePublication(Project $project, Form $form, Publication $publication) {
+        $projectForm = $this->getProjectForm($project, $form);
+        return $this->doRemovePublication($projectForm, $publication);
     }
 
     public function addEncoders(Project $project, Form $form, $encoders) {
@@ -70,13 +66,9 @@ class ProjectFormService {
         return $this->doAddEncoder($projectForm, $encoder);
     }
 
-    protected function doAddEncoder(ProjectForm $projectForm, User $encoder) {
-        $edge = FormEncoder::upsert([
-            'project_form_id' => $projectForm->getKey(),
-            'encoder_id' => $encoder->getKey(),
-        ]);
-        $this->assignNextTasks($projectForm, $encoder, $projectForm->task_target_encoder);
-        return $edge;
+    public function removeEncoder(Project $project, Form $form, User $encoder) {
+        $projectForm = $this->getProjectForm($project, $form);
+        return $this->doRemoveEncoder($projectForm, $encoder);
     }
 
     /**
@@ -93,18 +85,6 @@ class ProjectFormService {
         return $this->assignNextTasks($projectForm, $encoder, $count);
     }
 
-    protected function assignNextTasks(ProjectForm $projectForm, User $encoder, $count) {
-        $target = $projectForm->task_target_publication;
-        $publications = $this->getNextPublications($projectForm, $encoder, $count, $target);
-
-        $tasks = collect();
-        foreach($publications as $publication) {
-            $task = $this->assignTask($projectForm, $publication, $encoder);
-            $tasks->push($task);
-        }
-        return $tasks;
-    }
-
     /**
      * @param ProjectForm $projectForm
      * @param User $encoder
@@ -114,11 +94,11 @@ class ProjectFormService {
      */
     public function getNextPublications(ProjectForm $projectForm, User $encoder, $count, $target) {
         $query = DB::select(self::SQL_PAPER_QUEUE, [
-                $projectForm->getKey(),
-                $projectForm->getKey(),
-                $encoder->getKey(),
-                $target,
-                $count
+            $projectForm->getKey(),
+            $projectForm->getKey(),
+            $encoder->getKey(),
+            $target,
+            $count
         ]);
         return Publication::hydrate($query);
     }
@@ -133,6 +113,52 @@ class ProjectFormService {
         return $task;
     }
 
+    protected function doAddPublication(ProjectForm $projectForm, Publication $publication, $priority = null) {
+        $params = [
+            'project_form_id' => $projectForm->getKey(),
+            'publication_id' => $publication->getKey(),
+        ];
+        if ($priority !== null) $params['priority'] = $priority;
+        return FormPublication::upsert($params);
+    }
+
+    protected function doRemovePublication(ProjectForm $projectForm, Publication $publication) {
+        $existing = FormPublication::query()
+            ->where('project_form_id', '=', $projectForm->getKey())
+            ->where('publication_id', '=', $publication->getKey())
+            ->firstOrFail();
+        return $existing->delete();
+    }
+
+    protected function doAddEncoder(ProjectForm $projectForm, User $encoder) {
+        $edge = FormEncoder::upsert([
+            'project_form_id' => $projectForm->getKey(),
+            'encoder_id' => $encoder->getKey(),
+        ]);
+        $this->assignNextTasks($projectForm, $encoder, $projectForm->task_target_encoder);
+        return $edge;
+    }
+
+    protected function doRemoveEncoder(ProjectForm $projectForm, User $encoder) {
+        $existing = FormEncoder::query()
+            ->where('project_form_id', '=', $projectForm->getKey())
+            ->where('encoder_id', '=', $encoder->getKey())
+            ->firstOrFail();
+        return $existing->delete();
+    }
+
+    protected function assignNextTasks(ProjectForm $projectForm, User $encoder, $count) {
+        $target = $projectForm->task_target_publication;
+        $publications = $this->getNextPublications($projectForm, $encoder, $count, $target);
+
+        $tasks = collect();
+        foreach($publications as $publication) {
+            $task = $this->assignTask($projectForm, $publication, $encoder);
+            $tasks->push($task);
+        }
+        return $tasks;
+    }
+
     /**
      * @param Project $project
      * @param Form $form
@@ -144,9 +170,9 @@ class ProjectFormService {
             ->where('form_id', '=', $form->getKey())
             ->firstOrFail();
     }
-
     /** @var Project */
     protected $project;
+
     /** @var AssignmentService  */
     protected $assignmentService;
 
@@ -154,7 +180,7 @@ class ProjectFormService {
         $this->assignmentService = $assignmentService;
     }
 
-const SQL_PAPER_QUEUE = "
+    const SQL_PAPER_QUEUE = "
 SELECT
   publications.*,
   task_counts.task_count,

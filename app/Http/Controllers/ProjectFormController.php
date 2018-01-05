@@ -40,6 +40,11 @@ class ProjectFormController extends Controller {
         return $this->service->addPublications($project, $form, $publications, $request->priority);
     }
 
+    public function removePublication(Project $project, Form $form, Publication $publication) {
+        $this->service->removePublication($project, $form, $publication);
+        return okMessage("Successfully removed publication");
+    }
+
     public function addEncoder(Project $project, Form $form, User $user) {
         return $this->service->addEncoder($project, $form, $user);
     }
@@ -52,6 +57,11 @@ class ProjectFormController extends Controller {
         });
         $this->service->addEncoders($project, $form, $users);
         return okMessage("Successfully added encoders");
+    }
+
+    public function removeEncoder(Project $project, Form $form, User $encoder) {
+        $this->service->removeEncoder($project, $form, $encoder);
+        return okMessage("Successfully removed encoder");
     }
 
 
