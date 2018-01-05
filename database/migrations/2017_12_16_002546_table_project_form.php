@@ -16,6 +16,9 @@ class TableProjectForm extends Migration {
             $table->unsignedInteger('project_id');
             $table->unsignedInteger('form_id');
 
+            $table->integer('task_target_publication')->default(2);
+            $table->integer('task_target_encoder')->default(5);
+
             $table->foreign('project_id')->references('id')->on('projects')
                 ->onDelete('cascade');
             $table->foreign('form_id')->references('id')->on('forms')

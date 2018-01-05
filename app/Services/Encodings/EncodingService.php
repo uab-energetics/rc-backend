@@ -15,6 +15,12 @@ use Exception;
 
 class EncodingService {
 
+    /**
+     * @param $form_id
+     * @param $publication_id
+     * @param $user_id
+     * @return Encoding
+     */
     public function makeEncoding($form_id, $publication_id, $user_id) {
         $form = Form::find($form_id);
         if ($form === null) return false;

@@ -62,9 +62,7 @@ class Handler extends ExceptionHandler
             ], 404);
         }
         if ($e instanceof ValidationException) {
-            return response()->json([
-                'errors' => $e->validator->errors()
-            ], 400);
+            return invalidParamMessage($e->validator);
         }
 
         return $this->prepareJsonResponse($request, $e);

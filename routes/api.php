@@ -10,6 +10,7 @@ use App\Http\Controllers\EncodingController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectFormController;
 use App\Http\Controllers\ProjectInvitesController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\UserController;
@@ -31,7 +32,7 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 
-Route::group(['middleware' => 'jwt.auth'], function () {
+Route::group(['middleware' => ['jwt.auth']], function () {
 
     $user_ctrl = UserController::class;
     $forms_ctrl = FormController::class;
@@ -41,6 +42,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     $comment_ctrl = CommentsController::class;
     $publications_ctrl = PublicationController::class;
     $projects_ctrl = ProjectController::class;
+    $proj_form_ctrl = ProjectFormController::class;
     $questions_ctrl = QuestionController::class;
     $categories_ctrl = CategoryController::class;
 
@@ -74,6 +76,16 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::delete(  'projects/{project}/publications/{publication}', "$projects_ctrl@removePublication");
     Route::get(     'projects/{project}/researchers', "$projects_ctrl@getResearchers");
     Route::post(    'projects/{project}/invite-researcher', "$projects_ctrl@inviteResearcher");
+
+    Route::get(     'projects/{project}/forms/{form}/publications', $proj_form_ctrl."@searchPublications");
+    Route::post(    'projects/{project}/forms/{form}/publications/{publication}', $proj_form_ctrl."@addPublication");
+    Route::post(    'projects/{project}/forms/{form}/publications', $proj_form_ctrl."@addPublications");
+    Route::delete(  'projects/{project}/forms/{form}/publications/{publication}', $proj_form_ctrl."@removePublication");
+    Route::get(     'projects/{project}/forms/{form}/encoders', $proj_form_ctrl."@searchEncoders");
+    Route::post(    'projects/{project}/forms/{form}/encoders/{user}', $proj_form_ctrl."@addEncoder");
+    Route::post(    'projects/{project}/forms/{form}/encoders', $proj_form_ctrl."@addEncoders");
+    Route::delete(  'projects/{project}/forms/{form}/encoders', $proj_form_ctrl."@removeEncoder");
+
 
 
     // forms
