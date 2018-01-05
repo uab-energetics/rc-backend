@@ -8,15 +8,9 @@ use Laravel\Scout\Searchable;
 
 class Publication extends Model {
 
-    use Searchable, SearchableColumns {
-        SearchableColumns::toSearchableArray insteadof Searchable;
-    }
-
     protected $table = 'publications';
 
     protected $fillable = ['name', 'embedding_url'];
-
-    protected $searchable = ['name'];
 
     const searchable = ['name'];
 

@@ -12,8 +12,7 @@ function searcher( $model_class ){
         $search = request('search');
         $query = $model_class::query();
         if($search && $model_class::searchable)
-            foreach ($model_class::searchable as $column)
-                $query = $query->orWhere($column, 'like', "%$search%");
+            $query = search($query, $search, $model_class::searchable);
         return $query->paginate($page_size);
     };
 }

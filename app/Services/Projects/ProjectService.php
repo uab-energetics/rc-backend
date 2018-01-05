@@ -3,6 +3,7 @@
 namespace App\Services\Projects;
 
 use App\Form;
+use App\FormPublication;
 use App\Project;
 use App\ProjectForm;
 use App\ProjectPublication;
@@ -18,7 +19,7 @@ class ProjectService {
     }
 
     public function search($query) {
-        return Project::search($query)->get();
+        return Project::search($query)->paginate(getPaginationLimit())->toArray()['data'];
     }
 
     public function updateProject(Project $project, $params) {
@@ -58,6 +59,12 @@ class ProjectService {
             'project_id' => $project->getKey(),
             'publication_id' => $publication->getKey(),
         ]);
+        foreach (ProjectForm::where('project_id', '=', $project->getKey())->get() as $projectForm) { //FIXME: temporary and for testing
+            FormPublication::upsert([
+                'project_form_id' => $projectForm->getKey(),
+                'publication_id' => $publication->getKey()
+            ]);
+        }
         return $edge;
     }
 

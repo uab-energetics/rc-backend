@@ -15,7 +15,7 @@ class QuestionService {
     }
 
     public function search($query) {
-        return Question::search($query)->get();
+        return Question::search($query)->paginate(getPaginationLimit())->toArray()['data'];
     }
 
     public function updateQuestion(Question $question, $params) {
