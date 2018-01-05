@@ -18,4 +18,6 @@ class Publication extends Model {
 
     protected $searchable = ['name'];
 
+    const searchable = ['name'];
+
 }

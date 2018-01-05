@@ -9,7 +9,6 @@ use App\Services\Publications\CsvUploadService;
 use App\Services\Publications\PublicationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 class PublicationController extends Controller {
 
@@ -42,12 +41,6 @@ class PublicationController extends Controller {
 
     public function retrieve(Publication $publication) {
         return $publication;
-    }
-
-    public function search(Request $request) {
-        $validator = simpleSearchValidator($request->all());
-        if ($validator->fails()) return invalidParamMessage($validator);
-        return $this->publicationService->search($request->search);
     }
 
     public function update(Publication $publication, Request $request) {
