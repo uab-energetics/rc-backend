@@ -14,7 +14,7 @@ use App\User;
 
 class ProjectService {
 
-    public function makeProject($params): Project {
+    public function makeProject($params) {
         return Project::create($params);
     }
 
