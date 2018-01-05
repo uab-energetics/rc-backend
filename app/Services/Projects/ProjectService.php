@@ -59,12 +59,6 @@ class ProjectService {
             'project_id' => $project->getKey(),
             'publication_id' => $publication->getKey(),
         ]);
-        foreach (ProjectForm::where('project_id', '=', $project->getKey())->get() as $projectForm) { //FIXME: temporary and for testing
-            FormPublication::upsert([
-                'project_form_id' => $projectForm->getKey(),
-                'publication_id' => $publication->getKey()
-            ]);
-        }
         return $edge;
     }
 
