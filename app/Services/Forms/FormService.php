@@ -27,7 +27,7 @@ class FormService {
     }
 
     public function search($query) {
-        return Form::search($query)->get();
+        return Form::search($query)->paginate(getPaginationLimit())->get();
     }
 
     public function updateForm(Form $form, $params) {

@@ -9,7 +9,7 @@ use App\User;
 class UserService {
 
     public function search($query) {
-        return User::search($query)->get();
+        return User::search($query)->paginate(getPaginationLimit())->get();
     }
 
     public function getResearcherProjects(User $user) {
