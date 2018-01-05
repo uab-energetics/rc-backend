@@ -25,7 +25,7 @@ class BranchQuestionsTest extends TestCase {
         $branch->questionMap()->syncWithoutDetaching($questions);
         $branch->questionMap()->syncWithoutDetaching($questions);
 
-        echo json_encode($branch->questionMap, JSON_PRETTY_PRINT);
+//        echo json_encode($branch->questionMap, JSON_PRETTY_PRINT);
 
     }
 
