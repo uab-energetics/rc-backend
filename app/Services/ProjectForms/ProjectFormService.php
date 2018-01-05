@@ -18,6 +18,17 @@ use Illuminate\Support\Facades\DB;
 
 class ProjectFormService {
 
+    public function getSettings(Project $project, Form $form) {
+        return $projectForm = $this->getProjectForm($project, $form);
+    }
+
+    public function updateSettings(Project $project, Form $form, $params) {
+        $projectForm = $this->getProjectForm($project, $form);
+        batchUnset($params, ['project_id', 'form_id']);
+        $projectForm->update($params);
+        return $projectForm->refresh();
+    }
+
     public function retrievePublications(Project $project, Form $form, $query = "") {
         $projectForm = $this->getProjectForm($project, $form);
         return $projectForm->formPublications()->get();

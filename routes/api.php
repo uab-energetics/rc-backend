@@ -77,6 +77,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get(     'projects/{project}/researchers', "$projects_ctrl@getResearchers");
     Route::post(    'projects/{project}/invite-researcher', "$projects_ctrl@inviteResearcher");
 
+    Route::get(     'projects/{project}/forms/{form}', $proj_form_ctrl."@getSettings");
+    Route::put(     'projects/{project}/forms/{form}', $proj_form_ctrl."@updateSettings");
     Route::get(     'projects/{project}/forms/{form}/publications', $proj_form_ctrl."@searchPublications");
     Route::post(    'projects/{project}/forms/{form}/publications/{publication}', $proj_form_ctrl."@addPublication");
     Route::post(    'projects/{project}/forms/{form}/publications', $proj_form_ctrl."@addPublications");

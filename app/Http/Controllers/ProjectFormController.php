@@ -13,6 +13,15 @@ use Illuminate\Http\Request;
 
 class ProjectFormController extends Controller {
 
+    public function getSettings(Project $project, Form $form) {
+        return $this->service->getSettings($project, $form);
+    }
+
+    public function updateSettings(Project $project, Form $form, Request $request) {
+        $request->validate(['task_target_encoder' => 'integer|min:0', 'task_target_publication' => 'integer|min:0']);
+        return $this->service->updateSettings($project, $form, $request->all());
+    }
+
     public function searchPublications(Project $project, Form $form, Request $request) {
         $request->validate(['search' => 'string|nullable']);
         return $this->service->retrievePublications($project, $form, $request->search);
