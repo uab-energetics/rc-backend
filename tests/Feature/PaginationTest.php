@@ -23,15 +23,25 @@ class PaginationTest extends JWTTestCase {
     }
     public function testPagination() {
 
+        factory(Publication::class, 50)->create();
+
         $res = $this->json('GET', '/publications', [
             'page' => 1,
-            'search' => 'Bypass',
-            'page_size' => 35
+            'page_size' => 45
         ]);
 
-        $res_basic = $this->json('GET', '/publications');
+        $this->assertEquals(count($res->json()['data']), 45);
 
-//        echo json_encode($res->json(), JSON_PRETTY_PRINT);
-//        echo json_encode($res_basic->json(), JSON_PRETTY_PRINT);
+        factory(Publication::class, 4)->create([ 'name' => 'test paper name' ]);
+
+        $search_response = $this->json('GET', '/publications', [
+            'page' => 0,
+            'search' => 'test paper name',
+            'page_size' => 45
+        ]);
+
+        $search_response->dump();
+
+//        $this->assertEquals(count($search_response->json()['data']), 4);
     }
 }

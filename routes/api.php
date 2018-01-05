@@ -56,14 +56,14 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 
     // publications
     Route::post(    'publications/', "$publications_ctrl@create");
-    Route::get(     'publications/', "$publications_ctrl@search");
+    Route::get(     'publications/', searcher(Publication::class));
     Route::get(     'publications/{publication}', getter(Publication::class));
     Route::put(     'publications/{publication}', "$publications_ctrl@update");
     Route::delete(  'publications/{publication}', "$publications_ctrl@delete");
 
     // projects
-    Route::post(    'projects', "$projects_ctrl@create");
-    Route::get(     'projects', "$projects_ctrl@search");
+    Route::post(    'projects', "$projects_ctrl@create")->middleware('validate:projects.create');
+    Route::get(     'projects', "$projects_ctrl@search")->middleware('validate:projects.create');
     Route::get(     'projects/{project}', getter(Project::class));
     Route::put(     'projects/{project}', "$projects_ctrl@update");
     Route::delete(  'projects/{project}', "$projects_ctrl@delete");

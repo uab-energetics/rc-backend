@@ -15,11 +15,6 @@ use Illuminate\Support\Facades\Validator;
 class ProjectController extends Controller {
 
     public function create(Request $request, ProjectService $projectService) {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'string',
-        ]);
-
         $user = $request->user();
 
         DB::beginTransaction();
@@ -31,11 +26,6 @@ class ProjectController extends Controller {
     }
 
     public function update(Project $project, Request $request, ProjectService $projectService) {
-        $request->validate([
-            'name' => 'string|max:255',
-            'description' => 'string',
-        ]);
-
         DB::beginTransaction();
             $projectService->updateProject($project, $request->all());
         DB::commit();
@@ -65,7 +55,11 @@ class ProjectController extends Controller {
     }
 
     public function retrievePublications(Project $project, Request $request, ProjectService $projectService) {
-        return $projectService->getPublications($project, $request->search);
+        return search(
+            $project->publications(),
+            request('search'),
+            Publication::searchable
+        )->paginate(request('page_size', 500));
     }
 
     public function addPublication(Project $project, Publication $publication, ProjectService $projectService) {
