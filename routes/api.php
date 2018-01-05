@@ -54,8 +54,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
     // publications
     Route::post(    'publications/', "$publications_ctrl@create");
-//    Route::get(     'publications/', "$publications_ctrl@search");
-    Route::get(     'publications/', "$publications_ctrl@get");
+    Route::get(     'publications/', "$publications_ctrl@search");
     Route::get(     'publications/{publication}', getter(Publication::class));
     Route::put(     'publications/{publication}', "$publications_ctrl@update");
     Route::delete(  'publications/{publication}', "$publications_ctrl@delete");

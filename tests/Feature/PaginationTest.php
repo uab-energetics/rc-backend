@@ -26,7 +26,7 @@ class PaginationTest extends JWTTestCase {
         $res = $this->json('GET', '/publications', [
             'page' => 1,
             'search' => 'Bypass',
-            'results_per_page' => 35
+            'page_size' => 35
         ]);
 
         $res_basic = $this->json('GET', '/publications');

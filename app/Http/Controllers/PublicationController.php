@@ -50,14 +50,6 @@ class PublicationController extends Controller {
         return $this->publicationService->search($request->search);
     }
 
-    public function get(){
-        $query = Publication::query();
-        if(request('search'))
-            $query = $query->where('name', 'like', '%'.request('search').'%');
-        $results_per_page = request('results_per_page', 500);
-        return $query->paginate($results_per_page);
-    }
-
     public function update(Publication $publication, Request $request) {
         $request->validate([
             'name' => 'string',

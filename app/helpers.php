@@ -62,3 +62,7 @@ function csvResponseHeaders($file_name ){
     ];
 }
 
+function getPaginationLimit(){
+    return min(config('', 500), request('page_size', 500));
+}
+
