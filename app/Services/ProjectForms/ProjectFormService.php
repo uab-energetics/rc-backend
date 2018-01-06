@@ -39,6 +39,14 @@ class ProjectFormService {
         return $projectForm->encoders()->get();
     }
 
+    public function inheritProjectPublications(Project $project, Form $form) {
+        $projectForm = $this->getProjectForm($project, $form);
+        foreach($project->publications()->get() as $publication) {
+            $this->doAddPublication($projectForm, $publication);
+        }
+        return true;
+    }
+
     /**
      * @param Project $project
      * @param Form $form
