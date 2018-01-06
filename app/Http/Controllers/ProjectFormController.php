@@ -13,6 +13,15 @@ use Illuminate\Http\Request;
 
 class ProjectFormController extends Controller {
 
+    public function getSettings(Project $project, Form $form) {
+        return $this->service->getSettings($project, $form);
+    }
+
+    public function updateSettings(Project $project, Form $form, Request $request) {
+        $request->validate(['task_target_encoder' => 'integer|min:0', 'task_target_publication' => 'integer|min:0']);
+        return $this->service->updateSettings($project, $form, $request->all());
+    }
+
     public function searchPublications(Project $project, Form $form, Request $request) {
         $request->validate(['search' => 'string|nullable']);
         return $this->service->retrievePublications($project, $form, $request->search);
@@ -40,6 +49,11 @@ class ProjectFormController extends Controller {
         return $this->service->addPublications($project, $form, $publications, $request->priority);
     }
 
+    public function inheritProjectPublications(Project $project, Form $form) {
+        $this->service->inheritProjectPublications($project, $form);
+        return okMessage("Successfully inherited project publications");
+    }
+
     public function removePublication(Project $project, Form $form, Publication $publication) {
         $this->service->removePublication($project, $form, $publication);
         return okMessage("Successfully removed publication");
@@ -62,6 +76,11 @@ class ProjectFormController extends Controller {
     public function removeEncoder(Project $project, Form $form, User $encoder) {
         $this->service->removeEncoder($project, $form, $encoder);
         return okMessage("Successfully removed encoder");
+    }
+
+    public function requestTasks(Project $project, Form $form, User $encoder, Request $request) {
+        $request->validate(['count' => 'nullable|integer']);
+        return $this->service->requestTasks($project, $form, $encoder, $request->count);
     }
 
 

@@ -53,6 +53,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get(     'users/projects/coder', "$user_ctrl@retrieveCoderProjects");
     Route::get(     'users/projects/researcher', "$user_ctrl@retrieveResearcherProjects");
     Route::get(     'users/encodings', "$user_ctrl@retrieveEncodings");
+    Route::get(     'users/forms',  "$user_ctrl@retrieveForms");
 
     // publications
     Route::post(    'publications/', "$publications_ctrl@create");
@@ -77,6 +78,9 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get(     'projects/{project}/researchers', "$projects_ctrl@getResearchers");
     Route::post(    'projects/{project}/invite-researcher', "$projects_ctrl@inviteResearcher");
 
+    Route::get(     'projects/{project}/forms/{form}', $proj_form_ctrl."@getSettings");
+    Route::put(     'projects/{project}/forms/{form}', $proj_form_ctrl."@updateSettings");
+    Route::get(     'projects/{project}/forms/{form}/inherit-project-publications', $proj_form_ctrl."@inheritProjectPublications");
     Route::get(     'projects/{project}/forms/{form}/publications', $proj_form_ctrl."@searchPublications");
     Route::post(    'projects/{project}/forms/{form}/publications/{publication}', $proj_form_ctrl."@addPublication");
     Route::post(    'projects/{project}/forms/{form}/publications', $proj_form_ctrl."@addPublications");
@@ -85,6 +89,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::post(    'projects/{project}/forms/{form}/encoders/{user}', $proj_form_ctrl."@addEncoder");
     Route::post(    'projects/{project}/forms/{form}/encoders', $proj_form_ctrl."@addEncoders");
     Route::delete(  'projects/{project}/forms/{form}/encoders', $proj_form_ctrl."@removeEncoder");
+    Route::post(    'projects/{project}/forms/{form}/encoders/{encoder}/request-tasks', $proj_form_ctrl."@requestTasks");
 
 
 
