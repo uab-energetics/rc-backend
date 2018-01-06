@@ -18,7 +18,7 @@ class Form extends Model {
 
     protected $fillable = ['root_category_id', 'name', 'description', 'published', 'type'];
 
-    protected $with = ['rootCategory'];
+    protected $with = ['rootCategory', 'questions'];
 
     protected $searchable = ['name', 'description', 'type', 'published'];
 
