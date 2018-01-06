@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class EncodingExperimentBranch extends Model {
     protected $table = 'encoding_experiment_branches';
     protected $fillable = ['encoding_id', 'name', 'description', 'index'];
-    protected $with = ['responses'];
+    protected $with = ['responses', 'questionMap'];
 
     function responses() {
         return $this->belongsToMany(Response::class, 'branch_responses', 'branch_id', 'response_id');
