@@ -66,8 +66,18 @@ class PublicationController extends Controller {
     public function uploadFromCSV(Project $project, Request $request){
         $service = new CsvUploadService();
 
-        $records = $service->parse($request->data);
-        if(!$records){
+        $rows = $request->data;
+
+        $fail = 0;
+        $records = array_map(function($row){
+            // TODO - validate
+            return [
+                'name' => $row[0],
+                'embedding_url' => $row[1]
+            ];
+        }, $rows);
+
+        if($fail){
             return response()->json([
                 'msg' => 'Failed to parse csv. Please check to format and try again.',
                 'details' => $service->fail_message,

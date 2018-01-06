@@ -11,9 +11,6 @@ class Validator {
         $rule_name = $tmp[1];
         $rule = ( require app_path('Http/ValidationRules/'.$file_name.'.php') )[$rule_name];
 
-        echo 'validating..';
-        echo json_encode($rule, JSON_PRETTY_PRINT);
-
         $request->validate($rule);
         return $next($request);
     }
