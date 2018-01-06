@@ -18,7 +18,11 @@ class ProjectFormController extends Controller {
     }
 
     public function updateSettings(Project $project, Form $form, Request $request) {
-        $request->validate(['task_target_encoder' => 'integer|min:0', 'task_target_publication' => 'integer|min:0']);
+        $request->validate([
+            'task_target_encoder' => 'integer|min:0',
+            'task_target_publication' => 'integer|min:0',
+            'auto_enroll' => 'boolean'
+        ]);
         return $this->service->updateSettings($project, $form, $request->all());
     }
 
