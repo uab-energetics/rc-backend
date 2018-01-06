@@ -11,6 +11,7 @@ use App\ProjectPublication;
 use App\ProjectResearcher;
 use App\Publication;
 use App\Services\Forms\FormService;
+use App\Services\ProjectForms\ProjectFormService;
 use App\User;
 
 class ProjectService {
@@ -49,10 +50,17 @@ class ProjectService {
     }
 
     public function addEncoder(Project $project, User $encoder) {
-        return ProjectCoder::upsert([
+        $edge = ProjectCoder::upsert([
             'project_id' => $project->getKey(),
             'coder_id' => $encoder->getKey(),
         ]);
+
+        $forms = $project->forms()->where('project_form.auto_enroll', '=', true)->get();
+        foreach ($forms as $form) {
+            $this->projectFormService->addEncoder($project, $form, $encoder);
+        }
+
+        return $edge;
     }
 
     public function searchResearchers(Project $project, $search = null) {
@@ -96,9 +104,12 @@ class ProjectService {
 
     /** @var FormService */
     private $formService;
+    /** @var ProjectFormService  */
+    protected $projectFormService;
 
-    public function __construct(FormService $formService) {
+    public function __construct(FormService $formService, ProjectFormService $projectFormService) {
         $this->formService = $formService;
+        $this->projectFormService = $projectFormService;
     }
 
     public function getPublications(Project $project, $query = null) {
