@@ -58,6 +58,11 @@ class ProjectFormController extends Controller {
         return okMessage("Successfully inherited project publications");
     }
 
+    public function inheritProjectEncoders(Project $project, Form $form) {
+        $this->service->inheritProjectEncoders($project, $form);
+        return okMessage("Successfully inherited project encoders");
+    }
+
     public function removePublication(Project $project, Form $form, Publication $publication) {
         $this->service->removePublication($project, $form, $publication);
         return okMessage("Successfully removed publication");

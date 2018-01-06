@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProjectCoder extends UniqueJunction {
+class ProjectEncoder extends UniqueJunction {
     protected $table = "project_coder";
 
     protected $fillable = ['project_id', 'coder_id'];
