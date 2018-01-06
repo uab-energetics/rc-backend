@@ -75,9 +75,9 @@ class ProjectController extends Controller {
         return okMessage("Successfully removed the publication");
     }
 
-    public function inviteResearcher(Project $project, Request $request, ProjectService $projectService){
+    public function addResearcher(Project $project, Request $request, ProjectService $projectService){
+        $request->validate(['user_id' => 'exists:users,id']);
         $user = User::find($request->user_id);
-        if(!$user) return response("no user with that id", 404);
 
         // TODO - introduce access levels
         $res = $projectService->addResearcher($project->id, $request->user_id);
@@ -91,6 +91,19 @@ class ProjectController extends Controller {
         return response()->json([
             'msg' => "User invited to collaborate!"
         ], 200);
+    }
+
+    public function addEncoder(Project $project, Request $request) {
+        $request->validate(['user_id' => 'exists:users,id']);
+        $user = User::find($request->user_id);
+
+        $res = $this->service->addEncoder($project, $user);
+        if(!$res){
+            return okMessage("That user is already in this project!", 409);
+        }
+
+        $user->notify(new InvitedToProject($project->id, $request->notification_payload));
+        return okMessage("User added to project");
     }
 
     public function searchResearchers(Project $project, Request $request){
