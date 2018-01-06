@@ -17,6 +17,18 @@ class ConflictReporter {
         $other_encodings = $encoding->collaborators()->with('owner')->get();
         $conflict_records = ConflictRecord::where('encoding_id', '=', $encoding_id)->get()->toArray();
 
+        $branchNames = collect();
+
+
+        foreach($encoding->toArray()['experiment_branches'] as $branch) {
+            $branchNames->push($branch['name']);
+        }
+        foreach($other_encodings as $other_encoding) {
+            foreach($other_encoding->toArray()['experiment_branches'] as $branch) {
+                $branchNames->push($branch['name']);
+            }
+        }
+
         /* map conflict records to hash table */
         $_conflict_records = [];
         foreach ($conflict_records as $record){
@@ -30,7 +42,8 @@ class ConflictReporter {
             'encoding' => $encoding,
             'other_encodings' => $other_encodings,
             'questions' => $questions,
-            'conflicts' => $_conflict_records
+            'conflicts' => $_conflict_records,
+            'groups' => $branchNames->unique(),
         ];
     }
 
