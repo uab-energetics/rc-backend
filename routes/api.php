@@ -75,7 +75,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::post(    'projects/{project}/publications/csv', "$publications_ctrl@uploadFromCSV");
     Route::post(    'projects/{project}/publications/{publication}', "$projects_ctrl@addPublication");
     Route::delete(  'projects/{project}/publications/{publication}', "$projects_ctrl@removePublication");
-    Route::get(     'projects/{project}/researchers', "$projects_ctrl@getResearchers");
+    Route::get(     'projects/{project}/encoders', "$projects_ctrl@searchEncoders");
+    Route::get(     'projects/{project}/researchers', "$projects_ctrl@searchResearchers");
     Route::post(    'projects/{project}/invite-researcher', "$projects_ctrl@inviteResearcher");
 
     Route::get(     'projects/{project}/forms/{form}', $proj_form_ctrl."@getSettings");

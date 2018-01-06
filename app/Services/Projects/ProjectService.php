@@ -47,6 +47,20 @@ class ProjectService {
         ]);
     }
 
+    public function addEncoder(Project $project, User $encoder) {
+
+    }
+
+    public function searchResearchers(Project $project, $search = null) {
+        return search($project->researchers(), $search, User::searchable)
+            ->paginate(getPaginationLimit())->toArray()['data'];
+    }
+
+    public function searchEncoders(Project $project, $search = null) {
+        return search($project->encoders(), $search, User::searchable)
+            ->paginate(getPaginationLimit())->toArray()['data'];
+    }
+
     public function addForm (Project $project, Form $form) {
         return ProjectForm::upsert([
             'project_id' => $project->getKey(),

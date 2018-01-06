@@ -93,8 +93,21 @@ class ProjectController extends Controller {
         ], 200);
     }
 
-    function getResearchers(Project $project){
-        return $project->researchers;
+    public function searchResearchers(Project $project, Request $request){
+        $request->validate(['search' => 'string|nullable']);
+        return $this->service->searchResearchers($project, $request->search);
+    }
+
+    public function searchEncoders(Project $project, Request $request) {
+        $request->validate(['search' => 'string|nullable']);
+        return $this->service->searchEncoders($project, $request->search);
+    }
+
+    /** @var ProjectService  */
+    protected $service;
+
+    public function __construct(ProjectService $projectService) {
+        $this->service = $projectService;
     }
 
     const PUBLICATION_NOT_FOUND = [

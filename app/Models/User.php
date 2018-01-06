@@ -47,4 +47,6 @@ class User extends Authenticatable {
         return $this->belongsToMany(ProjectForm::class, 'form_encoder', 'encoder_id', 'project_form_id');
     }
 
+    const searchable = ['name', 'email'];
+
 }
