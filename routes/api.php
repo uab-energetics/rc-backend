@@ -144,8 +144,10 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get(     '/notifications/mark-read', "$notifications_ctrl@markAllRead");
 
     // invites
-    Route::post(    '/invite-to-project', "$project_invites_ctrl@sendInviteToken");
-    Route::post(    '/redeem-invite-token', "$project_invites_ctrl@redeemInviteToken");
+    Route::post(    '/invite-researcher-to-project', "$project_invites_ctrl@sendResearcherInviteToken");
+    Route::post(    '/redeem-researcher-invite', "$project_invites_ctrl@redeemResearcherInviteToken");
+    Route::post(    '/invite-encoder-to-project', "$project_invites_ctrl@sendEncoderInviteToken");
+    Route::post(    '/redeem-encoder-invite', "$project_invites_ctrl@redeemEncoderInviteToken");
 
     // comments
     Route::post(    '/channels', "$comment_ctrl@createChannel");
@@ -157,7 +159,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 });
 
 
-Route::get('/validate-invite', ProjectInvitesController::class."@validateInvitation");
+Route::get('/validate-researcher-invite', ProjectInvitesController::class."@validateResearcherInvitation");
+Route::get('/validate-encoder-invite', ProjectInvitesController::class."@validateEncoderInvitation");
 
 
 
