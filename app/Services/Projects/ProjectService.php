@@ -5,6 +5,7 @@ namespace App\Services\Projects;
 use App\Form;
 use App\FormPublication;
 use App\Project;
+use App\ProjectCoder;
 use App\ProjectForm;
 use App\ProjectPublication;
 use App\ProjectResearcher;
@@ -48,7 +49,10 @@ class ProjectService {
     }
 
     public function addEncoder(Project $project, User $encoder) {
-
+        return ProjectCoder::upsert([
+            'project_id' => $project->getKey(),
+            'coder_id' => $encoder->getKey(),
+        ]);
     }
 
     public function searchResearchers(Project $project, $search = null) {
