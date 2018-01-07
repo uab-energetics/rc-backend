@@ -74,6 +74,7 @@ class PublicationController extends Controller {
             ];
             $validator = Validator::make($params, self::CREATE_VALIDATION_RULES);
             if ($validator->fails()) return invalidParamMessage($validator);
+            return $params;
         }, $rows);
 
         if($fail){
