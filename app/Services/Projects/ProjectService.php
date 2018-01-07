@@ -101,6 +101,11 @@ class ProjectService {
             ->first();
         if ($edge === null) return false;
         $edge->delete();
+
+        $forms = $project->forms()->where('project_form.inherit_publications', '=', true)->get();
+        foreach ($forms as $form) {
+            $this->projectFormService->removePublication($project, $form, $publication);
+        }
         return true;
     }
 
