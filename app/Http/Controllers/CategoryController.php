@@ -29,7 +29,7 @@ class CategoryController extends Controller {
         return $category;
     }
 
-    public function update(Form $form, Category $category, Request $request, CategoryService $categoryService) {
+    public function update(Category $category, Request $request, CategoryService $categoryService) {
         $request->validate([
             'name' => 'string|max:255',
             'parent_id' => 'exists:categories,id',
@@ -48,8 +48,7 @@ class CategoryController extends Controller {
             return response()->json(static::INVALID_PARENT, 400);
         }
 
-        $form->refresh();
-        return $form;
+        return $category->refresh();
     }
 
     public function delete(Form $form, Category $category, CategoryService $categoryService) {

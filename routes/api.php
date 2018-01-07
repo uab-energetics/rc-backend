@@ -107,9 +107,9 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::put(     'forms/{form}/questions/{question}', "$forms_ctrl@moveQuestion");
     Route::delete(  'forms/{form}/questions/{question}', "$forms_ctrl@removeQuestion");
     Route::post(    'forms/{form}/categories', "$categories_ctrl@create");
-    Route::put(     'forms/{form}/categories/{category}', "$categories_ctrl@update");
     Route::delete(  'forms/{form}/categories/{category}', "$categories_ctrl@delete");
 
+    Route::put(     '/categories/{category}', "$categories_ctrl@update");
     // questions
     Route::post(    'questions/', "$questions_ctrl@create");
     Route::get(     'questions/{question}', "$questions_ctrl@retrieve");
