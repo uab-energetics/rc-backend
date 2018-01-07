@@ -32,7 +32,7 @@ class ProjectFormService {
 
     public function retrievePublications(Project $project, Form $form, $query = "") {
         $projectForm = $this->getProjectForm($project, $form);
-        return $projectForm->formPublications()->get();
+        return $projectForm->formPublications()->paginate(getPaginationLimit());
     }
 
     public function retrieveEncoders(Project $project, Form $form, $query = "") {
