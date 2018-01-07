@@ -37,7 +37,7 @@ class Response extends Model {
             case RESPONSE_RANGE:
                 return $this->range_min.":".$this->range_max;
             case RESPONSE_NOT_REPORTED:
-                return "Not reported";
+                return "NOT_REPORTED";
             default:
                 return $this->getAttribute($this->type);
         }
