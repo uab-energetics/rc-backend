@@ -51,6 +51,10 @@ class CategoryController extends Controller {
         return $category->refresh();
     }
 
+    public function updateOnForm(Form $form, Category $category, Request $request, CategoryService $categoryService) {
+        return $this->update($category, $request, $categoryService);
+    }
+
     public function delete(Form $form, Category $category, CategoryService $categoryService) {
         $res = $categoryService->deleteCategory($category);
         if ($res === false) {
