@@ -72,8 +72,6 @@ class PublicationController extends Controller {
                 'name' => $row[0],
                 'embedding_url' => $row[1]
             ];
-            $validator = Validator::make($params, self::CREATE_VALIDATION_RULES);
-            if ($validator->fails()) return invalidParamMessage($validator);
             return $params;
         }, $rows);
 
@@ -87,6 +85,8 @@ class PublicationController extends Controller {
 
         DB::beginTransaction();
             foreach ($records as $pubParams) {
+                $validator = Validator::make($pubParams, self::CREATE_VALIDATION_RULES);
+                if ($validator->fails()) return invalidParamMessage($validator);
                 $publication = $this->publicationService->makePublication($pubParams);
                 $projectService->addPublication($project, $publication);
             }
