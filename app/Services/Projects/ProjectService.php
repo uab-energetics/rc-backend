@@ -85,6 +85,12 @@ class ProjectService {
             'project_id' => $project->getKey(),
             'publication_id' => $publication->getKey(),
         ]);
+
+        $forms = $project->forms()->where('project_form.inherit_publications', '=', true)->get();
+        foreach ($forms as $form) {
+            $this->projectFormService->addPublication($project, $form, $publication);
+        }
+
         return $edge;
     }
 

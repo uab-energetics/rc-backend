@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProjectForm extends UniqueJunction {
     protected $table = "project_form";
 
-    protected $fillable = ['project_id', 'form_id', 'task_target_encoder', 'task_target_publication', 'auto_enroll'];
+    protected $fillable = ['project_id', 'form_id', 'task_target_encoder', 'task_target_publication', 'auto_enroll', 'inherit_publications'];
 
     /** @return string[] */
     public function uniqueColumns() {
