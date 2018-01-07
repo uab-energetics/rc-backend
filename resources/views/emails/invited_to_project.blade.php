@@ -1,7 +1,7 @@
 @component('mail::message')
 # You've been invited to collaborate on a project!
 
-{{$user}} has invited to you be a researcher on project: {{$project}}
+{{$user}} has invited you to participate in project: {{$project}}
 
 follow the instructions in the invite link below to get started.
 
