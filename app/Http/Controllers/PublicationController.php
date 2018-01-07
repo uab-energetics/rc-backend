@@ -62,26 +62,15 @@ class PublicationController extends Controller {
     }
 
     public function uploadFromCSV(Project $project, Request $request, ProjectService $projectService){
+        $request->validate([ 'data' => 'required' ]);
+
         $service = new CsvUploadService();
+        $records = $service->parse($request->data);
 
-        $rows = $request->data;
-
-        $fail = 0;
-        $records = array_map(function($row){
-            $params = [
-                'name' => $row[0],
-                'embedding_url' => $row[1]
-            ];
-            $validator = Validator::make($params, self::CREATE_VALIDATION_RULES);
-            if ($validator->fails()) return invalidParamMessage($validator);
-            return $params;
-        }, $rows);
-
-        if($fail){
+        if(!$records){
             return response()->json([
-                'msg' => 'Failed to parse csv. Please check to format and try again.',
-                'details' => $service->fail_message,
-                'original_data' => $request->data
+                'msg' => "Could not parse CSV",
+                'details' => $service->fail_message
             ], 400);
         }
 
