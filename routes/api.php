@@ -152,15 +152,20 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::post(    '/comments/{comment}/reply', "$comment_ctrl@reply");
     Route::put(     '/comments/{comment}', "$comment_ctrl@edit");
     Route::delete(  '/comments/{comment}', "$comment_ctrl@delete");
+
+
+
+
+
+    // error reporting
+    Route::get('/ok', function(){ return 'working'; });
+    Route::get('/error-reporting-test', function(){
+        (new FakeObject())->throwError();
+    });
 });
 
 
 Route::get('/validate-invite', ProjectInvitesController::class."@validateInvitation");
-
-
-Route::get('/error-reporting-test', function(){
-    (new FakeObject())->throwError();
-});
 
 
 

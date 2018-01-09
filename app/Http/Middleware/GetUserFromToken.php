@@ -37,9 +37,6 @@ class GetUserFromToken extends BaseMiddleware {
             return $user;
         });
 
-        /* error reporting */
-        (new \Raven_Client(config('sentry.dsn')))->user_context($user->toArray());
-
         $this->events->fire('tymon.jwt.valid', $user);
 
         return $next($request);

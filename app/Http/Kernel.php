@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\GetUserFromToken;
 use App\Http\Middleware\ProjectFormServiceMiddleware;
+use App\Http\Middleware\SentryUserContext;
 use App\Http\Middleware\Validator;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
