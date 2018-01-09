@@ -46,8 +46,10 @@ class Handler extends ExceptionHandler
     {
         if (app()->bound('sentry') && $this->shouldReport($exception)) {
             $sentry = app('sentry');
-            $sentry->user_context(Auth::user()->toArray());
-            $sentry->captureException($exception);
+            $user = Auth::user();
+            if ($user !== null) {
+                $sentry->user_context($user->toArray());
+            }
         }
 
         parent::report($exception);
