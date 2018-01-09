@@ -67,7 +67,8 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover"
         ],
-        "deploy": "ssh researchcoder.com 'cd /var/www/v3/api.researchcoder.com; git checkout -- .; composer build'",
+        "deploy-prod": "ssh researchcoder.com 'cd /var/www/v3/api.researchcoder.com; git checkout -- .; composer build'",
+        "deploy-dev": "ssh researchcoder.com 'cd /var/www/dev/api.dev.researchcoder.com; git checkout -- .; composer build'",
         "build" : "git pull; composer update -o; php artisan migrate --no-interaction"
     },
     "config": {
