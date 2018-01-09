@@ -66,6 +66,12 @@ function getPaginationLimit(){
     return min(config('custom.pagination_max_size', 500), request('page_size', 500));
 }
 
+/**
+ * @param \Illuminate\Database\Eloquent\Builder $query
+ * @param string $term
+ * @param string[] $columns
+ * @return \Illuminate\Database\Eloquent\Builder
+ */
 function search($query, $term, $columns){
     if(!$term) return $query;
     $query->where($columns[0], 'like', "%$term%");

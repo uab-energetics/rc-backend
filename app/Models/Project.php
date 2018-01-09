@@ -29,4 +29,9 @@ class Project extends Model {
     public function researchers(){
         return $this->belongsToMany(User::class, 'project_researcher', 'project_id', 'researcher_id');
     }
+
+    public function encoders(){
+        return $this->belongsToMany(User::class, 'project_coder', 'project_id', 'coder_id');
+    }
+
 }

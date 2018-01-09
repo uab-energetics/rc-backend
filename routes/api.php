@@ -75,12 +75,15 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::post(    'projects/{project}/publications/csv', "$publications_ctrl@uploadFromCSV");
     Route::post(    'projects/{project}/publications/{publication}', "$projects_ctrl@addPublication");
     Route::delete(  'projects/{project}/publications/{publication}', "$projects_ctrl@removePublication");
-    Route::get(     'projects/{project}/researchers', "$projects_ctrl@getResearchers");
-    Route::post(    'projects/{project}/invite-researcher', "$projects_ctrl@inviteResearcher");
+    Route::get(     'projects/{project}/encoders', "$projects_ctrl@searchEncoders");
+    Route::get(     'projects/{project}/researchers', "$projects_ctrl@searchResearchers");
+    Route::post(    'projects/{project}/researchers', "$projects_ctrl@addResearcher");
+    Route::post(    'projects/{project}/encoders', "$projects_ctrl@addEncoder");
 
     Route::get(     'projects/{project}/forms/{form}', $proj_form_ctrl."@getSettings");
     Route::put(     'projects/{project}/forms/{form}', $proj_form_ctrl."@updateSettings");
     Route::get(     'projects/{project}/forms/{form}/inherit-project-publications', $proj_form_ctrl."@inheritProjectPublications");
+    Route::get(     'projects/{project}/forms/{form}/inherit-project-encoders', $proj_form_ctrl."@inheritProjectEncoders");
     Route::get(     'projects/{project}/forms/{form}/publications', $proj_form_ctrl."@searchPublications");
     Route::post(    'projects/{project}/forms/{form}/publications/{publication}', $proj_form_ctrl."@addPublication");
     Route::post(    'projects/{project}/forms/{form}/publications', $proj_form_ctrl."@addPublications");
@@ -104,8 +107,9 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::put(     'forms/{form}/questions/{question}', "$forms_ctrl@moveQuestion");
     Route::delete(  'forms/{form}/questions/{question}', "$forms_ctrl@removeQuestion");
     Route::post(    'forms/{form}/categories', "$categories_ctrl@create");
-    Route::put(     'forms/{form}/categories/{category}', "$categories_ctrl@update");
+    Route::put(     'forms/{form}/categories/{category}', "$categories_ctrl@updateOnForm");
     Route::delete(  'forms/{form}/categories/{category}', "$categories_ctrl@delete");
+    Route::put(     'categories/{category}', "$categories_ctrl@update");
 
     // questions
     Route::post(    'questions/', "$questions_ctrl@create");
@@ -142,8 +146,10 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get(     '/notifications/mark-read', "$notifications_ctrl@markAllRead");
 
     // invites
-    Route::post(    '/invite-to-project', "$project_invites_ctrl@sendInviteToken");
-    Route::post(    '/redeem-invite-token', "$project_invites_ctrl@redeemInviteToken");
+    Route::post(    '/invite-researcher-to-project', "$project_invites_ctrl@sendResearcherInviteToken");
+    Route::post(    '/redeem-researcher-invite', "$project_invites_ctrl@redeemResearcherInviteToken");
+    Route::post(    '/invite-encoder-to-project', "$project_invites_ctrl@sendEncoderInviteToken");
+    Route::post(    '/redeem-encoder-invite', "$project_invites_ctrl@redeemEncoderInviteToken");
 
     // comments
     Route::post(    '/channels', "$comment_ctrl@createChannel");
@@ -155,7 +161,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 });
 
 
-Route::get('/validate-invite', ProjectInvitesController::class."@validateInvitation");
+Route::get('/validate-researcher-invite', ProjectInvitesController::class."@validateResearcherInvitation");
+Route::get('/validate-encoder-invite', ProjectInvitesController::class."@validateEncoderInvitation");
 
 
 

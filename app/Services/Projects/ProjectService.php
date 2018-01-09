@@ -5,11 +5,13 @@ namespace App\Services\Projects;
 use App\Form;
 use App\FormPublication;
 use App\Project;
+use App\ProjectEncoder;
 use App\ProjectForm;
 use App\ProjectPublication;
 use App\ProjectResearcher;
 use App\Publication;
 use App\Services\Forms\FormService;
+use App\Services\ProjectForms\ProjectFormService;
 use App\User;
 
 class ProjectService {
@@ -47,6 +49,30 @@ class ProjectService {
         ]);
     }
 
+    public function addEncoder(Project $project, User $encoder) {
+        $edge = ProjectEncoder::upsert([
+            'project_id' => $project->getKey(),
+            'coder_id' => $encoder->getKey(),
+        ]);
+
+        $forms = $project->forms()->where('project_form.auto_enroll', '=', true)->get();
+        foreach ($forms as $form) {
+            $this->projectFormService->addEncoder($project, $form, $encoder);
+        }
+
+        return $edge;
+    }
+
+    public function searchResearchers(Project $project, $search = null) {
+        return search($project->researchers(), $search, User::searchable)
+            ->paginate(getPaginationLimit())->toArray()['data'];
+    }
+
+    public function searchEncoders(Project $project, $search = null) {
+        return search($project->encoders(), $search, User::searchable)
+            ->paginate(getPaginationLimit())->toArray()['data'];
+    }
+
     public function addForm (Project $project, Form $form) {
         return ProjectForm::upsert([
             'project_id' => $project->getKey(),
@@ -59,6 +85,12 @@ class ProjectService {
             'project_id' => $project->getKey(),
             'publication_id' => $publication->getKey(),
         ]);
+
+        $forms = $project->forms()->where('project_form.inherit_publications', '=', true)->get();
+        foreach ($forms as $form) {
+            $this->projectFormService->addPublication($project, $form, $publication);
+        }
+
         return $edge;
     }
 
@@ -69,6 +101,11 @@ class ProjectService {
             ->first();
         if ($edge === null) return false;
         $edge->delete();
+
+        $forms = $project->forms()->without(['rootCategory', 'questions'])->where('project_form.inherit_publications', '=', true)->get();
+        foreach ($forms as $form) {
+            $this->projectFormService->removePublication($project, $form, $publication);
+        }
         return true;
     }
 
@@ -78,9 +115,12 @@ class ProjectService {
 
     /** @var FormService */
     private $formService;
+    /** @var ProjectFormService  */
+    protected $projectFormService;
 
-    public function __construct(FormService $formService) {
+    public function __construct(FormService $formService, ProjectFormService $projectFormService) {
         $this->formService = $formService;
+        $this->projectFormService = $projectFormService;
     }
 
     public function getPublications(Project $project, $query = null) {

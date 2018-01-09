@@ -24,6 +24,7 @@ class BranchQuestionsController extends Controller {
 
     function removeQuestion(Branch $branch, Question $question){
         $branch->questionMap()->detach($question->getKey());
+        $branch->responses()->where('question_id', '=', $question->getKey())->delete();
         return $branch->questionmap;
     }
 

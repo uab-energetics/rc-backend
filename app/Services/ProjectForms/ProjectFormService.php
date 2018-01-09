@@ -9,6 +9,7 @@ use App\Form;
 use App\FormEncoder;
 use App\FormPublication;
 use App\Project;
+use App\ProjectEncoder;
 use App\ProjectForm;
 use App\Publication;
 use App\Services\Encodings\AssignmentService;
@@ -31,7 +32,7 @@ class ProjectFormService {
 
     public function retrievePublications(Project $project, Form $form, $query = "") {
         $projectForm = $this->getProjectForm($project, $form);
-        return $projectForm->formPublications()->get();
+        return $projectForm->formPublications()->paginate(getPaginationLimit());
     }
 
     public function retrieveEncoders(Project $project, Form $form, $query = "") {
@@ -43,6 +44,19 @@ class ProjectFormService {
         $projectForm = $this->getProjectForm($project, $form);
         foreach($project->publications()->get() as $publication) {
             $this->doAddPublication($projectForm, $publication);
+        }
+        return true;
+    }
+
+    public function inheritProjectEncoders(Project $project, Form $form) {
+        $projectForm = $this->getProjectForm($project, $form);
+        foreach($project->encoders()->get() as $encoder) {
+            $existing = FormEncoder::query()
+                ->where('project_form_id', '=', $project->getKey())
+                ->where('encoder_id', '=', $encoder->getKey())
+                ->first();
+            if ($existing) continue; //skip encoders already in the project so they don't get more assignments
+            $this->doAddEncoder($projectForm, $encoder);
         }
         return true;
     }

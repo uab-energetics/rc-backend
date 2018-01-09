@@ -9,14 +9,12 @@ use App\Services\Publications\CsvUploadService;
 use App\Services\Publications\PublicationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class PublicationController extends Controller {
 
     public function create(Request $request) {
-        $request->validate([
-            'name' => 'string|required',
-            'embedding_url' => 'url|required',
-        ]);
+        $request->validate(self::CREATE_VALIDATION_RULES);
 
         DB::beginTransaction();
             $publication = $this->publicationService->makePublication($request->all());
@@ -63,29 +61,31 @@ class PublicationController extends Controller {
         return okMessage("Successfully deleted publication");
     }
 
-    public function uploadFromCSV(Project $project, Request $request){
+    public function uploadFromCSV(Project $project, Request $request, ProjectService $projectService){
+        $request->validate([ 'data' => 'required' ]);
+
         $service = new CsvUploadService();
+        $records = $service->parse($request->data);
 
-        $rows = $request->data;
-
-        $fail = 0;
-        $records = array_map(function($row){
-            // TODO - validate
-            return [
-                'name' => $row[0],
-                'embedding_url' => $row[1]
-            ];
-        }, $rows);
-
-        if($fail){
+        if(!$records){
             return response()->json([
-                'msg' => 'Failed to parse csv. Please check to format and try again.',
-                'details' => $service->fail_message,
-                'original_data' => $request->data
+                'msg' => "Could not parse CSV",
+                'details' => $service->fail_message
             ], 400);
         }
 
-        $project->publications()->createMany($records);
+        $validator = Validator::make($records, [
+            '*.name' => 'string|required',
+            '*.embedding_url' => 'url|required',
+        ]);
+        if ($validator->fails()) return invalidParamMessage($validator);
+
+        DB::beginTransaction();
+            foreach ($records as $pubParams) {
+                $publication = $this->publicationService->makePublication($pubParams);
+                $projectService->addPublication($project, $publication);
+            }
+        DB::commit();
 
         return $records;
     }
@@ -97,4 +97,9 @@ class PublicationController extends Controller {
     public function __construct(PublicationService $publicationService) {
         $this->publicationService = $publicationService;
     }
+
+    const CREATE_VALIDATION_RULES = [
+        'name' => 'string|required',
+        'embedding_url' => 'url|required',
+    ];
 }

@@ -5,7 +5,7 @@ namespace App;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class ProjectInviteToken extends Model {
+class ProjectResearcherInviteToken extends Model {
 
     protected $fillable = ['creator_id', 'token_key', 'project_id', 'access_level', 'expires'];
 
@@ -19,7 +19,7 @@ class ProjectInviteToken extends Model {
         $token_key = \Hash::make(str_random(8));
         $token_expires = Carbon::now()->addDays(2);
 
-        return ProjectInviteToken::create([
+        return ProjectResearcherInviteToken::create([
             'creator_id' => $creator_id,
             'project_id' => $project_id,
             'token_key' => $token_key,
@@ -29,10 +29,10 @@ class ProjectInviteToken extends Model {
     }
 
     /**
-     * @return ProjectInviteToken | bool = The database record, or false if the token is invalid
+     * @return ProjectResearcherInviteToken | null = The database record, or false if the token is invalid
      */
     public static function getToken($token_key){
-        return ProjectInviteToken::where([
+        return ProjectResearcherInviteToken::where([
             ['expires', ">", Carbon::now()],
             ['token_key', '=', $token_key]
         ])->first();

@@ -18,7 +18,12 @@ class ProjectFormController extends Controller {
     }
 
     public function updateSettings(Project $project, Form $form, Request $request) {
-        $request->validate(['task_target_encoder' => 'integer|min:0', 'task_target_publication' => 'integer|min:0']);
+        $request->validate([
+            'task_target_encoder' => 'integer|min:0',
+            'task_target_publication' => 'integer|min:0',
+            'auto_enroll' => 'boolean',
+            'inherit_publications' => 'boolean',
+        ]);
         return $this->service->updateSettings($project, $form, $request->all());
     }
 
@@ -52,6 +57,11 @@ class ProjectFormController extends Controller {
     public function inheritProjectPublications(Project $project, Form $form) {
         $this->service->inheritProjectPublications($project, $form);
         return okMessage("Successfully inherited project publications");
+    }
+
+    public function inheritProjectEncoders(Project $project, Form $form) {
+        $this->service->inheritProjectEncoders($project, $form);
+        return okMessage("Successfully inherited project encoders");
     }
 
     public function removePublication(Project $project, Form $form, Publication $publication) {

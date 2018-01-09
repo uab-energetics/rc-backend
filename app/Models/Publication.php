@@ -12,6 +12,6 @@ class Publication extends Model {
 
     protected $fillable = ['name', 'embedding_url'];
 
-    const searchable = ['name'];
+    const searchable = ['name', 'embedding_url'];
 
 }

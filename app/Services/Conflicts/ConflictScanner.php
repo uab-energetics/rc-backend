@@ -78,6 +78,8 @@ class ConflictScanner {
             return false;
         }
         switch ($my_response['type']){
+            case RESPONSE_NOT_REPORTED:
+                return $their_response['type'] === RESPONSE_NOT_REPORTED;
             case RESPONSE_TEXT:
                 return $my_response['txt'] === $their_response['txt'];
             case RESPONSE_BOOL:
