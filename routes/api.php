@@ -159,7 +159,7 @@ Route::get('/validate-invite', ProjectInvitesController::class."@validateInvitat
 
 
 Route::get('/error-reporting-test', function(){
-    DB::select("SELECT * FROM a table that doesn't exist'");
+    (new FakeObject())->throwError();
 });
 
 
