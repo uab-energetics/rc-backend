@@ -158,7 +158,9 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 Route::get('/validate-invite', ProjectInvitesController::class."@validateInvitation");
 
 
-
+Route::get('/error-reporting-test', function(){
+    DB::select("SELECT * FROM a table that doesn't exist'");
+});
 
 
 

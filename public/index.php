@@ -22,6 +22,8 @@ define('LARAVEL_START', microtime(true));
 */
 
 require __DIR__.'/../vendor/autoload.php';
+require __DIR__ . '/../vendor/sentry/sentry/lib/Raven/Autoloader.php'; /* Sentry error reporting: https://docs.sentry.io/clients/php/ */
+Raven_Autoloader::register();
 
 /*
 |--------------------------------------------------------------------------
