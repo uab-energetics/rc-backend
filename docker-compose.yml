@@ -1,0 +1,38 @@
+# THIS IS FOR DEVELOPMENT ONLY
+
+version: '2'
+services:
+  app:
+    container_name: rc-api
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    links:
+      - database
+    depends_on:
+      - database
+    volumes:
+      - ./:/var/www/app
+    env_file:
+      - .env
+    environment:
+      - "DB_PORT=3306"
+      - "DB_HOST=database"
+    ports:
+      - "8080:80"
+
+  database:
+    container_name: rc-db
+    image: mysql
+    volumes:
+      - dbdata:/var/lib/mysql
+    environment:
+      - "MYSQL_DATABASE=researchcoder"
+      - "MYSQL_USER=homestead"
+      - "MYSQL_PASSWORD=secret"
+      - "MYSQL_ROOT_PASSWORD=secret"
+    ports:
+        - "3306:3306"
+
+volumes:
+  dbdata:
