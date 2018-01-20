@@ -11,7 +11,8 @@ class Category extends Model
     protected $with = ['children', 'questions'];
 
     function children(){
-        return $this->hasMany(Category::class, 'parent_id');
+        return $this->hasMany(Category::class, 'parent_id')
+            ->orderBy('name');
     }
 
     function parent() {
@@ -19,7 +20,8 @@ class Category extends Model
     }
 
     function questions() {
-        return $this->belongsToMany(Question::class, 'form_question', 'category_id', 'question_id');
+        return $this->belongsToMany(Question::class, 'form_question', 'category_id', 'question_id')
+            ->orderBy('name');
     }
 
     function form() {
