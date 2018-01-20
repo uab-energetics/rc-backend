@@ -1,27 +1,31 @@
+
 version: '2'
 services:
   app:
-    container_name: rc-api
-    image: vectorweb/research-coder-api
-    build: ./
+    container_name: rc-api-dev
+    build:
+      context: ./
+      dockerfile: dev.dockerfile
     links:
       - database
+    volumes:
+      - ./:/var/www/app
     env_file:
       - .env
     environment:
       - "DB_PORT=3306"
       - "DB_HOST=database"
-      - "MYSQL_DATABASE=research-coder"
+      - "MYSQL_DATABASE=research-coder-dev"
     ports:
       - "8080:80"
 
   database:
-    container_name: rc-db
+    container_name: rc-db-dev
     image: mysql
     volumes:
       - dbdata:/var/lib/mysql
     environment:
-      - "MYSQL_DATABASE=research-coder"
+      - "MYSQL_DATABASE=research-coder-dev"
       - "MYSQL_USER=homestead"
       - "MYSQL_PASSWORD=secret"
       - "MYSQL_ROOT_PASSWORD=secret"

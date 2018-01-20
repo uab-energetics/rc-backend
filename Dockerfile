@@ -9,20 +9,17 @@ COPY vhost.conf /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/app
 
-COPY composer.json ./
-COPY composer.lock ./
+COPY --chown=root:www-data composer.json ./
+COPY --chown=root:www-data composer.lock ./
 RUN export COMPOSER_ALLOW_SUPERUSER=1 && \
-    composer install --no-scripts --no-autoloader
+    composer install --no-scripts --no-autoloader --no-dev
 
-
-COPY . /var/www/app
+COPY --chown=root:www-data . .
 
 RUN export COMPOSER_ALLOW_SUPERUSER=1 && \
     composer dump-autoload -o && \
-    groupmod -g 1000 www-data && \
-    chown -R root:www-data . && \
+\
     chmod -R 755 . && \
-    chmod -R 775 storage && \
-    chmod -R 775 bootstrap/cache
+    chmod -R 775 storage bootstrap/cache
 
 EXPOSE 80
