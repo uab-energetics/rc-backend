@@ -16,6 +16,8 @@
         "laravel/tinker": "~1.0",
         "phpseclib/phpseclib": "^2.0",
         "pusher/pusher-php-server": "^3.0",
+        "sentry/sentry": "^1.8",
+        "sentry/sentry-laravel": "^0.8.0",
         "tymon/jwt-auth": "^0.5.12",
         "yab/laravel-scout-mysql-driver": "^2.0"
     },
@@ -65,7 +67,8 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover"
         ],
-        "deploy": "ssh researchcoder.com 'cd /var/www/v3/api.researchcoder.com; git checkout -- .; composer build'",
+        "deploy-prod": "ssh researchcoder.com 'cd /var/www/v3/api.researchcoder.com; git checkout -- .; composer build'",
+        "deploy-dev": "ssh researchcoder.com 'cd /var/www/dev/api.dev.researchcoder.com; git checkout -- .; composer build'",
         "build" : "git pull; composer update -o; php artisan migrate --no-interaction"
     },
     "config": {

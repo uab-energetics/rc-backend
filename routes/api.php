@@ -168,9 +168,6 @@ Route::get('/validate-encoder-invite', ProjectInvitesController::class."@validat
 
 
 
-
-
-
 /**
 *  ===========================================
 *  MAILABLE PREVIEWS

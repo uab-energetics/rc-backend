@@ -14,6 +14,7 @@ class CategoryController extends Controller {
     public function create(Request $request, CategoryService $categoryService) {
         $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'string',
             'parent_id' => 'required|int|exists:categories,id',
         ]);
 
@@ -32,6 +33,7 @@ class CategoryController extends Controller {
     public function update(Category $category, Request $request, CategoryService $categoryService) {
         $request->validate([
             'name' => 'string|max:255',
+            'description' => 'string',
             'parent_id' => 'exists:categories,id',
         ]);
 
