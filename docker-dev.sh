@@ -10,4 +10,21 @@ chmod -R g+r .
 chmod -R g+w storage/ bootstrap/cache/
 echo permissions set
 
-docker-compose -f docker-compose.dev.yml up --build $@
+run() {
+     docker-compose -f docker-compose.dev.yml up $@
+}
+
+migrate() {
+    docker exec rc-api-dev php artisan migrate -n --seed
+}
+
+if [ "$1" = "--migrate" ]; then {
+    shift 1
+    # filter out any unnecessary -d's
+    run --build $(echo $@ | sed s/\s\?-d//)
+    migrate && \
+    echo Migrated and Seeded database
+    run $@
+}; else
+    run --build $@
+fi
