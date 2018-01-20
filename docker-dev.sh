@@ -6,9 +6,9 @@ cd "${0%/*}"
 export USER_GID=$( id -g $USER )
 echo using group id $USER_GID
 
-chmod -R g+r .
-chmod -R g+w storage/ bootstrap/cache/
-echo permissions set
+chmod -R g+r . && \
+chmod -R g+w storage/ bootstrap/cache/ && \
+echo Set permissions
 
 run() {
      docker-compose -f docker-compose.dev.yml up $@
@@ -21,7 +21,7 @@ migrate() {
 if [ "$1" = "--migrate" ]; then {
     shift 1
     # filter out any unnecessary -d's
-    run --build $(echo $@ | sed s/\s\?-d//)
+    run --build -d $(echo $@ | sed s/-d//)
     migrate && \
     echo Migrated and Seeded database
     run $@
