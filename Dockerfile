@@ -1,9 +1,9 @@
 FROM php:7.1-apache
 
 RUN apt-get update -y && apt-get install -y openssl zip unzip && \
-    docker-php-ext-install pdo pdo_mysql mbstring && \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer; \
+    docker-php-ext-install pdo pdo_mysql mbstring; \
     a2enmod rewrite
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 COPY vhost.conf /etc/apache2/sites-available/000-default.conf
 
@@ -18,7 +18,7 @@ COPY --chown=root:www-data . .
 
 RUN export COMPOSER_ALLOW_SUPERUSER=1 && \
     composer dump-autoload -o && \
-\
+    \
     chmod -R 755 . && \
     chmod -R 775 storage bootstrap/cache
 
