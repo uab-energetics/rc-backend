@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ProjectForm extends UniqueJunction {
     protected $table = "project_form";
@@ -26,11 +27,19 @@ class ProjectForm extends UniqueJunction {
         return $this->belongsTo(Form::class, 'form_id')->without('rootCategory');
     }
 
+    /** @return BelongsToMany */
     public function publications() {
-        return $this->belongsToMany(Publication::class, 'form_publication', 'project_form_id', 'publication_id');
+        return $this->belongsToMany(Publication::class, 'form_publication', 'project_form_id', 'publication_id')
+            ->withPivot('priority');
     }
 
     public function encoders() {
         return $this->belongsToMany(User::class, 'form_encoder', 'project_form_id', 'encoder_id');
+    }
+
+    public static function publicationsSearchable() {
+        $result = Publication::searchable;
+        $result[] = 'priority';
+        return $result;
     }
 }
