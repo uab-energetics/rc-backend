@@ -16,7 +16,8 @@ class EncodingExperimentBranch extends Model {
     }
 
     function questionMap() {
-        return $this->belongsToMany(Question::class, 'branch_questions', 'branch_id', 'question_id');
+        return $this->belongsToMany(Question::class, 'branch_questions', 'branch_id', 'question_id')
+            ->orderBy('name');
     }
 
     function encoding() {
