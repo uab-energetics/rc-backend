@@ -4,28 +4,31 @@ namespace App\Http\Controllers;
 
 use App\EncodingExperimentBranch as Branch;
 use App\Models\Question;
+use App\Services\Encodings\EncodingService;
+use Illuminate\Http\Request;
 
 class BranchQuestionsController extends Controller {
 
-    /**
-     * TODO - validate that the question belongs to... the branch's encoding's form's codebook
-     * addQuestion ( branch_id, question_id ) ->
-     * removeQuestion ( branch_id, question_id ) ->
-     */
+     // TODO - validate that the question belongs to... the branch's encoding's form's codebook
 
-    function getQuestions(Branch $branch){
+    function getQuestions(Branch $branch, Request $request){
+        return $this->service->getBranchQuestions($branch);
+    }
+
+    function addQuestion(Branch $branch, Question $question, Request $request){
+        return $this->service->addBranchQuestion($branch, $question);
+    }
+
+    function removeQuestion(Branch $branch, Question $question, Request $request){
+        $this->service->removeBranchQuestion($branch, $question);
         return $branch->questionmap;
     }
 
-    function addQuestion(Branch $branch, Question $question){
-        $branch->questionMap()->syncWithoutDetaching($question->getKey());
-        return $branch->questionmap;
-    }
+    /** @var EncodingService  */
+    protected $service;
 
-    function removeQuestion(Branch $branch, Question $question){
-        $branch->questionMap()->detach($question->getKey());
-        $branch->responses()->where('question_id', '=', $question->getKey())->delete();
-        return $branch->questionmap;
+    public function __construct(EncodingService $encodingService) {
+        $this->service = $encodingService;
     }
 
 }

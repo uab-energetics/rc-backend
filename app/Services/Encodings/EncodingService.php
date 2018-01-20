@@ -7,11 +7,13 @@ namespace App\Services\Encodings;
 use App\BranchResponse;
 use App\Channel;
 use App\Encoding;
+use App\EncodingExperimentBranch as Branch;
 use App\EncodingExperimentBranch;
 use App\Form;
+use App\Models\Question;
 use App\Models\Response;
 use App\Services\Comments\CommentService;
-use Exception;
+use App\Services\Forms\FormService;
 
 class EncodingService {
 
@@ -32,6 +34,7 @@ class EncodingService {
             'type' => $form->type,
         ]);
 
+        $this->addDefaultBranch($form, $encoding);
         $this->upsertEncodingChannel($encoding);
 
         return $encoding;
@@ -108,6 +111,36 @@ class EncodingService {
         return Encoding::find($encoding_id)->toArray();
     }
 
+    public function addDefaultBranch(Form $form, Encoding $encoding) {
+        $branch = EncodingExperimentBranch::create([
+            'encoding_id' => $encoding->getKey(),
+            'name' => "Constants",
+            'description' => "Automatically generated branch",
+        ]);
+
+        $questions = $this->formService->getQuestions($form);
+        foreach ($questions as $question) {
+            $this->addBranchQuestion($branch, $question);
+        }
+
+        return $branch->refresh();
+    }
+
+    function getBranchQuestions(Branch $branch){
+        return $branch->questionmap;
+    }
+
+    function addBranchQuestion(Branch $branch, Question $question){
+        $branch->questionMap()->syncWithoutDetaching($question->getKey());
+        return $branch->questionmap;
+    }
+
+    function removeBranchQuestion(Branch $branch, Question $question){
+        $branch->questionMap()->detach($question->getKey());
+        $branch->responses()->where('question_id', '=', $question->getKey())->delete();
+        return true;
+    }
+
     public function dispatch( $encoding_action ){
         $result = false;
         switch ($encoding_action['type']){
@@ -144,8 +177,11 @@ class EncodingService {
 
     /** @var PusherService  */
     protected $commentService;
+    /** @var FormService  */
+    protected $formService;
 
-    public function __construct(CommentService $commentService) {
+    public function __construct(CommentService $commentService, FormService $formService) {
         $this->commentService = $commentService;
+        $this->formService = $formService;
     }
 }
