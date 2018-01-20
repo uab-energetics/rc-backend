@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\EncodingExperimentBranch as Branch;
+use App\FormQuestion;
 use App\Models\Question;
 use App\Services\Encodings\EncodingService;
 use Illuminate\Http\Request;
@@ -16,6 +17,17 @@ class BranchQuestionsController extends Controller {
     }
 
     function addQuestion(Branch $branch, Question $question, Request $request){
+        $form = $branch->encoding()->firstOrFail()->form()->firstOrFail();
+        $exists = FormQuestion::query()
+            ->where('form_id', '=', $form->getKey())
+            ->where('question_id', '=', $question->getKey())
+            ->first() !== null;
+        if ($exists === false) {
+            return response()->json([
+                'status' => 'INVALID_QUESTION',
+                'msg' => "The specified question must be in the encoding's form"
+            ], 400);
+        }
         return $this->service->addBranchQuestion($branch, $question);
     }
 
