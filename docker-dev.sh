@@ -4,7 +4,13 @@
 cd "${0%/*}"
 
 export USER_GID=$( id -g $USER )
-echo using group id $USER_GID
+echo Using group id $USER_GID
+
+ls .env > /dev/null 2> /dev/null
+if [ $? = 2 ]; then {
+    cp .env.example .env && \
+    echo Created environment file
+}; fi
 
 chmod -R g+r . && \
 chmod -R g+w storage/ bootstrap/cache/ && \
