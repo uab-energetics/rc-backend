@@ -1,13 +1,14 @@
 
-version: '2'
+version: '2.1'
 services:
   app:
     container_name: rc-api-dev
-    build:
-      context: ./
-      dockerfile: dev.dockerfile
+    image: vectorweb/research-coder-api
     links:
       - database
+    depends_on:
+      database:
+        condition: service_healthy
     volumes:
       - ./:/var/www/app
     env_file:
@@ -24,6 +25,11 @@ services:
     image: mysql
     volumes:
       - rc-db-dev:/var/lib/mysql
+    healthcheck:
+      test: mysql -u homestead --password=secret -e "exit" research-coder
+      interval: 3s
+      retries: 3
+      timeout: 10s
     environment:
       - "MYSQL_DATABASE=research-coder"
       - "MYSQL_USER=homestead"
