@@ -3,6 +3,7 @@
 Backend supporting <a href="https://researchcoder.com">researchcoder.com</a>.
   
 ## Installation
+The following tutorial is for local development only. Do not use it for a production deployment.
 
 #### Docker (the easy way)
 
@@ -23,3 +24,11 @@ Start the development server, opting to run the database migrations. If you didn
 ~~~
 
 
+## Daily use
+
+#### Docker
+
+Start up the docker containers with, optionally passing in any arguments that `docker-compse up` accepts. Migrate the database with `--migrate`. The `--down` switch maps to `docker-compose down` and accepts its extra arguments.
+~~~
+./docker-dev.sh
+~~~
