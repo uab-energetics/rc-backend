@@ -18,7 +18,7 @@ git clone https://github.com/uab-energetics/research-coder-api
 cd research-coder-api
 ~~~
 
-Start the development server, opting to run the database migrations. If you didn't add your user to the docker group, you may need to prefix with `sudo`:
+Start the development server, opting to run the database migrations. If you didn't add your user to the docker group, you may need to prefix with `sudo`
 ~~~
 ./docker-dev.sh --migrate
 ~~~
