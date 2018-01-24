@@ -28,7 +28,7 @@ Start the development server, opting to run the database migrations. If you didn
 
 ### Docker
 
-Start up the docker containers with, optionally passing in any arguments that `docker-compse up` accepts. Migrate the database with `--migrate`. The `--down` switch maps to `docker-compose down` and accepts its extra arguments.
+Start up the docker containers with the following command, optionally passing in any arguments that `docker-compse up` accepts. Migrate the database with `--migrate`. The `--down` switch maps to `docker-compose down` and accepts its extra arguments. This will start a local server on `http://localhost:8080`
 ~~~
 ./docker-dev.sh
 ~~~
