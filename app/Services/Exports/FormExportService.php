@@ -41,28 +41,28 @@ class FormExportService extends AbstractExportService {
             case "user_name":
                 return $this->branchGetUser($rowModel['id'])['name'];
             default:
-                return false;
+                return null;
         }
     }
 
     private function branchGetUser($branch_id) {
         $branch = EncodingExperimentBranch::find($branch_id);
-        if ($branch === null) return false;
+        if ($branch === null) return null;
         return $branch->encoding->owner->toArray();
     }
 
     private function branchGetResponse( $rowModel, $question_id ){
         $branch = EncodingExperimentBranch::find($rowModel['id']);
-        if ($branch === null) return false;
+        if ($branch === null) return null;
         /** @var Response $response */
         $response = $branch->responses()->where('question_id', '=', $question_id)->first();
-        if ($response === null) return false;
+        if ($response === null) return null;
         return $response->toAtomic();
     }
 
     private function branchGetPublication($branch_id) {
         $branch = EncodingExperimentBranch::find($branch_id);
-        if ($branch === null) return false;
+        if ($branch === null) return null;
         return $branch->encoding->publication->toArray();
     }
 }

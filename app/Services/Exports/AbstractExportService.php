@@ -23,9 +23,8 @@ abstract class AbstractExportService {
     protected function mapModelToRow($headers, $rowModel){
         $row = [];
         for($i = 0; $i < count($headers); ++$i){
-            $cell = FormExportService::NO_RESPONSE;
-            $res = $this->lookupValue($rowModel, $headers[$i]);
-            if($res) $cell = $res;
+            $cell = $this->lookupValue($rowModel, $headers[$i]);
+            if($cell === null) $cell = FormExportService::NO_RESPONSE;
             array_push($row, $cell);
         }
         return $row;
@@ -38,7 +37,7 @@ abstract class AbstractExportService {
      *
      * @param $rowModel - the object representing the table row.
      * @param $header - the header to look for
-     * @return string | null - returns the content of this cell for the given header. If 'false', the 'NO_RESPONSE' constant is used.
+     * @return string | null - returns the content of this cell for the given header. If null, the 'NO_RESPONSE' constant is used.
      */
     abstract protected function lookupValue($rowModel, $header);
 }
