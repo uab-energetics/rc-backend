@@ -6,9 +6,11 @@ namespace App\Services\Forms;
 
 use App\Category;
 use App\Encoding;
+use App\Events\FormQuestionRemoved;
 use App\Form;
 use App\FormQuestion;
 use App\Models\Question;
+use App\Services\Encodings\EncodingService;
 use App\Services\Exports\FormExportService;
 use App\Services\Questions\QuestionService;
 
@@ -86,10 +88,9 @@ class FormService {
         if ($edge === null) {
             return false;
         }
+
         $edge->delete();
-
-        $this->questionService->deleteQuestionIfDangling($question);
-
+        event( new FormQuestionRemoved($form, $question) );
         return true;
     }
 
@@ -166,12 +167,9 @@ class FormService {
 
     /** @var FormExportService  */
     protected $formExportService;
-    /** @var QuestionService  */
-    protected $questionService;
 
-    public function __construct(FormExportService $formExportService, QuestionService $questionService) {
+    public function __construct(FormExportService $formExportService) {
         $this->formExportService = $formExportService;
-        $this->questionService = $questionService;
     }
 
 }

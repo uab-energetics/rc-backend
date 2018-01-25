@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\FormQuestionRemoved;
+use App\Listeners\FormQuestionRemovedListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -18,6 +20,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\CommentUpdate' => [
             'App\Listeners\CommentsListener'
+        ],
+        FormQuestionRemoved::class => [
+            FormQuestionRemovedListener::class,
         ]
     ];
 

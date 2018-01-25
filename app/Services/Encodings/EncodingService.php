@@ -61,6 +61,12 @@ class EncodingService {
         return $existing;
     }
 
+    public function removeQuestion(Encoding $encoding, Question $question) {
+        foreach ($encoding->experimentBranches()->get() as $branch) {
+            $this->removeBranchQuestion($branch, $question);
+        }
+    }
+
     function recordBranch( $encoding_id, $branch ){
         $encoding = Encoding::find($encoding_id);
         if(!$encoding || !$branch) return false;
