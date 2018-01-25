@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Form;
 use App\Traits\SearchableColumns;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
@@ -26,6 +27,10 @@ class Question extends Model {
 
     function accepts(){
         return $this->hasMany(AcceptsFormat::class, 'question_id');
+    }
+
+    public function forms() {
+        return $this->belongsToMany(Form::class, 'form_question', 'question_id', 'form_id');
     }
 
     /* helpers */

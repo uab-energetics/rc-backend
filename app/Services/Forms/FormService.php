@@ -10,6 +10,7 @@ use App\Form;
 use App\FormQuestion;
 use App\Models\Question;
 use App\Services\Exports\FormExportService;
+use App\Services\Questions\QuestionService;
 
 class FormService {
 
@@ -86,6 +87,9 @@ class FormService {
             return false;
         }
         $edge->delete();
+
+        $this->questionService->deleteQuestionIfDangling($question);
+
         return true;
     }
 
@@ -162,9 +166,12 @@ class FormService {
 
     /** @var FormExportService  */
     protected $formExportService;
+    /** @var QuestionService  */
+    protected $questionService;
 
-    public function __construct(FormExportService $formExportService) {
+    public function __construct(FormExportService $formExportService, QuestionService $questionService) {
         $this->formExportService = $formExportService;
+        $this->questionService = $questionService;
     }
 
 }
