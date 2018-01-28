@@ -47,6 +47,10 @@ class User extends Authenticatable {
         return $this->belongsToMany(ProjectForm::class, 'form_encoder', 'encoder_id', 'project_form_id');
     }
 
+    public function linkedSocialAccounts() {
+        return $this->hasMany(LinkedSocialAccount::class);
+    }
+
     const searchable = ['name', 'email'];
 
 }
