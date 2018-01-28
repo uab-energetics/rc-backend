@@ -49,12 +49,11 @@ class ImportV2 extends Command {
             }
             /** @var Form $form */
             $form = $this->makeForm($v2Project);
-            echo $form->name . PHP_EOL;
+            echo PHP_EOL . $form->name . PHP_EOL;
 
             $categoryMap = $this->makeCategories($form->rootCategory()->first(), $v2Project['structure']);
 
             $questions = $this->makeQuestions($form, $categoryMap, $v2Project['structure']);
-
 
 //            echo json_encode (Form::find($form->getKey())) . PHP_EOL . PHP_EOL;
         }
@@ -63,7 +62,11 @@ class ImportV2 extends Command {
     }
 
     protected function v2ProjectValidator($v2Project) {
-        return Validator::make($v2Project, []);
+        return Validator::make($v2Project, [
+            'name' => 'required|string',
+            'description' => 'required|string',
+            'structure' => 'required',
+        ]);
     }
 
     protected function makeForm($v2Project) {
@@ -96,16 +99,11 @@ class ImportV2 extends Command {
         return $result;
     }
 
-    /**
-     * @param Form $form
-     * @param Category[] $categories
-     * @param $v2Structure
-     */
     protected function makeQuestions(Form $form, $categoryMap, $v2Structure) {
         $variables = array_filter($v2Structure['questions'], function ($variable) {return $variable !== null; });
-        foreach ($variables as $variable) {
 
-            $questionParams = $this->convertVariable($variable);
+        foreach ($variables as $variable) {
+            $questionParams = $this->getQuestionParams($variable);
             $question = $this->questionService->makeQuestion($questionParams);
 
             $category = getOrDefault($categoryMap[$variable['parent']], null);
@@ -113,17 +111,21 @@ class ImportV2 extends Command {
         }
     }
 
+    // Guarantees that creating categories in the order of the result  won't break the parent_id foreign key constraint
     private function getDomainMap(array $domains) {
         $domains = array_filter($domains, function ($domain) { return $domain !== null; });
+
         $result = [];
         foreach ($domains as $i => $domain) {
             if (preg_match("/^domains.*/", $domain['parent'])) {
+                //we're not interested in children domains
                 continue;
             }
             $domain['parent'] = null;
             $result[$domain['_id']] = $domain;
         }
 
+        //map all of the children domains
         $loopCounter = 0;
         while (count($result) < count($domains)) {
             foreach ($domains as $domain) {
@@ -144,18 +146,18 @@ class ImportV2 extends Command {
         return $result;
     }
 
-    private function convertVariable($variable) {
+    private function getQuestionParams($v2Variable) {
         $result = [
-            'name' => $variable['name'],
-            'description' => $variable['tooltip'],
-            'prompt' => $variable['question'],
-            'type' => $this->typeMap[$variable['type']],
-            'true_option' => getOrDefault($variable['trueOption'], null),
-            'false_option' => getOrDefault($variable['falseOption'], null),
+            'name' => $v2Variable['name'],
+            'description' => $v2Variable['tooltip'],
+            'prompt' => $v2Variable['question'],
+            'type' => $this->typeMap[$v2Variable['type']],
+            'true_option' => getOrDefault($v2Variable['trueOption'], null),
+            'false_option' => getOrDefault($v2Variable['falseOption'], null),
         ];
         $result['default_format'] = $result['type'];
         $result['accepts'] = [['type' => $result['type']]];
-        $result['options'] = $this->transformOptions( getOrDefault($variable['options'], []) );
+        $result['options'] = $this->transformOptions( getOrDefault($v2Variable['options'], []) );
 
         return $result;
     }
