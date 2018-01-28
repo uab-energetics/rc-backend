@@ -122,6 +122,7 @@ class ImportV2 extends Command {
             $loopCounter++;
             if ($loopCounter > 1000){
                 foreach ($domains as $i => $domain) {
+                    if (isset( $result[$domain['_id']] )) continue;
                     $domain['parent'] = null;
                     $result[$domain['_id']] = $domain;
                 }
