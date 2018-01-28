@@ -15,7 +15,7 @@ services:
     environment:
       - "DB_PORT=3306"
       - "DB_HOST=database"
-      - "MYSQL_DATABASE=research-coder"
+      - "MYSQL_DATABASE=research_coder"
     ports:
       - "8080:80"
 
@@ -25,7 +25,7 @@ services:
     volumes:
       - rc-db-dev:/var/lib/mysql
     environment:
-      - "MYSQL_DATABASE=research-coder"
+      - "MYSQL_DATABASE=research_coder"
       - "MYSQL_USER=homestead"
       - "MYSQL_PASSWORD=secret"
       - "MYSQL_ROOT_PASSWORD=secret"

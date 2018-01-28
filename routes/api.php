@@ -2,6 +2,7 @@
 
 use App\Form;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\Auth\SocialAccountController;
 use App\Http\Controllers\BranchQuestionsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentsController;
@@ -30,6 +31,9 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('login', AuthController::class."@login");
     Route::post('register', AuthController::class."@register");
 });
+
+Route::get('login/{provider}',          SocialAccountController::class.'@redirectToProvider');
+Route::get('login/{provider}/callback', SocialAccountController::class.'@handleProviderCallback');
 
 
 Route::group(['middleware' => ['jwt.auth']], function () {
