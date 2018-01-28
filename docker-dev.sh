@@ -50,7 +50,7 @@ export USER_UID=$( ls -dn . | awk -F " " '{print $3}' )
 export USER_GID=$( ls -dn . | awk -F " " '{print $4}' )
 echo using user id $USER_UID and group id $USER_GID
 
-# Ensure that the .env exists
+# Ensure that the .env.api exists
 ls .env > /dev/null 2> /dev/null
 if [ $? = 2 ]; then {
   cp .env.example .env && \

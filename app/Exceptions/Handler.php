@@ -68,7 +68,8 @@ class Handler extends ExceptionHandler
         if ($e instanceof NotFoundHttpException) {
             return response()->json([
                 'status' => "URL_NOT_FOUND",
-                'msg' => "This is not the route you are looking for"
+                'msg' => "This is not the route you are looking for",
+                'details' => \Request::fullUrl()
             ], 404);
         }
         if ($e instanceof ValidationException) {

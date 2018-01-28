@@ -7,7 +7,7 @@ services:
     links:
       - database
     env_file:
-      - .env
+      - .env.api
     environment:
       - "DB_PORT=3306"
       - "DB_HOST=database"
