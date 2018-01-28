@@ -24,6 +24,17 @@ class ImportV2 extends Command {
      */
     protected $description = 'Imports V2 projects as V3 forms';
 
+    /**
+     * Execute the console command.
+     * @return mixed
+     */
+    public function handle() {
+        $fileName = $this->argument('file');
+        $json = file_get_contents($fileName);
+        $projects = json_decode($json, true);
+        $this->import($projects);
+    }
+
     protected function import(array $v2Projects) {
         $failures = [];
         DB::beginTransaction();
@@ -45,7 +56,7 @@ class ImportV2 extends Command {
             $questions = $this->makeQuestions($form, $categoryMap, $v2Project['structure']);
 
 
-            echo json_encode (Form::find($form->getKey())) . PHP_EOL . PHP_EOL;
+//            echo json_encode (Form::find($form->getKey())) . PHP_EOL . PHP_EOL;
         }
         DB::commit();
         echo "Success!" . PHP_EOL;
@@ -165,17 +176,6 @@ class ImportV2 extends Command {
         'select' => RESPONSE_SELECT,
         'multiselect' => RESPONSE_MULTI_SELECT,
     ];
-
-    /**
-     * Execute the console command.
-     * @return mixed
-     */
-    public function handle() {
-        $fileName = $this->argument('file');
-        $json = file_get_contents($fileName);
-        $projects = json_decode($json, true);
-        $this->import($projects);
-    }
 
 
     /** @var FormService  */
