@@ -1,6 +1,7 @@
 #!/bin/sh
 
 COMPOSE_FILE=docker-compose.dev.yml
+ENV_FILE=.env.api
 
 ### Declare functions for later use
 
@@ -51,9 +52,9 @@ export USER_GID=$( ls -dn . | awk -F " " '{print $4}' )
 echo using user id $USER_UID and group id $USER_GID
 
 # Ensure that the .env.api exists
-ls .env > /dev/null 2> /dev/null
+ls $ENV_FILE > /dev/null 2> /dev/null
 if [ $? = 2 ]; then {
-  cp .env.example .env && \
+  cp .env.example $ENV_FILE && \
   echo created environment file
 }; fi
 
