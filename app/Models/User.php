@@ -43,6 +43,10 @@ class User extends Authenticatable {
         return $this->hasMany(Encoding::class, 'owner_id');
     }
 
+    public function tasks() {
+        return $this->hasMany(EncodingTask::class, 'encoder_id');
+    }
+
     public function projectFormsEncoder() {
         return $this->belongsToMany(ProjectForm::class, 'form_encoder', 'encoder_id', 'project_form_id');
     }
