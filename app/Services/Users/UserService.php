@@ -26,8 +26,9 @@ class UserService {
 
     public function getEncodings(User $user) {
         return $user->encodings()
+            ->without(['experimentBranches', 'simpleResponses'])
             ->with(['publication', 'form' => function ($query) {
-                $query->without('rootCategory');
+                $query->without(['rootCategory', 'questions']);
             }])
             ->get();
     }
