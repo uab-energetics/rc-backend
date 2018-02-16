@@ -24,10 +24,7 @@ class PublicationController extends Controller {
     }
 
     public function createInProject(Project $project, Request $request, ProjectService $projectService) {
-        $request->validate([
-            'name' => 'string|required',
-            'embedding_url' => 'url|required',
-        ]);
+        $request->validate(self::CREATE_VALIDATION_RULES);
 
         DB::beginTransaction();
             $publication = $this->publicationService->makePublication($request->all());
@@ -45,6 +42,7 @@ class PublicationController extends Controller {
         $request->validate([
             'name' => 'string',
             'embedding_url' => 'url',
+            'source_id' => 'string',
         ]);
 
         DB::beginTransaction();
@@ -77,6 +75,7 @@ class PublicationController extends Controller {
         $validator = Validator::make($records, [
             '*.name' => 'string|required',
             '*.embedding_url' => 'url|required',
+            '*.source_id' => 'string|required',
         ]);
         if ($validator->fails()) return invalidParamMessage($validator);
 
@@ -101,5 +100,6 @@ class PublicationController extends Controller {
     const CREATE_VALIDATION_RULES = [
         'name' => 'string|required',
         'embedding_url' => 'url|required',
+        'source_id' => 'string'
     ];
 }
