@@ -46,6 +46,8 @@ class FormExporter extends AbstractExportService {
                 return $this->getEncodingPublication($encoding)['id'];
             case "publication_name":
                 return $this->getEncodingPublication($encoding)['name'];
+            case "publication_source_id":
+                return $this->getEncodingPublication($encoding)['source_id'];
             case "user_id":
                 return $this->getEncodingUser($encoding)['id'];
             case "user_name":
@@ -84,6 +86,7 @@ class FormExporter extends AbstractExportService {
     protected function generateFormHeaders() {
         $result = [
             self::header("Publication ID", 'publication_id'),
+            self::header("Publication Source ID", 'publication_source_id'),
             self::header("Publication Name", 'publication_name'),
             self::header("User ID", 'user_id'),
             self::header("User Name", 'user_name'),
