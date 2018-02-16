@@ -100,6 +100,6 @@ class PublicationController extends Controller {
     const CREATE_VALIDATION_RULES = [
         'name' => 'string|required',
         'embedding_url' => 'url|required',
-        'source_id' => 'string'
+        'source_id' => 'string|nullable'
     ];
 }
