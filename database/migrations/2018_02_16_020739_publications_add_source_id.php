@@ -22,7 +22,6 @@ class PublicationsAddSourceId extends Migration {
                 continue;
             }
             $publication->source_id = "PMC" . $pmid;
-            echo $publication->source_id . PHP_EOL;
             $publication->save();
         }
 
@@ -30,7 +29,7 @@ class PublicationsAddSourceId extends Migration {
     }
 
     private function tryParsePMC($embed_url) {
-        $expressions = ["/pubmed\/(\d+)/", "/PMC(\d+)/"];
+        $expressions = ["/pubmed\/(\d+)/", "/PMC(\d+)/"]; //each of these is assumed to have at least one capture
 
         foreach ($expressions as $expr) {
             $matches = [];
