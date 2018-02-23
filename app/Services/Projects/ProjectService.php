@@ -110,7 +110,7 @@ class ProjectService {
     }
 
     public function getForms(Project $project) {
-        return $project->forms()->without('rootCategory')->get();
+        return $project->forms()->without(['rootCategory', 'questions'])->get();
     }
 
     /** @var FormService */
