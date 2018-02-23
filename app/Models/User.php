@@ -40,7 +40,7 @@ class User extends Authenticatable {
     }
 
     public function encodings() {
-        return $this->hasMany(Encoding::class, 'owner_id');
+        return $this->belongsToMany(Encoding::class, 'encoding_tasks', 'encoder_id', 'encoding_id');
     }
 
     public function tasks() {

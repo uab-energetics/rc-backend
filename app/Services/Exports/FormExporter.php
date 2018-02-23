@@ -75,7 +75,13 @@ class FormExporter extends AbstractExportService {
     }
 
     protected function getEncodingUser(Encoding $encoding) {
-        return $encoding->owner;
+        if (count($encoding->owners) > 0) {
+            return $encoding->owners[0];
+        }
+        return [
+            'id' => '-1',
+            'name' => 'NO_USER'
+        ];
     }
 
     protected function getEncodingPublication(Encoding $encoding) {
@@ -100,7 +106,7 @@ class FormExporter extends AbstractExportService {
 
     protected function getEncodings() {
         return $this->form->encodings()
-            ->with(['publication', 'owner'])
+            ->with(['publication', 'owners'])
             ->get();
     }
 

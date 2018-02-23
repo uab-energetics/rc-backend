@@ -31,7 +31,6 @@ class EncodingService {
         $encoding = Encoding::create([
             'form_id' => $form_id,
             'publication_id' => $publication_id,
-            'owner_id' => $user_id,
             'type' => $form->type,
         ]);
 
@@ -41,7 +40,7 @@ class EncodingService {
     }
 
     public function updateEncoding(Encoding $encoding, $params) {
-        batchUnset($params, ['owner_id', 'publication_id', 'form_id', 'type']);
+        batchUnset($params, ['publication_id', 'form_id', 'type']);
         return $encoding->update($params);
     }
 
