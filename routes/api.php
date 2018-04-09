@@ -78,7 +78,9 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get(     'projects/{project}/encoders', "$projects_ctrl@searchEncoders");
     Route::get(     'projects/{project}/researchers', "$projects_ctrl@searchResearchers");
     Route::post(    'projects/{project}/researchers', "$projects_ctrl@addResearcher");
+    Route::delete(  'projects/{project}/researchers/{user}', "$projects_ctrl@removeResearcher");
     Route::post(    'projects/{project}/encoders', "$projects_ctrl@addEncoder");
+    Route::delete(  'projects/{project}/encoders/{user}', "$projects_ctrl@removeEncoder");
 
     Route::get(     'projects/{project}/forms/{form}', $proj_form_ctrl."@getSettings");
     Route::put(     'projects/{project}/forms/{form}', $proj_form_ctrl."@updateSettings");

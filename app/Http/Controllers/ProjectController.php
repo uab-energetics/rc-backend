@@ -93,6 +93,11 @@ class ProjectController extends Controller {
         ], 200);
     }
 
+    public function removeResearcher(Project $project, User $user) {
+        $this->service->removeResearcher($project, $user);
+        return okMessage("Successfully removed researcher");
+    }
+
     public function addEncoder(Project $project, Request $request) {
         $request->validate(['user_id' => 'exists:users,id']);
         $user = User::find($request->user_id);
@@ -104,6 +109,11 @@ class ProjectController extends Controller {
 
         $user->notify(new InvitedToProject($project->id, $request->notification_payload));
         return okMessage("User added to project");
+    }
+
+    public function removeEncoder(Project $project, User $user) {
+        $this->service->removeEncoder($project, $user);
+        return okMessage("Successfully removed encoder");
     }
 
     public function searchResearchers(Project $project, Request $request){

@@ -75,6 +75,12 @@ class Handler extends ExceptionHandler
         if ($e instanceof ValidationException) {
             return invalidParamMessage($e->validator);
         }
+        if ($e instanceof ProjectResearcherCountException) {
+            return response()->json([
+                'status' => 'PROJECT_RESEARCHER_COUNT',
+                'msg' => "Projects must have at least one researcher"
+            ], 400);
+        }
 
         return $this->prepareJsonResponse($request, $e);
     }
