@@ -83,8 +83,8 @@ class ProjectFormController extends Controller {
         return okMessage("Successfully added encoders");
     }
 
-    public function removeEncoder(Project $project, Form $form, User $encoder) {
-        $this->service->removeEncoder($project, $form, $encoder);
+    public function removeEncoder(Project $project, Form $form, User $user) {
+        $this->service->removeEncoder($project, $form, $user);
         return okMessage("Successfully removed encoder");
     }
 

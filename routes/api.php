@@ -91,7 +91,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get(     'projects/{project}/forms/{form}/encoders', $proj_form_ctrl."@searchEncoders");
     Route::post(    'projects/{project}/forms/{form}/encoders/{user}', $proj_form_ctrl."@addEncoder");
     Route::post(    'projects/{project}/forms/{form}/encoders', $proj_form_ctrl."@addEncoders");
-    Route::delete(  'projects/{project}/forms/{form}/encoders', $proj_form_ctrl."@removeEncoder");
+    Route::delete(  'projects/{project}/forms/{form}/encoders/{user}', $proj_form_ctrl."@removeEncoder");
     Route::post(    'projects/{project}/forms/{form}/encoders/{encoder}/request-tasks', $proj_form_ctrl."@requestTasks");
 
 
