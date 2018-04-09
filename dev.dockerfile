@@ -1,8 +1,7 @@
 FROM php:7.1
 
-RUN apt-get update -y && apt-get install -y openssl mysql-client zip unzip libpng-dev libjpeg-dev libwebp-dev && \
-    docker-php-ext-configure gd --with-jpeg-dir=/usr/include/ && \
-    docker-php-ext-install pdo pdo_mysql mbstring gd
+RUN apt-get update -y && apt-get install -y openssl mysql-client zip unzip && \
+    docker-php-ext-install pdo pdo_mysql mbstring
 
 RUN mkdir -p /.config/psysh /.composer && \
     chmod -R 777 /.config /.composer
