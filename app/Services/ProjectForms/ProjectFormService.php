@@ -40,6 +40,12 @@ class ProjectFormService {
         return $projectForm->encoders()->get();
     }
 
+    public function getTasksByUser(ProjectForm $projectForm, User $user) {
+        return $projectForm->tasks()
+            ->where('encoder_id', '=', $user->getKey())
+            ->get();
+    }
+
     public function inheritProjectPublications(Project $project, Form $form) {
         $projectForm = $this->getProjectForm($project, $form);
         foreach($project->publications()->get() as $publication) {
@@ -177,7 +183,15 @@ class ProjectFormService {
             ->where('project_form_id', '=', $projectForm->getKey())
             ->where('encoder_id', '=', $encoder->getKey())
             ->firstOrFail();
+        $this->deactivateUserTasks($projectForm, $encoder);
         return $existing->delete();
+    }
+
+    protected function deactivateUserTasks(ProjectForm $projectForm, User $user) {
+        $tasks = $this->getTasksByUser($projectForm, $user);
+        foreach ($tasks as $task) {
+            $task->update(['active' => false]);
+        }
     }
 
     protected function assignNextTasks(ProjectForm $projectForm, User $encoder, $count) {
