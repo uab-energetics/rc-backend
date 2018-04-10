@@ -79,7 +79,7 @@ class Handler extends ExceptionHandler
             return response()->json([
                 'status' => 'PROJECT_RESEARCHER_COUNT',
                 'msg' => "Projects must have at least one researcher"
-            ], 400);
+            ], 403);
         }
 
         return $this->prepareJsonResponse($request, $e);
