@@ -76,6 +76,11 @@ class ProjectService {
     public function removeEncoder(Project $project, User $user) {
         $edge = $this->getEncoderEdge($project->getKey(), $user->getKey());
         $edge->delete();
+
+        $forms = $project->forms()->without(['rootCategory', 'questions'])->get();
+        foreach ($forms as $form) {
+            $this->projectFormService->removeEncoder($project, $form, $user);
+        }
     }
 
     public function searchResearchers(Project $project, $search = null) {

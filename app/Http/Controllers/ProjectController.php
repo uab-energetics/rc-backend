@@ -112,7 +112,9 @@ class ProjectController extends Controller {
     }
 
     public function removeEncoder(Project $project, User $user) {
-        $this->service->removeEncoder($project, $user);
+        DB::beginTransaction();
+            $this->service->removeEncoder($project, $user);
+        DB::commit();
         return okMessage("Successfully removed encoder");
     }
 
