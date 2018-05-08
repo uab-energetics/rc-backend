@@ -20,7 +20,7 @@ services:
 
   database:
     container_name: rc-db-dev
-    image: mysql
+    image: mysql:5.7
     volumes:
       - rc-db-dev:/var/lib/mysql
     environment:
