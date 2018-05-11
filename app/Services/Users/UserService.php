@@ -48,7 +48,6 @@ class UserService {
         return $user->projectFormsEncoder()
             ->with(['form' => function ($query) {
                 $query->without(['questions', 'rootCategory']);
-                $query->withTrashed();
             },
                     'project'])
             ->get();
