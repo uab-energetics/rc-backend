@@ -69,7 +69,9 @@ class FormController extends Controller {
     }
 
     public function delete(Form $form) {
-        $this->formService->deleteForm($form);
+        DB::beginTransaction();
+            $this->formService->deleteForm($form);
+        DB::commit();
         return okMessage("Successfully deleted form");
     }
 

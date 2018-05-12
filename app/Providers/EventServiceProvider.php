@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Events\EncodingCreated;
+use App\Events\FormDeleted;
 use App\Events\FormQuestionRemoved;
 use App\Listeners\EncodingCreatedListener;
+use App\Listeners\FormDeletedListener;
 use App\Listeners\FormQuestionRemovedListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -28,6 +30,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         EncodingCreated::class => [
             EncodingCreatedListener::class,
+        ],
+        FormDeleted::class => [
+            FormDeletedListener::class,
         ],
     ];
 

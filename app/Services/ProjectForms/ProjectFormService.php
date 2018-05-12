@@ -19,6 +19,13 @@ use Illuminate\Support\Facades\DB;
 
 class ProjectFormService {
 
+    public function handleFormDeleted(Form $form) {
+        $projectForms = $this->getProjectFormsFromForm($form)->get();
+        foreach ($projectForms as $projectForm) {
+            $this->doDelete($projectForm);
+        }
+    }
+
     public function getSettings(Project $project, Form $form) {
         return $projectForm = $this->getProjectForm($project, $form);
     }
@@ -32,12 +39,12 @@ class ProjectFormService {
 
     public function retrievePublications(Project $project, Form $form, $query = "") {
         $projectForm = $this->getProjectForm($project, $form);
-        return $projectForm->formPublications()->paginate(getPaginationLimit());
+        return $this->doRetrievePublications($projectForm);
     }
 
     public function retrieveEncoders(Project $project, Form $form, $query = "") {
         $projectForm = $this->getProjectForm($project, $form);
-        return $projectForm->encoders()->get();
+        return $this->doRetrieveEncoders($projectForm);
     }
 
     public function inheritProjectPublications(Project $project, Form $form) {
@@ -85,6 +92,16 @@ class ProjectFormService {
     public function removePublication(Project $project, Form $form, Publication $publication) {
         $projectForm = $this->getProjectForm($project, $form);
         return $this->doRemovePublication($projectForm, $publication);
+    }
+
+    public function removeAllPublications(Project $project, Form $form) {
+        $projectForm = $this->getProjectForm($project, $form);
+        $this->doRemoveAllPublications($projectForm);
+    }
+
+    public function removePublications(Project $project, Form $form, $publications) {
+        $projectForm = $this->getProjectForm($project, $form);
+        $this->doRemovePublications($publications);
     }
 
     public function addEncoders(Project $project, Form $form, $encoders) {
@@ -146,6 +163,28 @@ class ProjectFormService {
         return $task;
     }
 
+    protected function doDelete(ProjectForm $projectForm) {
+        $this->doRemoveAllPublications($projectForm);
+        $this->doRemoveAllEncoders($projectForm);
+        $this->doDeleteAllTasks($projectForm);
+        $projectForm->delete();
+    }
+
+    protected function doRetrievePublications(ProjectForm $projectForm) {
+        return $projectForm->formPublications();
+    }
+
+    protected function doRemoveAllPublications(ProjectForm $projectForm) {
+        $publications = $this->doRetrievePublications($projectForm);
+        $this->doRemovePublications($projectForm, $publications);
+    }
+
+    protected function doRemovePublications(ProjectForm $projectForm, $publications) {
+        foreach ($publications as $publication) {
+            $this->doRemovePublication($publication);
+        }
+    }
+
     protected function doAddPublication(ProjectForm $projectForm, Publication $publication, $priority = null) {
         $params = [
             'project_form_id' => $projectForm->getKey(),
@@ -163,6 +202,10 @@ class ProjectFormService {
         return $existing->delete();
     }
 
+    protected function doRetrieveEncoders(ProjectForm $projectForm) {
+        return $projectForm->encoders();
+    }
+
     protected function doAddEncoder(ProjectForm $projectForm, User $encoder) {
         $edge = FormEncoder::upsert([
             'project_form_id' => $projectForm->getKey(),
@@ -172,12 +215,40 @@ class ProjectFormService {
         return $edge;
     }
 
+    protected function doRemoveAllEncoders(ProjectForm $projectForm) {
+        $encoders = $this->doRetrieveEncoders($projectForm)->get();
+        $this->doRemoveEncoders($projectForm, $encoders);
+    }
+
+    protected function doRemoveEncoders(ProjectForm $projectForm, $encoders){
+        foreach($encoders as $encoder) {
+            $this->doRemoveEncoder($projectForm, $encoder);
+        }
+    }
+
     protected function doRemoveEncoder(ProjectForm $projectForm, User $encoder) {
         $existing = FormEncoder::query()
             ->where('project_form_id', '=', $projectForm->getKey())
             ->where('encoder_id', '=', $encoder->getKey())
             ->firstOrFail();
         return $existing->delete();
+    }
+
+    protected function doRetrieveAllTasks(ProjectForm $projectForm) {
+        return $projectForm->tasks();
+    }
+
+    protected function doDeleteAllTasks(ProjectForm $projectForm) {
+        $tasks = $this->doRetrieveAllTasks($projectForm)->get();
+        $this->doDeleteTasks($projectForm, $tasks);
+    }
+
+    protected function doDeleteTasks(ProjectForm $projectForm, $tasks) {
+        $this->assignmentService->deleteTasks($tasks);
+    }
+
+    protected function doDeleteTask(ProjectForm $projectForm, EncodingTask $task) {
+        $this->assignmentService->deleteTask($task);
     }
 
     protected function assignNextTasks(ProjectForm $projectForm, User $encoder, $count) {
@@ -203,6 +274,22 @@ class ProjectFormService {
             ->where('form_id', '=', $form->getKey())
             ->firstOrFail();
     }
+
+    /**
+     * @param Form $form
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function getProjectFormsFromForm(Form $form) {
+        return ProjectForm::query()
+            ->where('form_id', '=', $form->getKey());
+    }
+
+    protected function getProjectFormsFromProject(Project $project) {
+        return ProjectForm::query()
+            ->where('project_id', '=', $project->getKey());
+    }
+
+
     /** @var Project */
     protected $project;
 

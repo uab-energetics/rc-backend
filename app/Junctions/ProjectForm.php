@@ -33,4 +33,8 @@ class ProjectForm extends UniqueJunction {
     public function encoders() {
         return $this->belongsToMany(User::class, 'form_encoder', 'project_form_id', 'encoder_id');
     }
+
+    public function tasks() {
+        return $this->hasMany(EncodingTask::class, 'project_form_id');
+    }
 }
