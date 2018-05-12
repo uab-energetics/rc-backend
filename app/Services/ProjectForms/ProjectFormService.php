@@ -52,7 +52,7 @@ class ProjectFormService {
         $projectForm = $this->getProjectForm($project, $form);
         foreach($project->encoders()->get() as $encoder) {
             $existing = FormEncoder::query()
-                ->where('project_form_id', '=', $project->getKey())
+                ->where('project_form_id', '=', $projectForm->getKey())
                 ->where('encoder_id', '=', $encoder->getKey())
                 ->first();
             if ($existing) continue; //skip encoders already in the project so they don't get more assignments
