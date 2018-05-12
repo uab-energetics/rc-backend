@@ -143,12 +143,11 @@ class ProjectFormService {
      * @return Collection | Publication[]
      */
     public function getNextPublications(ProjectForm $projectForm, User $encoder, $count, $target) {
-        $query = DB::select(self::SQL_PAPER_QUEUE, [
-            $projectForm->getKey(),
-            $projectForm->getKey(),
-            $encoder->getKey(),
-            $target,
-            $count
+        $query = DB::select(self::SQL_PAPER_QUEUE,[
+            'proj_form_id' => $projectForm->getKey(),
+            'encoder_id' => $encoder->getKey(),
+            'task_target' => $target,
+            'task_limit' => intval($count),
         ]);
         return Publication::hydrate($query);
     }
@@ -307,24 +306,26 @@ SELECT
   form_pub.priority
 FROM publications
   JOIN form_publication form_pub ON publications.id = form_pub.publication_id
-  JOIN project_form proj_form ON form_pub.project_form_id = proj_form.id AND proj_form.id = ?
+  JOIN project_form proj_form ON form_pub.project_form_id = proj_form.id AND proj_form.id = :proj_form_id
   JOIN (SELECT
-      publications.id,
-      SUM(CASE WHEN tasks.id IS NULL
-       THEN 0 ELSE 1 END
-  ) AS task_count
-  FROM publications
-   LEFT JOIN encodings ON encodings.publication_id = publications.id
-   LEFT JOIN encoding_tasks tasks ON encodings.id = tasks.encoding_id AND tasks.project_form_id = ?
- GROUP BY publications.id
- HAVING NOT EXISTS(SELECT * FROM encoding_tasks et JOIN encodings e ON et.encoding_id = e.id AND et.encoder_id = ? WHERE e.publication_id = publications.id)
-) task_counts ON publications.id = task_counts.id
+          publications.id,
+          SUM(CASE WHEN tasks.id IS NULL
+            THEN 0 ELSE 1 END
+          ) AS task_count
+        FROM publications
+          LEFT JOIN encodings ON encodings.publication_id = publications.id
+          LEFT JOIN encoding_tasks tasks ON encodings.id = tasks.encoding_id AND tasks.project_form_id = :proj_form_id
+        GROUP BY publications.id
+        HAVING NOT EXISTS(SELECT * FROM encoding_tasks et JOIN encodings e ON et.encoding_id = e.id AND et.encoder_id = :encoder_id
+          WHERE e.publication_id = publications.id
+          AND et.project_form_id = :proj_form_id)
+       ) task_counts ON publications.id = task_counts.id
 
 WHERE
-  (priority = 0 AND task_count < ?)
+  (priority = 0 AND task_count < :task_target)
   OR priority > 0
-  
+
 ORDER BY task_count DESC, priority DESC
-LIMIT ?
+LIMIT :task_limit
 ";
 }
