@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 
-use App\Services\Exports\FormExportService;
+use App\Services\Exports\FormExporter;
 use Tests\TestCase;
 
 class FormExportsTest extends TestCase {
@@ -13,9 +13,9 @@ class FormExportsTest extends TestCase {
     function setUp() {
         parent::setUp();
         $this->headers = [
-            FormExportService::header('User ID', 'user'),
-            FormExportService::header('Question One', 'question', 1),
-            FormExportService::header('Question Two', 'question', 2)
+            FormExporter::header('User ID', 'user'),
+            FormExporter::header('Question One', 'question', 1),
+            FormExporter::header('Question Two', 'question', 2)
         ];
     }
 
@@ -24,7 +24,7 @@ class FormExportsTest extends TestCase {
 
 //        $this->assertEquals('Yes!', $output[1][2]);
 //        $this->assertEquals('No', $output[1][1]);
-        $this->assertEquals(FormExportService::NO_RESPONSE, $output[2][2]);
+        $this->assertEquals(FormExporter::NO_RESPONSE, $output[2][2]);
         //echo json_encode($output, JSON_PRETTY_PRINT);
     }
 

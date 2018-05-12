@@ -2,6 +2,7 @@
 
 namespace App\Services\Projects;
 
+use App\Exceptions\ProjectResearcherCountException;
 use App\Form;
 use App\FormPublication;
 use App\Project;
@@ -49,6 +50,15 @@ class ProjectService {
         ]);
     }
 
+    public function removeResearcher(Project $project, User $user) {
+        $edge = $this->getResearcherEdge($project->getKey(), $user->getKey());
+        $researcherCount = ProjectResearcher::query()->count();
+        if ($researcherCount === 1) {
+            throw new ProjectResearcherCountException();
+        }
+        $edge->delete();
+    }
+
     public function addEncoder(Project $project, User $encoder) {
         $edge = ProjectEncoder::upsert([
             'project_id' => $project->getKey(),
@@ -61,6 +71,16 @@ class ProjectService {
         }
 
         return $edge;
+    }
+
+    public function removeEncoder(Project $project, User $user) {
+        $edge = $this->getEncoderEdge($project->getKey(), $user->getKey());
+        $edge->delete();
+
+        $forms = $project->forms()->without(['rootCategory', 'questions'])->get();
+        foreach ($forms as $form) {
+            $this->projectFormService->removeEncoder($project, $form, $user);
+        }
     }
 
     public function searchResearchers(Project $project, $search = null) {
@@ -110,7 +130,21 @@ class ProjectService {
     }
 
     public function getForms(Project $project) {
-        return $project->forms()->without('rootCategory')->get();
+        return $project->forms()->without(['rootCategory', 'questions'])->get();
+    }
+
+    private function getResearcherEdge($project_id, $user_id) {
+        return ProjectResearcher::query()
+            ->where('project_id', '=', $project_id)
+            ->where('researcher_id', '=', $user_id)
+            ->firstOrFail();
+    }
+
+    private function getEncoderEdge($project_id, $user_id) {
+        return ProjectEncoder::query()
+            ->where('project_id', '=', $project_id)
+            ->where('coder_id', '=', $user_id)
+            ->firstOrFail();
     }
 
     /** @var FormService */

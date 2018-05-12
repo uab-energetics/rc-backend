@@ -5,6 +5,7 @@ namespace App\Services\Conflicts;
 
 use App\ConflictRecord;
 use App\Encoding;
+use Illuminate\Support\Collection;
 
 class ConflictScanner {
 
@@ -17,9 +18,11 @@ class ConflictScanner {
      * @return array
      */
     public function runConflictScan($encoding_id){
+        /** @var Encoding $encoding */
         $encoding = Encoding::find($encoding_id);
         if(!$encoding) return null;
         $form = $encoding->form;
+        /** @var Encoding[]|Collection $other_encoding_models */
         $other_encoding_models = $encoding->collaborators;
         /* map to more useful format */
         $encoding = $encoding->getResponseTable();

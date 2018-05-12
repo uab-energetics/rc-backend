@@ -6,7 +6,7 @@ use App\Models\Response;
 use Illuminate\Database\Eloquent\Model;
 
 class Encoding extends Model {
-    protected $fillable = ['type', 'publication_id', 'form_id', 'owner_id'];
+    protected $fillable = ['type', 'publication_id', 'form_id'];
 
     protected $with = ['simpleResponses', 'experimentBranches'];
 
@@ -20,8 +20,9 @@ class Encoding extends Model {
         return $this->belongsTo(Form::class, 'form_id')->withTrashed();
     }
 
-    function owner() {
-        return $this->belongsTo(User::class, 'owner_id');
+    function owners() {
+        return $this->belongsToMany(User::class, 'encoding_tasks', 'encoding_id', 'encoder_id')
+            ->orderByDesc('encoding_tasks.active');
     }
 
     function simpleResponses() {
@@ -63,7 +64,6 @@ class Encoding extends Model {
         $encoding = $this->toArray();
         $_encoding = [
             'id' => $this->id,
-            'owner_id' => $this->owner_id,
             'publication_id' => $this->publication_id,
             'branches' => []
         ];

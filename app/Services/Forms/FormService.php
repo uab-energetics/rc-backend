@@ -5,11 +5,12 @@ namespace App\Services\Forms;
 
 
 use App\Category;
-use App\Encoding;
+use App\Events\FormDeleted;
+use App\Events\FormQuestionRemoved;
 use App\Form;
 use App\FormQuestion;
 use App\Models\Question;
-use App\Services\Exports\FormExportService;
+use App\Services\Exports\FormExporter;
 
 class FormService {
 
@@ -38,6 +39,7 @@ class FormService {
 
     public function deleteForm(Form $form) {
         $rootCategory = $form->rootCategory()->first();
+        event(new FormDeleted($form));
         $form->delete();
         $rootCategory->delete();
         return true;
@@ -85,64 +87,17 @@ class FormService {
         if ($edge === null) {
             return false;
         }
+
         $edge->delete();
+        event( new FormQuestionRemoved($form, $question) );
         return true;
     }
 
     public function exportForm(Form $form) {
-        $headers = $this->generateFormHeaders($form);
-        $formArr = $form->toArray();
-        $formArr['encodings'] = $this->getExportArrayEncodings($form);
-
-//        return $formArr;
-        $export = $this->formExportService->exportFormData($headers, $formArr);
-        return $export;
+        $exporter = new FormExporter($this, $form);
+        return $exporter->export();
     }
 
-    protected function generateFormHeaders(Form $form) {
-        $result = [
-            FormExportService::header("Publication ID", 'publication_id'),
-            FormExportService::header("Publication Name", 'publication_name'),
-            FormExportService::header("User ID", 'user_id'),
-            FormExportService::header("User Name", 'user_name'),
-            FormExportService::header("Branch", 'branch'),
-        ];
-        foreach ($this->getQuestions($form) as $question) {
-            $result[] = FormExportService::header($question->name, 'question', $question->getKey());
-        }
-        return $result;
-    }
-
-    protected function getExportArrayEncodings(Form $form) {
-        $result = [];
-        foreach($form->encodings()->get() as $encoding) {
-            $result[] = $this->normalizeEncodingArray($encoding, $form->type);
-        }
-        return $result;
-    }
-
-    protected function normalizeEncodingArray(Encoding $encoding, $formType) {
-        $result = $encoding->toArray();
-        switch($formType) {
-            case FORM_EXPERIMENT:
-                $result['branches'] = $result['experiment_branches'];
-                unset($result['experiment_branches']);
-                break;
-            case FORM_SIMPLE:
-                $result['branches'] = [
-                    [
-                    'name' => "Simple",
-                    'responses' => $result['simple_responses'],
-                    ]
-                ];
-                unset($result['simple_responses']);
-                break;
-            default:
-                throw new \Exception("Unsupported form type ($formType)");
-                break;
-        }
-        return $result;
-    }
 
     /**
      * @param Form $form
@@ -160,11 +115,6 @@ class FormService {
         return $category;
     }
 
-    /** @var FormExportService  */
-    protected $formExportService;
-
-    public function __construct(FormExportService $formExportService) {
-        $this->formExportService = $formExportService;
-    }
+    public function __construct() {}
 
 }

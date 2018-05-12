@@ -9,11 +9,12 @@ use App\Channel;
 use App\Encoding;
 use App\EncodingExperimentBranch as Branch;
 use App\EncodingExperimentBranch;
+use App\Events\EncodingCreated;
 use App\Form;
 use App\Models\Question;
 use App\Models\Response;
 use App\Services\Comments\CommentService;
-use App\Services\Forms\FormService;
+use Illuminate\Support\Collection;
 
 class EncodingService {
 
@@ -30,18 +31,16 @@ class EncodingService {
         $encoding = Encoding::create([
             'form_id' => $form_id,
             'publication_id' => $publication_id,
-            'owner_id' => $user_id,
             'type' => $form->type,
         ]);
 
-        $this->addDefaultBranch($form, $encoding);
-        $this->upsertEncodingChannel($encoding);
+        event( new EncodingCreated($encoding) );
 
         return $encoding;
     }
 
     public function updateEncoding(Encoding $encoding, $params) {
-        batchUnset($params, ['owner_id', 'publication_id', 'form_id', 'type']);
+        batchUnset($params, ['publication_id', 'form_id', 'type']);
         return $encoding->update($params);
     }
 
@@ -59,6 +58,12 @@ class EncodingService {
             ]);
         }
         return $existing;
+    }
+
+    public function removeQuestion(Encoding $encoding, Question $question) {
+        foreach ($encoding->experimentBranches()->get() as $branch) {
+            $this->removeBranchQuestion($branch, $question);
+        }
     }
 
     function recordBranch( $encoding_id, $branch ){
@@ -111,14 +116,18 @@ class EncodingService {
         return Encoding::find($encoding_id)->toArray();
     }
 
-    public function addDefaultBranch(Form $form, Encoding $encoding) {
+    /**
+     * @param Encoding $encoding
+     * @param Collection|Question[] $questions
+     * @return mixed
+     */
+    public function addDefaultBranch(Encoding $encoding, $questions) {
         $branch = EncodingExperimentBranch::create([
             'encoding_id' => $encoding->getKey(),
             'name' => "Constants",
             'description' => "Automatically generated branch",
         ]);
 
-        $questions = $this->formService->getQuestions($form);
         foreach ($questions as $question) {
             $this->addBranchQuestion($branch, $question);
         }
@@ -177,11 +186,8 @@ class EncodingService {
 
     /** @var PusherService  */
     protected $commentService;
-    /** @var FormService  */
-    protected $formService;
 
-    public function __construct(CommentService $commentService, FormService $formService) {
+    public function __construct(CommentService $commentService) {
         $this->commentService = $commentService;
-        $this->formService = $formService;
     }
 }

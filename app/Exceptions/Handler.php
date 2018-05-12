@@ -68,11 +68,18 @@ class Handler extends ExceptionHandler
         if ($e instanceof NotFoundHttpException) {
             return response()->json([
                 'status' => "URL_NOT_FOUND",
-                'msg' => "This is not the route you are looking for"
+                'msg' => "This is not the route you are looking for",
+                'details' => \Request::fullUrl()
             ], 404);
         }
         if ($e instanceof ValidationException) {
             return invalidParamMessage($e->validator);
+        }
+        if ($e instanceof ProjectResearcherCountException) {
+            return response()->json([
+                'status' => 'PROJECT_RESEARCHER_COUNT',
+                'msg' => "Projects must have at least one researcher"
+            ], 403);
         }
 
         return $this->prepareJsonResponse($request, $e);

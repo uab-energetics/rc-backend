@@ -1,32 +1,35 @@
-version: '2'
+version: '3.3'
+
 services:
+
   app:
-    container_name: rc-api
-    image: vectorweb/research-coder-api
-    build: ./
-    links:
-      - database
-    env_file:
-      - .env
+    container_name: rc-api-dev
+    build:
+      context: .
+      dockerfile: dev.dockerfile
+    volumes:
+      - ./:/app
     environment:
-      - "DB_PORT=3306"
-      - "DB_HOST=database"
-      - "MYSQL_DATABASE=research-coder"
+      - DB_HOST=database
+      - DB_PORT=3306
+      - COMPOSER_ALLOW_SUPERUSER=1
+    env_file: .env.api
     ports:
-      - "8080:80"
+      - 8000:8000
+    user: ${UID:-0}:${GID:-0}
 
   database:
-    container_name: rc-db
-    image: mysql
+    container_name: rc-db-dev
+    image: mysql:5.7
     volumes:
-      - rc-db:/var/lib/mysql
+      - rc-db-dev:/var/lib/mysql
     environment:
-      - "MYSQL_DATABASE=research-coder"
-      - "MYSQL_USER=homestead"
-      - "MYSQL_PASSWORD=secret"
-      - "MYSQL_ROOT_PASSWORD=secret"
+      - MYSQL_DATABASE=research-coder
+      - MYSQL_USER=homestead
+      - MYSQL_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=secret
     ports:
-        - "3306:3306"
+      - 33061:3306
 
 volumes:
-  rc-db:
+  rc-db-dev:

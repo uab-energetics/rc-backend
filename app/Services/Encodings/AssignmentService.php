@@ -4,7 +4,7 @@
 namespace App\Services\Encodings;
 
 
-use App\Project;
+use App\EncodingTask;
 use App\ProjectEncoding;
 
 class AssignmentService {
@@ -12,6 +12,16 @@ class AssignmentService {
     public function assignTo($form_id, $publication_id, $user_id) {
         $encoding = $this->encodingService->makeEncoding($form_id, $publication_id, $user_id);
         return $encoding;
+    }
+
+    public function deleteTasks($tasks) {
+        foreach ($tasks as $task) {
+            $this->deleteTask($task);
+        }
+    }
+
+    public function deleteTask(EncodingTask $task){
+        $task->delete();
     }
 
 

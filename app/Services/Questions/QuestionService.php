@@ -30,6 +30,17 @@ class QuestionService {
         $question->delete();
     }
 
+    /**
+     * Deletes a question iff it isn't being used by any forms
+     * @param Question $question
+     */
+    public function deleteQuestionIfDangling(Question $question) {
+        $formCount = $question->forms()->count();
+        if ($formCount > 0) return;
+
+        $this->deleteQuestion($question);
+    }
+
     public function addSubRelations(Question $question, $params) {
         $accepts = getOrDefault($params['accepts'], []);
         if (!in_array(['type' => RESPONSE_NOT_REPORTED], $accepts)) {

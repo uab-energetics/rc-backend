@@ -1,14 +1,13 @@
-FROM vectorweb/research-coder-api
+FROM php:7.1
 
-# The shared volume inherits the permissions (including uid / gid) of the
-# user running the container, so owner of the files in the container will
-# be the id of the user on the host system (not root:www-data). Upon not
-# finding a satisfactory solution, this workaround will set the group id
-# of www-data in the container to the host user's group id.
-RUN groupmod -g ${USER_GID:-1000} www-data
+RUN apt-get update -y && apt-get install -y openssl mysql-client zip unzip && \
+    docker-php-ext-install pdo pdo_mysql mbstring
 
-# The host filesystem is assumed to have the correct file permissions.
-# Specifically, g+r for everything and g+w forstorage/ and bootstrap/cache/.
+RUN mkdir -p /.config/psysh /.composer && \
+    chmod -R 777 /.config /.composer
 
-# See the helper script (docker-dev.sh) bundled with this repo to have this
-# automated.
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
+
+CMD php artisan serve --host 0.0.0.0 --port 8000

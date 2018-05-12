@@ -8,13 +8,13 @@ use App\Publication;
 
 /**
  * Array should be of the format:
- * [ <publication_name>, <embedding_url> ]
+ * [ <publication_name>, <source_id>, <embedding_url> ]
  *
  */
 class CsvUploadService {
 
     // this will look like the fillable array of the eloquent model
-    const HEADERS = [ 'name', 'embedding_url' ];
+    const HEADERS = [ 'name', 'source_id', 'embedding_url' ];
 
     public $fail_message;
 

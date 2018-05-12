@@ -29,13 +29,12 @@ class ProjectFormController extends Controller {
 
     public function searchPublications(Project $project, Form $form, Request $request) {
         $request->validate(['search' => 'string|nullable']);
-        $search = $this->service->retrievePublications($project, $form, $request->search);
-        return $search;
+        return paginate($this->service->retrievePublications($project, $form, $request->search));
     }
 
     public function searchEncoders(Project $project, Form $form, Request $request) {
         $request->validate(['search' => 'string|nullable']);
-        return $this->service->retrieveEncoders($project, $form, $request->search);
+        return $this->service->retrieveEncoders($project, $form, $request->search)->get();
     }
 
     public function addPublication(Project $project, Form $form, Publication $publication, Request $request) {
@@ -84,8 +83,8 @@ class ProjectFormController extends Controller {
         return okMessage("Successfully added encoders");
     }
 
-    public function removeEncoder(Project $project, Form $form, User $encoder) {
-        $this->service->removeEncoder($project, $form, $encoder);
+    public function removeEncoder(Project $project, Form $form, User $user) {
+        $this->service->removeEncoder($project, $form, $user);
         return okMessage("Successfully removed encoder");
     }
 
