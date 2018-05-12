@@ -5,14 +5,12 @@ namespace App\Services\Forms;
 
 
 use App\Category;
-use App\Encoding;
+use App\Events\FormDeleted;
 use App\Events\FormQuestionRemoved;
 use App\Form;
 use App\FormQuestion;
 use App\Models\Question;
-use App\Services\Encodings\EncodingService;
 use App\Services\Exports\FormExporter;
-use App\Services\Questions\QuestionService;
 
 class FormService {
 
@@ -41,6 +39,7 @@ class FormService {
 
     public function deleteForm(Form $form) {
         $rootCategory = $form->rootCategory()->first();
+        event(new FormDeleted($form));
         $form->delete();
         $rootCategory->delete();
         return true;

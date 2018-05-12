@@ -19,6 +19,13 @@ use Illuminate\Support\Facades\DB;
 
 class ProjectFormService {
 
+    public function handleFormDeleted(Form $form) {
+        $projectForms = $this->getProjectFormsFromForm($form)->get();
+        foreach ($projectForms as $projectForm) {
+            $this->doDelete($projectForm);
+        }
+    }
+
     public function getSettings(Project $project, Form $form) {
         return $projectForm = $this->getProjectForm($project, $form);
     }
@@ -32,12 +39,12 @@ class ProjectFormService {
 
     public function retrievePublications(Project $project, Form $form, $query = "") {
         $projectForm = $this->getProjectForm($project, $form);
-        return $projectForm->formPublications()->paginate(getPaginationLimit());
+        return $this->doRetrievePublications($projectForm);
     }
 
     public function retrieveEncoders(Project $project, Form $form, $query = "") {
         $projectForm = $this->getProjectForm($project, $form);
-        return $projectForm->encoders()->get();
+        return $this->doRetrieveEncoders($projectForm);
     }
 
     public function getTasksByUser(ProjectForm $projectForm, User $user) {
@@ -58,7 +65,7 @@ class ProjectFormService {
         $projectForm = $this->getProjectForm($project, $form);
         foreach($project->encoders()->get() as $encoder) {
             $existing = FormEncoder::query()
-                ->where('project_form_id', '=', $project->getKey())
+                ->where('project_form_id', '=', $projectForm->getKey())
                 ->where('encoder_id', '=', $encoder->getKey())
                 ->first();
             if ($existing) continue; //skip encoders already in the project so they don't get more assignments
@@ -91,6 +98,16 @@ class ProjectFormService {
     public function removePublication(Project $project, Form $form, Publication $publication) {
         $projectForm = $this->getProjectForm($project, $form);
         return $this->doRemovePublication($projectForm, $publication);
+    }
+
+    public function removeAllPublications(Project $project, Form $form) {
+        $projectForm = $this->getProjectForm($project, $form);
+        $this->doRemoveAllPublications($projectForm);
+    }
+
+    public function removePublications(Project $project, Form $form, $publications) {
+        $projectForm = $this->getProjectForm($project, $form);
+        $this->doRemovePublications($publications);
     }
 
     public function addEncoders(Project $project, Form $form, $encoders) {
@@ -132,12 +149,11 @@ class ProjectFormService {
      * @return Collection | Publication[]
      */
     public function getNextPublications(ProjectForm $projectForm, User $encoder, $count, $target) {
-        $query = DB::select(self::SQL_PAPER_QUEUE, [
-            $projectForm->getKey(),
-            $projectForm->getKey(),
-            $encoder->getKey(),
-            $target,
-            $count
+        $query = DB::select(self::SQL_PAPER_QUEUE,[
+            'proj_form_id' => $projectForm->getKey(),
+            'encoder_id' => $encoder->getKey(),
+            'task_target' => $target,
+            'task_limit' => intval($count),
         ]);
         return Publication::hydrate($query);
     }
@@ -150,6 +166,28 @@ class ProjectFormService {
             'encoder_id' => $encoder->getKey(),
         ]);
         return $task;
+    }
+
+    protected function doDelete(ProjectForm $projectForm) {
+        $this->doRemoveAllPublications($projectForm);
+        $this->doRemoveAllEncoders($projectForm);
+        $this->doDeleteAllTasks($projectForm);
+        $projectForm->delete();
+    }
+
+    protected function doRetrievePublications(ProjectForm $projectForm) {
+        return $projectForm->formPublications();
+    }
+
+    protected function doRemoveAllPublications(ProjectForm $projectForm) {
+        $publications = $this->doRetrievePublications($projectForm);
+        $this->doRemovePublications($projectForm, $publications);
+    }
+
+    protected function doRemovePublications(ProjectForm $projectForm, $publications) {
+        foreach ($publications as $publication) {
+            $this->doRemovePublication($publication);
+        }
     }
 
     protected function doAddPublication(ProjectForm $projectForm, Publication $publication, $priority = null) {
@@ -169,6 +207,10 @@ class ProjectFormService {
         return $existing->delete();
     }
 
+    protected function doRetrieveEncoders(ProjectForm $projectForm) {
+        return $projectForm->encoders();
+    }
+
     protected function doAddEncoder(ProjectForm $projectForm, User $encoder) {
         $edge = FormEncoder::upsert([
             'project_form_id' => $projectForm->getKey(),
@@ -176,6 +218,17 @@ class ProjectFormService {
         ]);
         $this->assignNextTasks($projectForm, $encoder, $projectForm->task_target_encoder);
         return $edge;
+    }
+
+    protected function doRemoveAllEncoders(ProjectForm $projectForm) {
+        $encoders = $this->doRetrieveEncoders($projectForm)->get();
+        $this->doRemoveEncoders($projectForm, $encoders);
+    }
+
+    protected function doRemoveEncoders(ProjectForm $projectForm, $encoders){
+        foreach($encoders as $encoder) {
+            $this->doRemoveEncoder($projectForm, $encoder);
+        }
     }
 
     protected function doRemoveEncoder(ProjectForm $projectForm, User $encoder) {
@@ -192,6 +245,23 @@ class ProjectFormService {
         foreach ($tasks as $task) {
             $task->update(['active' => false]);
         }
+    }
+
+    protected function doRetrieveAllTasks(ProjectForm $projectForm) {
+        return $projectForm->tasks();
+    }
+
+    protected function doDeleteAllTasks(ProjectForm $projectForm) {
+        $tasks = $this->doRetrieveAllTasks($projectForm)->get();
+        $this->doDeleteTasks($projectForm, $tasks);
+    }
+
+    protected function doDeleteTasks(ProjectForm $projectForm, $tasks) {
+        $this->assignmentService->deleteTasks($tasks);
+    }
+
+    protected function doDeleteTask(ProjectForm $projectForm, EncodingTask $task) {
+        $this->assignmentService->deleteTask($task);
     }
 
     protected function assignNextTasks(ProjectForm $projectForm, User $encoder, $count) {
@@ -217,6 +287,22 @@ class ProjectFormService {
             ->where('form_id', '=', $form->getKey())
             ->firstOrFail();
     }
+
+    /**
+     * @param Form $form
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function getProjectFormsFromForm(Form $form) {
+        return ProjectForm::query()
+            ->where('form_id', '=', $form->getKey());
+    }
+
+    protected function getProjectFormsFromProject(Project $project) {
+        return ProjectForm::query()
+            ->where('project_id', '=', $project->getKey());
+    }
+
+
     /** @var Project */
     protected $project;
 
@@ -234,24 +320,26 @@ SELECT
   form_pub.priority
 FROM publications
   JOIN form_publication form_pub ON publications.id = form_pub.publication_id
-  JOIN project_form proj_form ON form_pub.project_form_id = proj_form.id AND proj_form.id = ?
+  JOIN project_form proj_form ON form_pub.project_form_id = proj_form.id AND proj_form.id = :proj_form_id
   JOIN (SELECT
-      publications.id,
-      SUM(CASE WHEN tasks.id IS NULL
-       THEN 0 ELSE 1 END
-  ) AS task_count
-  FROM publications
-   LEFT JOIN encodings ON encodings.publication_id = publications.id
-   LEFT JOIN encoding_tasks tasks ON encodings.id = tasks.encoding_id AND tasks.project_form_id = ?
- GROUP BY publications.id
- HAVING NOT EXISTS(SELECT * FROM encoding_tasks et JOIN encodings e ON et.encoding_id = e.id AND et.encoder_id = ? WHERE e.publication_id = publications.id)
-) task_counts ON publications.id = task_counts.id
+          publications.id,
+          SUM(CASE WHEN tasks.id IS NULL
+            THEN 0 ELSE 1 END
+          ) AS task_count
+        FROM publications
+          LEFT JOIN encodings ON encodings.publication_id = publications.id
+          LEFT JOIN encoding_tasks tasks ON encodings.id = tasks.encoding_id AND tasks.project_form_id = :proj_form_id
+        GROUP BY publications.id
+        HAVING NOT EXISTS(SELECT * FROM encoding_tasks et JOIN encodings e ON et.encoding_id = e.id AND et.encoder_id = :encoder_id
+          WHERE e.publication_id = publications.id
+          AND et.project_form_id = :proj_form_id)
+       ) task_counts ON publications.id = task_counts.id
 
 WHERE
-  (priority = 0 AND task_count < ?)
+  (priority = 0 AND task_count < :task_target)
   OR priority > 0
-  
+
 ORDER BY task_count DESC, priority DESC
-LIMIT ?
+LIMIT :task_limit
 ";
 }

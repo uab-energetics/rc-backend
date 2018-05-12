@@ -29,12 +29,12 @@ class ProjectFormController extends Controller {
 
     public function searchPublications(Project $project, Form $form, Request $request) {
         $request->validate(['search' => 'string|nullable']);
-        return $this->service->retrievePublications($project, $form, $request->search);
+        return paginate($this->service->retrievePublications($project, $form, $request->search));
     }
 
     public function searchEncoders(Project $project, Form $form, Request $request) {
         $request->validate(['search' => 'string|nullable']);
-        return $this->service->retrieveEncoders($project, $form, $request->search);
+        return $this->service->retrieveEncoders($project, $form, $request->search)->get();
     }
 
     public function addPublication(Project $project, Form $form, Publication $publication, Request $request) {
