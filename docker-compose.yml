@@ -22,7 +22,7 @@ services:
     container_name: rc-db-dev
     image: mysql:5.7
     volumes:
-      - rc-db-dev:/var/lib/mysql
+      - dbdata:/var/lib/mysql
     environment:
       - MYSQL_DATABASE=research-coder
       - MYSQL_USER=homestead
@@ -32,4 +32,4 @@ services:
       - 33061:3306
 
 volumes:
-  rc-db-dev:
+  dbdata:

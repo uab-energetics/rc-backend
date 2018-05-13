@@ -23,8 +23,10 @@ class ProjectDashboardService {
         $numResearchers = $project->researchers()->count();
         $total = $numEncoders + $numResearchers;
         return [
-            'encoders' => $numEncoders,
-            'researchers' => $numResearchers,
+            'encoder_cnt' => $numEncoders,
+            'researcher_cnt' => $numResearchers,
+            'encoders' => $project->encoders()->get(),
+            'researchers' => $project->researchers()->get(),
             'total' => $total,
         ];
     }
