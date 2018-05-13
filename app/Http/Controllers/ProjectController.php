@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Notifications\InvitedToProject;
 use App\ProjectResearcher;
 use App\Publication;
+use App\Services\Projects\ProjectDashboardService;
 use App\Services\Projects\ProjectService;
 use App\User;
 use Illuminate\Http\Request;
@@ -13,6 +14,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller {
+
+    public function getDashboard(Project $project, ProjectDashboardService $dashboardService) {
+        return $dashboardService->getProjectStats($project);
+    }
 
     public function create(Request $request, ProjectService $projectService) {
         $user = $request->user();
