@@ -35,12 +35,15 @@ class UserService {
 
     public function getTasks(User $user) {
         return $user->tasks()
-            ->with(['encoding' => function($query) {
-                $query->without(['experimentBranches', 'simpleResponses']);
-                $query->with(['publication', 'form' => function ($subquery) {
-                    $subquery->without(['rootCategory', 'questions']);
-                }]);
-            }]);
+            ->with([
+                'encoding' => function($query) {
+                    $query->without(['experimentBranches', 'simpleResponses']);
+            },
+                'form' => function ($query) {
+                    $query->without(['rootCategory', 'questions']);
+            },
+                'publication'
+            ]);
     }
 
     public function getFormsEncoder(User $user) {
