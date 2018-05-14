@@ -9,6 +9,8 @@ class EncodingTask extends UniqueJunction {
 
     protected $fillable = ['project_form_id', 'encoder_id', 'encoding_id', 'publication_id', 'form_id', 'active', 'complete'];
 
+    protected $appends = ['status'];
+
     public function encoding() {
         return $this->belongsTo(Encoding::class, 'encoding_id');
     }
@@ -27,6 +29,16 @@ class EncodingTask extends UniqueJunction {
 
     public function form() {
         return $this->belongsTo(Form::class, 'form_id');
+    }
+
+    public function getStatusAttribute() {
+        if ($this->encoding_id === null) {
+            return TASK_PENDING;
+        }
+        if ($this->complete === true) {
+            return TASK_COMPLETE;
+        }
+        return TASK_IN_PROGRESS;
     }
 
     /** @return string[] */

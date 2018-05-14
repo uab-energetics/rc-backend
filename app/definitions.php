@@ -12,4 +12,8 @@ const FORM_SIMPLE = 'simple';
 const FORM_EXPERIMENT = 'experiment';
 const FORM_WIZARD = 'wizard';
 
+const TASK_PENDING = 'pending';
+const TASK_IN_PROGRESS = 'in_progress';
+const TASK_COMPLETE = 'complete';
+
 const NOTIFICATION_INVITE_TO_PROJECT = 'invited_to_project';
