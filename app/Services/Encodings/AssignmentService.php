@@ -9,7 +9,14 @@ use App\ProjectEncoding;
 
 class AssignmentService {
 
-    public function assignTo($form_id, $publication_id, $user_id) {
+    public function make($params) {
+        return EncodingTask::upsert($params);
+    }
+
+    public function startEncoding(EncodingTask $task) {
+        $form_id = $task->form_id;
+        $publication_id = $task->publication_id;
+        $user_id = $task->encoder_id;
         $encoding = $this->encodingService->makeEncoding($form_id, $publication_id, $user_id);
         return $encoding;
     }

@@ -159,11 +159,11 @@ class ProjectFormService {
     }
 
     public function assignTask(ProjectForm $projectForm, Publication $publication, User $encoder) {
-        $encoding = $this->assignmentService->assignTo($projectForm->form_id, $publication->getKey(), $encoder->getKey());
-        $task = EncodingTask::upsert([
-            'project_form_id' => $projectForm->getKey(),
-            'encoding_id' => $encoding->getKey(),
+        $task = $this->assignmentService->make([
             'encoder_id' => $encoder->getKey(),
+            'project_form_id' => $projectForm->getKey(),
+            'publication_id' => $publication->getKey(),
+            'form_id' => $projectForm->form_id,
         ]);
         return $task;
     }

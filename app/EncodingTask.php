@@ -31,6 +31,6 @@ class EncodingTask extends UniqueJunction {
 
     /** @return string[] */
     public function uniqueColumns() {
-        return ['encoder_id', 'encoding_id'];
+        return ['project_form_id', 'encoder_id', 'publication_id', 'form_id'];
     }
 }
