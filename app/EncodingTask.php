@@ -35,7 +35,7 @@ class EncodingTask extends UniqueJunction {
         if ($this->encoding_id === null) {
             return TASK_PENDING;
         }
-        if ($this->complete === true) {
+        if (boolval($this->complete) === true) {
             return TASK_COMPLETE;
         }
         return TASK_IN_PROGRESS;
