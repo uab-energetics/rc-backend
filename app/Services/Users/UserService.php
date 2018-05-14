@@ -40,8 +40,7 @@ class UserService {
                 $query->with(['publication', 'form' => function ($subquery) {
                     $subquery->without(['rootCategory', 'questions']);
                 }]);
-            }])
-            ->get();
+            }]);
     }
 
     public function getFormsEncoder(User $user) {
