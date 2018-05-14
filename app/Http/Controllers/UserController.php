@@ -31,7 +31,7 @@ class UserController extends Controller {
 
     public function retrieveTasks(Request $request, UserService $userService) {
         $user = $request->user();
-        return $userService->getTasks($user);
+        return paginate($userService->getTasks($user));
     }
 
     public function retrieveForms(Request $request, UserService $userService) {
