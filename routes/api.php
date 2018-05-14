@@ -13,6 +13,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectFormController;
 use App\Http\Controllers\ProjectInvitesController;
 use App\Http\Controllers\PublicationController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Project;
 use App\Publication;
@@ -133,6 +134,10 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::delete(  'encodings/{encoding}/branches/{branch}', "$encodings_ctrl@deleteBranch");
     Route::post(    'encodings/{encoding}/branches/{branch}/responses', "$encodings_ctrl@createBranchResponse");
     Route::post(    'encodings/{encoding}/responses', "$encodings_ctrl@createSimpleResponse");
+
+    // tasks
+    Route::delete(  'tasks/{task}', TaskController::class."@delete");
+
 
     // branch question map
     Route::get(     'branches/{branch}/questionMap', BranchQuestionsController::class.'@getQuestions');
