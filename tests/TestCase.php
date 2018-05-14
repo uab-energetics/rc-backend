@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use App\Services\Encodings\AssignmentService;
+use App\Services\Encodings\TaskService;
 use App\Services\Encodings\EncodingService;
 use App\Services\Exports\FormExporter;
 use App\Services\Forms\CategoryService;
@@ -31,8 +31,8 @@ abstract class TestCase extends BaseTestCase {
     protected $encodingService;
     /** @var FormExporter */
     protected $formExportService;
-    /** @var AssignmentService */
-    protected $assignmentService;
+    /** @var TaskService */
+    protected $taskService;
     /** @var PublicationService */
     protected $publicationService;
 
@@ -47,6 +47,6 @@ abstract class TestCase extends BaseTestCase {
         $this->encodingService = $this->app->make(EncodingService::class);
         $this->formExportService = $this->app->make(FormExporter::class);
         $this->publicationService = $this->app->make(PublicationService::class);
-        $this->assignmentService = $this->app->make(AssignmentService::class);
+        $this->taskService = $this->app->make(TaskService::class);
     }
 }

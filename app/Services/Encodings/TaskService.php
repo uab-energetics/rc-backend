@@ -7,7 +7,7 @@ namespace App\Services\Encodings;
 use App\EncodingTask;
 use App\ProjectEncoding;
 
-class AssignmentService {
+class TaskService {
 
     public function make($params) {
         return EncodingTask::upsert($params);

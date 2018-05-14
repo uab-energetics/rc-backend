@@ -12,7 +12,7 @@ use App\Project;
 use App\ProjectEncoder;
 use App\ProjectForm;
 use App\Publication;
-use App\Services\Encodings\AssignmentService;
+use App\Services\Encodings\TaskService;
 use App\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -159,7 +159,7 @@ class ProjectFormService {
     }
 
     public function assignTask(ProjectForm $projectForm, Publication $publication, User $encoder) {
-        $task = $this->assignmentService->make([
+        $task = $this->taskService->make([
             'encoder_id' => $encoder->getKey(),
             'project_form_id' => $projectForm->getKey(),
             'publication_id' => $publication->getKey(),
@@ -257,11 +257,11 @@ class ProjectFormService {
     }
 
     protected function doDeleteTasks(ProjectForm $projectForm, $tasks) {
-        $this->assignmentService->deleteTasks($tasks);
+        $this->taskService->deleteTasks($tasks);
     }
 
     protected function doDeleteTask(ProjectForm $projectForm, EncodingTask $task) {
-        $this->assignmentService->deleteTask($task);
+        $this->taskService->deleteTask($task);
     }
 
     protected function assignNextTasks(ProjectForm $projectForm, User $encoder, $count) {
@@ -306,11 +306,11 @@ class ProjectFormService {
     /** @var Project */
     protected $project;
 
-    /** @var AssignmentService  */
-    protected $assignmentService;
+    /** @var TaskService  */
+    protected $taskService;
 
-    public function __construct(AssignmentService $assignmentService) {
-        $this->assignmentService = $assignmentService;
+    public function __construct(TaskService $taskService) {
+        $this->taskService = $taskService;
     }
 
     const SQL_PAPER_QUEUE = "

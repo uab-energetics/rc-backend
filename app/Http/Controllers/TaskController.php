@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\EncodingTask;
-use App\Services\Encodings\AssignmentService;
+use App\Services\Encodings\TaskService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -16,10 +16,10 @@ class TaskController extends Controller {
         return okMessage("Successfully deleted task");
     }
 
-    /** @var AssignmentService  */
+    /** @var TaskService  */
     protected $service;
 
-    public function __construct(AssignmentService $service) {
+    public function __construct(TaskService $service) {
         $this->service = $service;
     }
 }

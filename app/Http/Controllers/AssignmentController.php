@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Encodings\AssignmentService;
+use App\Services\Encodings\TaskService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class AssignmentController extends Controller {
 
-    public function assignOne(Request $request, AssignmentService $assignmentService) {
+    public function assignOne(Request $request, TaskService $assignmentService) {
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'form_id' => 'required|exists:forms,id',
