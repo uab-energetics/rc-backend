@@ -81,6 +81,12 @@ class Handler extends ExceptionHandler
                 'msg' => "Projects must have at least one researcher"
             ], 403);
         }
+        if ($e instanceof TaskAlreadyStartedException) {
+            return response()->json([
+                'status' => 'TASK_ALREADY_STARTED',
+                'msg' => "This task already has an encoding"
+            ], 400);
+        }
 
         return $this->prepareJsonResponse($request, $e);
     }

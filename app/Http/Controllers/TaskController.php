@@ -9,6 +9,15 @@ use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller {
 
+    public function startEncoding(EncodingTask $task) {
+        DB::beginTransaction();
+            $encoding = $this->service->startEncoding($task);
+        DB::commit();
+        return okMessage("Successfully started encoding", 201, [
+            'encoding' => $encoding
+        ]);
+    }
+
     public function delete(EncodingTask $task, Request $request) {
         DB::beginTransaction();
             $this->service->deleteTask($task);

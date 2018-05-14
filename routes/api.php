@@ -136,6 +136,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::post(    'encodings/{encoding}/responses', "$encodings_ctrl@createSimpleResponse");
 
     // tasks
+    Route::get(     'tasks/{task}/start-encoding', TaskController::class."@startEncoding");
     Route::delete(  'tasks/{task}', TaskController::class."@delete");
 
 

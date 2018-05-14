@@ -5,6 +5,7 @@ namespace App\Services\Encodings;
 
 
 use App\EncodingTask;
+use App\Exceptions\TaskAlreadyStartedException;
 use App\ProjectEncoding;
 
 class TaskService {
@@ -14,10 +15,17 @@ class TaskService {
     }
 
     public function startEncoding(EncodingTask $task) {
+        if ($task->encoding_id !== null) {
+            throw new TaskAlreadyStartedException();
+        }
         $form_id = $task->form_id;
         $publication_id = $task->publication_id;
         $user_id = $task->encoder_id;
         $encoding = $this->encodingService->makeEncoding($form_id, $publication_id, $user_id);
+
+        $task->encoding_id = $encoding->getKey();
+        $task->save();
+
         return $encoding;
     }
 
