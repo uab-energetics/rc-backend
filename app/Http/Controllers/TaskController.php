@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller {
 
+    public function retrieve(EncodingTask $task) {
+        return $task;
+    }
+
     public function startEncoding(EncodingTask $task) {
         DB::beginTransaction();
             $encoding = $this->service->startEncoding($task);
