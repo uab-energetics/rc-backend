@@ -22,6 +22,16 @@ class TaskController extends Controller {
         ]);
     }
 
+    public function updateCompletion(EncodingTask $task, Request $request) {
+        $request->validate([
+            'complete' => 'required|boolean'
+        ]);
+        $this->service->updateCompletion($task, $request->complete);
+        return okMessage("Successfully updated completion", 200, [
+            'task' => $task->refresh()
+        ]);
+    }
+
     public function delete(EncodingTask $task, Request $request) {
         DB::beginTransaction();
             $this->service->deleteTask($task);

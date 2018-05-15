@@ -29,6 +29,11 @@ class TaskService {
         return $encoding;
     }
 
+    public function updateCompletion(EncodingTask $task, $complete) {
+        $task->complete = $complete;
+        $task->save();
+    }
+
     public function deleteTasks($tasks) {
         foreach ($tasks as $task) {
             $this->deleteTask($task);

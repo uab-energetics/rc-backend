@@ -138,6 +138,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     // tasks
     Route::get(     'tasks/{task}', TaskController::class."@retrieve");
     Route::get(     'tasks/{task}/start-encoding', TaskController::class."@startEncoding");
+    Route::put(     'tasks/{task}/completion', TaskController::class."@updateCompletion");
     Route::delete(  'tasks/{task}', TaskController::class."@delete");
 
 
