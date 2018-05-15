@@ -11,6 +11,8 @@ class EncodingTask extends UniqueJunction {
 
     protected $appends = ['status'];
 
+    protected $casts = ['complete' => 'boolean', 'active' => 'boolean'];
+
     public function encoding() {
         return $this->belongsTo(Encoding::class, 'encoding_id');
     }
