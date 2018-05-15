@@ -23,19 +23,29 @@ class TableTasksAddPublicationForm extends Migration {
 
         });
 
+        echo "Updating tasks. This runs in O(tasks) time." . PHP_EOL;
+        $deleted = 0;
+        $updated = 0;
         foreach (\App\EncodingTask::all() as $task) {
+            if ( ($deleted + $updated) % 50 === 0 ) {
+                echo "\tprocessed ". ($deleted + $updated) . " tasks" . PHP_EOL;
+            }
             if ($task->encoding_id === null) {
+                $deleted++;
+                $task->delete();
                 continue;
             }
-            $publication_id = $task->encoding->publication_id;
-            $form_id = $task->encoding->form_id;
+            $encoding = \App\Encoding::find($task->encoding_id);
+            $publication_id = $encoding->publication_id;
+            $form_id = $encoding->form_id;
 
             $task->publication_id = $publication_id;
             $task->form_id = $form_id;
             $task->save();
 
-            echo "Updated task $task->id with publication $publication_id and codebook $form_id" . PHP_EOL;
+            $updated++;
         }
+        echo "Updated $updated and deleted $deleted encoding tasks" . PHP_EOL;
     }
 
     /**
