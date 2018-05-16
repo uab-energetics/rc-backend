@@ -14,6 +14,11 @@ class TaskService {
         return EncodingTask::upsert($params);
     }
 
+    public function filterTasksByStatus($query, $status = null) {
+        $filter = $this->getTaskQueryFilter($status);
+        return $filter->filter($query);
+    }
+
     public function startEncoding(EncodingTask $task) {
         if ($task->encoding_id !== null) {
             throw new TaskAlreadyStartedException();
@@ -42,6 +47,20 @@ class TaskService {
 
     public function deleteTask(EncodingTask $task){
         $task->delete();
+    }
+
+    // Simple factory method. Didn't feel like making a class out of it.
+    public function getTaskQueryFilter($status) {
+        switch ($status) {
+            case TASK_COMPLETE:
+                return new CompleteFilter();
+            case TASK_IN_PROGRESS:
+                return new InProgressFilter();
+            case TASK_PENDING:
+                return new PendingFilter();
+            default:
+                return new NullFilter();
+        }
     }
 
 

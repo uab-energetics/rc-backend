@@ -4,6 +4,7 @@
 namespace App\Services\Users;
 
 
+use App\Services\Encodings\TaskService;
 use App\User;
 
 class UserService {
@@ -33,17 +34,18 @@ class UserService {
             ->get();
     }
 
-    public function getTasks(User $user) {
-        return $user->tasks()
+    public function getTasks(User $user, $status = null) {
+        $query = $user->tasks()
             ->with([
                 'encoding' => function($query) {
                     $query->without(['experimentBranches', 'simpleResponses']);
-            },
+                },
                 'form' => function ($query) {
                     $query->without(['rootCategory', 'questions']);
-            },
+                },
                 'publication'
             ]);
+        return $this->taskService->filterTasksByStatus($query, $status);
     }
 
     public function getFormsEncoder(User $user) {
@@ -53,5 +55,12 @@ class UserService {
             },
                     'project'])
             ->get();
+    }
+
+    /** @var TaskService  */
+    protected $taskService;
+
+    public function __construct(TaskService $taskService) {
+        $this->taskService = $taskService;
     }
 }
