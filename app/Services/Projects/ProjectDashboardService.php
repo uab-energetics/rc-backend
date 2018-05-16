@@ -6,6 +6,7 @@ namespace App\Services\Projects;
 
 use App\EncodingTask;
 use App\Project;
+use App\Services\Encodings\TaskService;
 
 class ProjectDashboardService {
 
@@ -40,20 +41,20 @@ class ProjectDashboardService {
     }
 
     public function getTaskStats(Project $project) {
-        $query = function () use ($project) {
-            return $this->getTasksQuery($project);
+        $query = function ($status = null) use ($project) {
+            $query = $this->getTasksQuery($project);
+            return $this->filterTasksQuery($query, $status);
         };
 
         $total = $query()->count();
-        $complete = $query()->where('complete', '=', true)->count();
-        $in_progress = $query()->where('encoding_id', '!=', null)
-            ->where('complete', '=', false)->count();
-        $pending = $query()->where('encoding_id', '=', null)->count();
+        $complete = $query(TASK_COMPLETE)->count();
+        $in_progress = $query(TASK_IN_PROGRESS)->count();
+        $pending = $query(TASK_PENDING)->count();
 
         return [
-            'complete' => $complete,
-            'active' => $in_progress,
-            'pending' => $pending,
+            TASK_COMPLETE => $complete,
+            TASK_IN_PROGRESS => $in_progress,
+            TASK_PENDING => $pending,
             'total' => $total,
         ];
     }
@@ -65,11 +66,18 @@ class ProjectDashboardService {
             ->where('projects.id', '=', $project->getKey());
     }
 
+    private function filterTasksQuery($query, $status) {
+        return $this->taskService->filterTasksByStatus($query, $status);
+    }
+
 
     /** @var ProjectService  */
     protected $projectService;
+    /** @var TaskService  */
+    protected $taskService;
 
-    public function __construct(ProjectService $projectService) {
+    public function __construct(ProjectService $projectService, TaskService $taskService) {
         $this->projectService = $projectService;
+        $this->taskService = $taskService;
     }
 }
