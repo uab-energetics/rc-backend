@@ -178,7 +178,9 @@ Route::get('/validate-encoder-invite', ProjectInvitesController::class."@validat
 
 
 
-
+Route::get('/ping', function() {
+    return "{ msg: 'pong!' }";
+});
 
 /**
 *  ===========================================
