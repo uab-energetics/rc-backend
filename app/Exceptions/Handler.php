@@ -51,8 +51,8 @@ class Handler extends ExceptionHandler
                 $sentry->user_context($user->toArray());
             }
             $sentry->captureException($exception);
+            return;
         }
-
         parent::report($exception);
     }
 
