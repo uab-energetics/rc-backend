@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\AuthorizeUserAPI;
 use App\Http\Middleware\GetUserFromToken;
 use App\Http\Middleware\ProjectFormServiceMiddleware;
 use App\Http\Middleware\SentryUserContext;
@@ -60,6 +61,7 @@ class Kernel extends HttpKernel
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'jwt.auth' => GetUserFromToken::class,
         'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
+        'rc.auth' => AuthorizeUserAPI::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,

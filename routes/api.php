@@ -25,7 +25,9 @@ use App\Http\Controllers\QuestionController;
 
 
 
-
+Route::group(['middleware' => ['rc.auth']], function () {
+    Route::get('auth-test', function () {   return "true";  });
+});
 
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', AuthController::class."@login");
