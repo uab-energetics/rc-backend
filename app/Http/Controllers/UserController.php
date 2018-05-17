@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Rules\TaskStatus;
 use App\Services\Users\UserService;
 use App\User;
 use Illuminate\Http\Request;
@@ -30,8 +31,12 @@ class UserController extends Controller {
     }
 
     public function retrieveTasks(Request $request, UserService $userService) {
+        $request->validate([
+            'status' => ['nullable', new TaskStatus()]
+        ]);
         $user = $request->user();
-        return paginate($userService->getTasks($user));
+        $status = $request->status;
+        return paginate($userService->getTasks($user, $status));
     }
 
     public function retrieveForms(Request $request, UserService $userService) {
