@@ -39,7 +39,9 @@ class ProjectFormService {
 
     public function retrievePublications(Project $project, Form $form, $term = "") {
         $projectForm = $this->getProjectForm($project, $form);
-        return $this->doRetrievePublications($projectForm);
+        return search($this->doRetrievePublications($projectForm), $term, ['priority'], [
+            'publication' => Publication::searchable
+        ]);
     }
 
     public function retrieveEncoders(Project $project, Form $form, $query = "") {
