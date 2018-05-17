@@ -4,6 +4,9 @@
 namespace App\Services\Users;
 
 
+use App\Events\UserCreated;
+use App\Events\UserUpdated;
+use App\Listeners\UserDeletedListener;
 use App\Services\Encodings\TaskService;
 use App\User;
 
@@ -18,15 +21,20 @@ class UserService {
     }
 
     public function make($params) {
-        return User::create($params);
+        $user = User::create($params);
+        event(new UserCreated($user));
+        return $user;
     }
 
     public function update(User $user, $params) {
         $user->update($params);
-        return $user->refresh();
+        $user = $user->refresh();
+        event(new UserUpdated($user));
+        return $user;
     }
 
     public function delete(User $user) {
+        event(new UserDeleted($user));
         $user->delete();
     }
 
