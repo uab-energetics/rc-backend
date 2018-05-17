@@ -29,13 +29,11 @@ class TaskService {
      */
     public function filterTasksByKeyword($query, $search = null) {
         if ($search === null) return $query;
-        return $query
-            ->whereHas('form', function ($q) use ($search) {
-                search($q, $search, Form::searchable);
-            })
-            ->orWhereHas('publication', function ($q) use ($search) {
-                search($q, $search, Publication::searchable);
-            });
+        $query = search($query, $search, [], [
+            'form' => Form::searchable,
+            'publication' => Publication::searchable
+        ]);
+        return $query;
     }
 
     public function startEncoding(EncodingTask $task) {

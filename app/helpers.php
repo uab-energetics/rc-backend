@@ -76,8 +76,20 @@ function getPaginationLimit() {
  * @param string[] $columns
  * @return \Illuminate\Database\Eloquent\Builder
  */
-function search($query, $term, $columns) {
-    if (!$term) return $query;
+function search($query, $term, $columns, $relationColumns = []) {
+    if (!$query) return $query;
+    return $query->where(function ($query) use ($term, $columns, $relationColumns) {
+        simpleSearch($query, $term, $columns);
+        foreach ($relationColumns as $rel => $relColumns) {
+            $query->orWhereHas($rel, function($q) use ($term, $relColumns) {
+                simpleSearch($q, $term, $relColumns);
+            });
+        }
+    });
+}
+
+function simpleSearch($query, $term, $columns) {
+    if (!$term || !$columns) return $query;
     $query->where($columns[0], 'like', "%$term%");
     for ($i = 1; $i < count($columns); $i++)
         $query->orWhere($columns[$i], 'like', "%$term%");
