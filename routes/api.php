@@ -183,6 +183,7 @@ Route::group(['prefix' => 'channels', 'middleware' => ['rc.auth']], function () 
 
     Route::post('/users/created', UserChannelController::class."@created");
     Route::post('/users/updated', UserChannelController::class."@updated");
+    Route::post('/users/deleted', UserChannelController::class."@deleted");
 });
 
 

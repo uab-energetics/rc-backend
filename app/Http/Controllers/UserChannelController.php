@@ -4,20 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Services\Users\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserChannelController extends Controller {
 
     public function created(Request $request) {
         $request->validate(static::$createRules);
-        $this->userService->make($request->all());
-        return okMessage("", 201);
+        DB::beginTransaction();
+            $this->userService->make($request->all());
+        DB::commit();
+        return okMessage(null, 201);
     }
 
     public function updated(Request $request) {
         $request->validate(static::$updateRules);
-        $user = $this->userService->retrieve($request->id);
-        $this->userService->update($user, $request->all());
-        return okMessage("", 200);
+        DB::beginTransaction();
+            $user = $this->userService->retrieve($request->id);
+            $this->userService->update($user, $request->all());
+        DB::commit();
+        return okMessage();
+    }
+
+    public function deleted(Request $request) {
+        $request->validate(static::$deleteRules);
+        DB::beginTransaction();
+            $user = $this->userService->retrieve($request->id);
+            $this->userService->delete($user);
+        DB::commit();
+        return okMessage();
     }
 
 
@@ -49,6 +63,10 @@ class UserChannelController extends Controller {
         'bio' => 'string|nullable',
         'website' => 'url|nullable',
         'theme' => 'string|nullable',
+    ];
+
+    public static $deleteRules = [
+        'id' => 'required|numeric|exists:users,id',
     ];
 
 }

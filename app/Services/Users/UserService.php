@@ -26,6 +26,10 @@ class UserService {
         return $user->refresh();
     }
 
+    public function delete(User $user) {
+        $user->delete();
+    }
+
     public function getResearcherProjects(User $user) {
         return $user->researcherProjects()->get();
     }

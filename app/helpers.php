@@ -18,11 +18,13 @@ function invalidParamMessage(\Illuminate\Contracts\Validation\Validator $validat
     ], 400);
 }
 
-function okMessage($message, $code = 200, $extra = []) {
+function okMessage($message = null, $code = 200, $extra = []) {
     $arr = [
-        'status' => 'ok',
-        'msg' => $message
+        'status' => 'ok'
     ];
+    if ($message !== null) {
+        $arr['msg'] = $message;
+    }
     $arr += $extra;
     return response()->json($arr, $code);
 }
