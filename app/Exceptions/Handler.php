@@ -58,6 +58,11 @@ class Handler extends ExceptionHandler
 
     public function render($request, Exception $e)
     {
+        if ($e instanceof AuthenticationException) {
+            return response()->json([
+                'status' => $e->getMessage()
+            ], 401);
+        }
         if ($e instanceof ModelNotFoundException) {
             $class = $this->getEndOfClassName($e->getModel());
             return response()->json([
