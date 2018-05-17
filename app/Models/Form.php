@@ -20,7 +20,7 @@ class Form extends Model {
 
     protected $with = ['rootCategory', 'questions'];
 
-    protected $searchable = ['name', 'description', 'type', 'published'];
+    protected $searchable = self::searchable;
 
     public function rootCategory(){
         return $this->belongsTo(Category::class, 'root_category_id');
@@ -34,4 +34,6 @@ class Form extends Model {
     public function encodings() {
         return $this->hasMany(Encoding::class, 'form_id');
     }
+
+    const searchable = ['name', 'description', 'type', 'published'];
 }

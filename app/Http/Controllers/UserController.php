@@ -32,11 +32,11 @@ class UserController extends Controller {
 
     public function retrieveTasks(Request $request, UserService $userService) {
         $request->validate([
-            'status' => ['nullable', new TaskStatus()]
+            'status' => ['nullable', new TaskStatus()],
+            'search' => 'nullable|string',
         ]);
         $user = $request->user();
-        $status = $request->status;
-        return paginate($userService->getTasks($user, $status));
+        return paginate($userService->getTasks($user, $request->status, $request->search));
     }
 
     public function retrieveForms(Request $request, UserService $userService) {

@@ -6,7 +6,10 @@ namespace App\Services\Encodings;
 
 use App\EncodingTask;
 use App\Exceptions\TaskAlreadyStartedException;
+use App\Form;
 use App\ProjectEncoding;
+use App\Publication;
+use Illuminate\Database\Query\Builder;
 
 class TaskService {
 
@@ -17,6 +20,22 @@ class TaskService {
     public function filterTasksByStatus($query, $status = null) {
         $filter = $this->getTaskQueryFilter($status);
         return $filter->filter($query);
+    }
+
+    /**
+     * @param $query \Illuminate\Database\Eloquent\Builder
+     * @param null $search
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function filterTasksByKeyword($query, $search = null) {
+        if ($search === null) return $query;
+        return $query
+            ->whereHas('form', function ($q) use ($search) {
+                search($q, $search, Form::searchable);
+            })
+            ->orWhereHas('publication', function ($q) use ($search) {
+                search($q, $search, Publication::searchable);
+            });
     }
 
     public function startEncoding(EncodingTask $task) {

@@ -34,7 +34,7 @@ class UserService {
             ->get();
     }
 
-    public function getTasks(User $user, $status = null) {
+    public function getTasks(User $user, $status = null, $search = null) {
         $query = $user->tasks()
             ->with([
                 'encoding' => function($query) {
@@ -45,7 +45,9 @@ class UserService {
                 },
                 'publication'
             ]);
-        return $this->taskService->filterTasksByStatus($query, $status);
+        $filtered = $this->taskService->filterTasksByStatus($query, $status);
+        $searched = $this->taskService->filterTasksByKeyword($query, $search);
+        return $searched;
     }
 
     public function getFormsEncoder(User $user) {
