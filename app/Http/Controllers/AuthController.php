@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserCreated;
 use App\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -82,11 +83,13 @@ class AuthController extends Controller {
      * @return \App\User
      */
     protected function create(array $data) {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+        event(new UserCreated($user));
+        return $user;
     }
 
     protected function onRegistered($user, $request) {

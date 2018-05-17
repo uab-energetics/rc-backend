@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserUpdated;
 use App\Rules\TaskStatus;
 use App\Services\Users\UserService;
 use App\User;
@@ -48,6 +49,7 @@ class UserController extends Controller {
         $user = $request->user();
         $user->fill($request->all());
         $user->save();
+        event(new UserUpdated($user));
         return User::find($user->getKey());
     }
 
