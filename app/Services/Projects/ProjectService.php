@@ -14,6 +14,7 @@ use App\Publication;
 use App\Services\Forms\FormService;
 use App\Services\ProjectForms\ProjectFormService;
 use App\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProjectService {
 
@@ -50,10 +51,14 @@ class ProjectService {
         ]);
     }
 
-    public function removeResearcher(Project $project, User $user) {
+    public function removeResearcher(Project $project, User $user, $force = false) {
         $edge = $this->getResearcherEdge($project->getKey(), $user->getKey());
         $researcherCount = ProjectResearcher::query()->count();
         if ($researcherCount === 1) {
+            if ($force === true) {
+                $this->deleteProject($project);
+                return;
+            }
             throw new ProjectResearcherCountException();
         }
         $edge->delete();
@@ -81,6 +86,17 @@ class ProjectService {
         foreach ($forms as $form) {
             $this->projectFormService->removeEncoder($project, $form, $user);
         }
+    }
+
+    public function getProjectsByUser(User $user) {
+        $user_id = $user->getKey();
+        return Project::query()
+            ->whereHas('researchers', function($query) use ($user_id) {
+                $query->where('researcher_id', '=', $user_id);
+            })
+            ->orWhereHas('encoders', function ($query) use ($user_id) {
+                $query->where('coder_id', '=', $user_id);
+            });
     }
 
     public function searchResearchers(Project $project, $search = null) {
@@ -133,6 +149,18 @@ class ProjectService {
         return $project->forms()->without(['rootCategory', 'questions'])->get();
     }
 
+    public function handleUserDeleted(User $user) {
+        $projects = $this->getProjectsByUser($user)->get();
+        foreach ($projects as $project) {
+            if ($this->isResearcher($project->getKey(), $user->getKey())) {
+                $this->removeResearcher($project, $user, true);
+            }
+            if ($this->isEncoder($project->getKey(), $user->getKey())) {
+                $this->removeEncoder($project, $user);
+            }
+        }
+    }
+
     private function getResearcherEdge($project_id, $user_id) {
         return ProjectResearcher::query()
             ->where('project_id', '=', $project_id)
@@ -140,11 +168,25 @@ class ProjectService {
             ->firstOrFail();
     }
 
+    private function isResearcher($project_id, $user_id) {
+        return ProjectResearcher::query()
+            ->where('project_id', '=', $project_id)
+            ->where('researcher_id', '=', $user_id)
+            ->count() > 0;
+    }
+
     private function getEncoderEdge($project_id, $user_id) {
         return ProjectEncoder::query()
             ->where('project_id', '=', $project_id)
             ->where('coder_id', '=', $user_id)
             ->firstOrFail();
+    }
+
+    private function isEncoder($project_id, $user_id) {
+        return ProjectEncoder::query()
+            ->where('project_id', '=', $project_id)
+            ->where('coder_id', '=', $user_id)
+            ->count() > 0;
     }
 
     /** @var FormService */
