@@ -17,6 +17,15 @@ class UserService {
         return User::search($query)->paginate(getPaginationLimit())->toArray()['data'];
     }
 
+    public function make($params) {
+        return User::create($params);
+    }
+
+    public function update(User $user, $params) {
+        $user->update($params);
+        return $user->refresh();
+    }
+
     public function getResearcherProjects(User $user) {
         return $user->researcherProjects()->get();
     }

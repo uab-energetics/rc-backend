@@ -14,6 +14,7 @@ use App\Http\Controllers\ProjectFormController;
 use App\Http\Controllers\ProjectInvitesController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserChannelController;
 use App\Http\Controllers\UserController;
 use App\Project;
 use App\Publication;
@@ -25,9 +26,7 @@ use App\Http\Controllers\QuestionController;
 
 
 
-Route::group(['middleware' => ['rc.auth']], function () {
-    Route::get('auth-test', function () {   return "true";  });
-});
+
 
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', AuthController::class."@login");
@@ -179,9 +178,16 @@ Route::get('/validate-researcher-invite', ProjectInvitesController::class."@vali
 Route::get('/validate-encoder-invite', ProjectInvitesController::class."@validateEncoderInvitation");
 
 
+Route::group(['prefix' => 'channels', 'middleware' => ['rc.auth']], function () {
+    Route::get('auth-test', function () {   return "true";  });
+
+    Route::post('/users/created', UserChannelController::class."@created");
+    Route::post('/users/updated', UserChannelController::class."@updated");
+});
+
 
 Route::get('/ping', function() {
-    return "{ msg: 'pong!' }";
+    return response()->json(['msg' => 'pong!']);
 });
 
 /**
