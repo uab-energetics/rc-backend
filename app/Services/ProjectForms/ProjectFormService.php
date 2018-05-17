@@ -242,9 +242,7 @@ class ProjectFormService {
 
     protected function deactivateUserTasks(ProjectForm $projectForm, User $user) {
         $tasks = $this->getTasksByUser($projectForm, $user);
-        foreach ($tasks as $task) {
-            $task->update(['active' => false]);
-        }
+        $this->taskService->deleteTasks($tasks);
     }
 
     protected function doRetrieveAllTasks(ProjectForm $projectForm) {
