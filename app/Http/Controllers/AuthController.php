@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
+
+
+// TODO - purge this application of Tymon JWT Auth
+
 class AuthController extends Controller {
 
     public function login(Request $request, JWTAuth $auth) {

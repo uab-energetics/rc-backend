@@ -35,7 +35,7 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 
-Route::group(['middleware' => ['jwt.auth']], function () {
+Route::group(['middleware' => ['rocco.jwt-auth']], function () {
 
     $user_ctrl = UserController::class;
     $forms_ctrl = FormController::class;
