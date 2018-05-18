@@ -1,28 +1,35 @@
 version: '3.3'
 
+volumes:
+  rc-backend-dbdata:
+
+networks:
+  default:
+    external:
+      name: research-coder
+
 services:
 
-  app:
-    container_name: rc-api-dev
-    build:
-      context: .
-      dockerfile: dev.dockerfile
+  rc-backend:
+    container_name: rc-backend
+    build: .
     volumes:
       - ./:/app
     environment:
-      - DB_HOST=database
+      - DB_HOST=rc-backend-db
       - DB_PORT=3306
       - COMPOSER_ALLOW_SUPERUSER=1
     env_file: .env.api
     ports:
-      - 8000:8000
+      - 8000:80
     user: ${UID:-0}:${GID:-0}
+    entrypoint: php artisan serve --host 0.0.0.0 --port 80
 
-  database:
-    container_name: rc-db-dev
+  rc-backend-db:
+    container_name: rc-backend-db
     image: mysql:5.7
     volumes:
-      - dbdata:/var/lib/mysql
+      - rc-backend-dbdata:/var/lib/mysql
     environment:
       - MYSQL_DATABASE=research-coder
       - MYSQL_USER=homestead
@@ -30,6 +37,3 @@ services:
       - MYSQL_ROOT_PASSWORD=secret
     ports:
       - 33061:3306
-
-volumes:
-  dbdata:

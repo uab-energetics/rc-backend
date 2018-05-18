@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CONTAINER=rc-api-dev
+CONTAINER=rc-backend
 
 if [ $# -eq 0 ]; then {
     docker exec -it $CONTAINER /bin/bash
