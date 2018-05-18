@@ -5,6 +5,7 @@ namespace App\Services\Users;
 
 
 use App\Events\UserCreated;
+use App\Events\UserDeleted;
 use App\Events\UserUpdated;
 use App\Services\Encodings\TaskService;
 use App\User;
