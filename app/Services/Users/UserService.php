@@ -16,6 +16,12 @@ class UserService {
         return User::findOrFail($user_id);
     }
 
+    public function retrieveByUuid($uuid) {
+        return User::query()
+            ->where('uuid', '=', $uuid)
+            ->firstOrFail();
+    }
+
     public function search($query) {
         return User::search($query)->paginate(getPaginationLimit())->toArray()['data'];
     }

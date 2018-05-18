@@ -19,7 +19,7 @@ class UserChannelController extends Controller {
     public function updated(Request $request) {
         $request->validate(static::$updateRules);
         DB::beginTransaction();
-            $user = $this->userService->retrieve($request->id);
+            $user = $this->userService->retrieveByUuid($request->uuid);
             $this->userService->update($user, $request->all());
         DB::commit();
         return okMessage();
@@ -28,7 +28,7 @@ class UserChannelController extends Controller {
     public function deleted(Request $request) {
         $request->validate(static::$deleteRules);
         DB::beginTransaction();
-            $user = $this->userService->retrieve($request->id);
+            $user = $this->userService->retrieveByUuid($request->uuid);
             $this->userService->delete($user);
         DB::commit();
         return okMessage();
@@ -43,7 +43,7 @@ class UserChannelController extends Controller {
     }
 
     public static $createRules = [
-        'id' => 'numeric|required|unique:users,id',
+        'uuid' => 'string|required|unique:users,uuid',
         'name' => 'string|required',
         'email' => 'email|required|unique:users,email',
         'image' => 'url|required',
@@ -55,7 +55,7 @@ class UserChannelController extends Controller {
     ];
 
     public static $updateRules = [
-        'id' => 'required|numeric|exists:users,id',
+        'uuid' => 'required|string|exists:users,uuid',
         'name' => 'string',
         'email' => 'string',
         'image' => 'url',
@@ -66,7 +66,7 @@ class UserChannelController extends Controller {
     ];
 
     public static $deleteRules = [
-        'id' => 'required|numeric|exists:users,id',
+        'uuid' => 'required|string|exists:users,uuid',
     ];
 
 }
