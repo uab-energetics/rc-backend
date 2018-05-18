@@ -45,12 +45,9 @@ class UserController extends Controller {
         return $userService->getFormsEncoder($user);
     }
 
-    public function updateProfile(Request $request){
+    public function updateProfile(Request $request, UserService $userService){
         $user = $request->user();
-        $user->fill($request->all());
-        $user->save();
-        event(new UserUpdated($user));
-        return User::find($user->getKey());
+        return $userService->update($user, $request->all());
     }
 
 }

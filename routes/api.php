@@ -67,7 +67,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 
     // projects
     Route::post(    'projects', "$projects_ctrl@create")->middleware('validate:projects.create');
-    Route::get(     'projects', "$projects_ctrl@search")->middleware('validate:projects.create');
+    Route::get(     'projects', "$projects_ctrl@search");
     Route::get(     'projects/{project}', getter(Project::class));
     Route::put(     'projects/{project}', "$projects_ctrl@update");
     Route::get(     'projects/{project}/dashboard', "$projects_ctrl@getDashboard");
