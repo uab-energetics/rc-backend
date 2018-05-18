@@ -14,7 +14,7 @@ services:
     container_name: rc-backend
     build: .
     volumes:
-      - ./:/app
+      - ./:/var/www/app
     environment:
       - DB_HOST=rc-backend-db
       - DB_PORT=3306
