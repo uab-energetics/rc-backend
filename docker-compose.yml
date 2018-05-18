@@ -15,10 +15,14 @@ services:
     build: .
     volumes:
       - ./:/var/www/app
+      # CAREFUL WITH THIS. if you move the project, this line will break. TODO - fix it
+      - ../rc-auth/.keys/pub:/.keys/pub
     environment:
       - DB_HOST=rc-backend-db
       - DB_PORT=3306
       - COMPOSER_ALLOW_SUPERUSER=1
+      - JWT_PUBLIC_KEY=/.keys/pub/rc-auth.pub
+      - JWT_ALGORITHM=RS256
     env_file: .env.api
     ports:
       - 8000:8000

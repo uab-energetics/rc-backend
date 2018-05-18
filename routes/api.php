@@ -20,6 +20,7 @@ use App\Project;
 use App\Publication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use \Firebase\JWT\JWT;
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\QuestionController;
@@ -189,6 +190,14 @@ Route::group(['prefix' => 'channels', 'middleware' => ['rc.auth']], function () 
 
 Route::get('/ping', function() {
     return response()->json(['msg' => 'pong!']);
+});
+
+echo config('jwt.public');
+
+Route::group(['middleware' => 'rocco.jwt-auth'], function(){
+    Route::get('/me', function(Request $request) {
+        return response()->json(Auth::user());
+    });
 });
 
 /**
