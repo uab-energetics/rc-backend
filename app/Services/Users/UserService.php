@@ -27,7 +27,11 @@ class UserService {
     }
 
     public function make($params) {
-        $user = User::create($params);
+        $user = new User();
+        $user->uuid = $params['uuid'];
+        $user->fill($params);
+        $user->save();
+        $user = $user->refresh();
         event(new UserCreated($user));
         return $user;
     }
