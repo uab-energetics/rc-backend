@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\UserCreated;
+use App\Services\Users\UserService;
 use App\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -83,13 +84,11 @@ class AuthController extends Controller {
      * @return \App\User
      */
     protected function create(array $data) {
-        $user = User::create([
+        return $this->userService->make([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
-        event(new UserCreated($user));
-        return $user;
     }
 
     protected function onRegistered($user, $request) {
@@ -103,6 +102,13 @@ class AuthController extends Controller {
             'email' => $user->email,
             'name' => $user->name,
         ];
+    }
+
+    /** @var UserService  */
+    protected $userService;
+
+    public function __construct(UserService $userService) {
+        $this->userService = $userService;
     }
 
     const INVALID_CREDENTIALS = [

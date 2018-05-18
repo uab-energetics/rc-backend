@@ -4,6 +4,8 @@
 namespace App\Services\Users;
 
 
+use App\Events\UserCreated;
+use App\Events\UserUpdated;
 use App\Services\Encodings\TaskService;
 use App\User;
 
@@ -15,6 +17,24 @@ class UserService {
 
     public function search($query) {
         return User::search($query)->paginate(getPaginationLimit())->toArray()['data'];
+    }
+
+    public function make($params) {
+        $user = User::create($params);
+        event(new UserCreated($user));
+        return $user;
+    }
+
+    public function update(User $user, $params) {
+        $user->update($params);
+        $user = $user->refresh();
+        event(new UserUpdated($user));
+        return $user;
+    }
+
+    public function delete(User $user) {
+        event(new UserDeleted($user));
+        $user->delete();
     }
 
     public function getResearcherProjects(User $user) {
@@ -55,7 +75,7 @@ class UserService {
             ->with(['form' => function ($query) {
                 $query->without(['questions', 'rootCategory']);
             },
-                    'project'])
+                'project'])
             ->get();
     }
 
