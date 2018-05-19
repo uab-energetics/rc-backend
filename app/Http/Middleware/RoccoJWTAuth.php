@@ -20,10 +20,6 @@ class RoccoJWTAuth
      * 3. Decode the JWT
      * 4. Lookup the user in our database
      * 5. Set the currently logged in user
-     *
-     * @param Request $request
-     * @param Closure $next
-     * @return \Illuminate\Http\JsonResponse|mixed
      */
     public function handle(Request $request, Closure $next)
     {
