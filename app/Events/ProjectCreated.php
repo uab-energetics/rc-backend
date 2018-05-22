@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Project;
+use App\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -16,9 +17,12 @@ class ProjectCreated {
 
     /** @var Project  */
     public $project;
+    /** @var User  */
+    public $user;
 
-    public function __construct(Project $project) {
+    public function __construct(Project $project, User $createdBy) {
         $this->project = $project;
+        $this->user = $createdBy;
     }
 
     public function broadcastOn() {

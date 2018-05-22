@@ -23,8 +23,7 @@ class ProjectController extends Controller {
         $user = $request->user();
 
         DB::beginTransaction();
-            $project = $projectService->makeProject($request->all());
-            $projectService->addResearcher($project->getKey(), $user->getKey(), true);
+            $project = $projectService->makeProject($request->all(), $user);
         DB::commit();
 
         return $project;

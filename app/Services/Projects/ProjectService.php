@@ -19,9 +19,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProjectService {
 
-    public function makeProject($params) {
+    public function makeProject($params, User $user) {
         $project = Project::create($params);
-        event(new ProjectCreated($project));
+        event(new ProjectCreated($project, $user));
         return $project;
     }
 

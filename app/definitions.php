@@ -17,3 +17,5 @@ const TASK_IN_PROGRESS = 'in_progress';
 const TASK_COMPLETE = 'complete';
 
 const NOTIFICATION_INVITE_TO_PROJECT = 'invited_to_project';
+
+const RABBITMQ_RESOURCE_CREATED = 'resource.created';

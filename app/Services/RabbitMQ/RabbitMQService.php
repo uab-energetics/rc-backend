@@ -10,7 +10,7 @@ use PhpAmqpLib\Message\AMQPMessage;
 class RabbitMQService {
 
     public function publishMessage($exchange, $messageData) {
-        $message = new AMQPMessage($messageData);
+        $message = new AMQPMessage(json_encode($messageData));
         $this->channel->basic_publish($message, $exchange);
     }
 
