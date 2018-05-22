@@ -10,9 +10,11 @@ networks:
 
 services:
 
-  rc-backend-dev:
-    container_name: rc-backend
-    build: .
+  rc-backend:
+    container_name: rc-backend-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     volumes:
       - ./:/var/www/app
       # CAREFUL WITH THIS. if you move the project, this line will break. TODO - fix it
@@ -29,8 +31,8 @@ services:
     user: ${UID:-0}:${GID:-0}
     entrypoint: php artisan serve --host 0.0.0.0 --port 8000
 
-  rc-backend-db-dev:
-    container_name: rc-backend-db
+  rc-backend-db:
+    container_name: rc-backend-db-dev
     image: mysql:5.7
     volumes:
       - rc-backend-dbdata:/var/lib/mysql

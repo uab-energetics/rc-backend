@@ -1,0 +1,16 @@
+FROM php:7.1
+
+RUN apt-get update -y && apt-get install -y openssl mysql-client zip unzip && \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer; \
+    docker-php-ext-install pdo pdo_mysql mbstring bcmath
+
+WORKDIR /var/www/app
+
+COPY composer.json composer.lock ./
+RUN export COMPOSER_ALLOW_SUPERUSER=1 && \
+    composer install --no-scripts --no-autoloader
+
+COPY . .
+
+RUN export COMPOSER_ALLOW_SUPERUSER=1 && \
+    composer dump-autoload -o
