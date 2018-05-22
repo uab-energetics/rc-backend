@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Services\RabbitMQ\RabbitMQService;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,6 +24,11 @@ class RabbitMQTest extends TestCase {
 
         $channel->close();
         $connection->close();
+    }
+
+    public function testRabbitMQServiceResolved() {
+        $service = app()->make(RabbitMQService::class);
+        $this->assertTrue($service !== null);
     }
 
 }
