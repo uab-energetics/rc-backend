@@ -10,16 +10,19 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 class RabbitMQTest extends TestCase {
 
-    public function testRabbitMQPublishing() {
-        $connection = new AMQPStreamConnection('rabbitmq', 5672, 'guest', 'guest');
+    public function testRabbitMQConnection() {
+        $connection = new AMQPStreamConnection(
+            config('rabbitmq.connection.host'),
+            config('rabbitmq.connection.port'),
+            config('rabbitmq.connection.user'),
+            config('rabbitmq.connection.password')
+        );
         $channel = $connection->channel();
 
         $this->assertTrue($connection && $channel);
 
         $channel->close();
         $connection->close();
-
-
     }
 
 }
