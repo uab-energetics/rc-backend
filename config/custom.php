@@ -7,4 +7,5 @@ return [
 
     'auth_api_secret' => env('AUTH_API_SECRET'),
 
+
 ];
