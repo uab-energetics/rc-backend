@@ -54,7 +54,7 @@ class EventServiceProvider extends ServiceProvider {
         UserDeleted::class => [
             UserDeletedListener::class,
         ],
-        ProjectCreated::class, [
+        ProjectCreated::class => [
             ProjectCreatedListener::class,
         ],
     ];
