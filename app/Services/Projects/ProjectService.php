@@ -2,6 +2,7 @@
 
 namespace App\Services\Projects;
 
+use App\Events\ProjectCreated;
 use App\Exceptions\ProjectResearcherCountException;
 use App\Form;
 use App\FormPublication;
@@ -19,7 +20,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class ProjectService {
 
     public function makeProject($params) {
-        return Project::create($params);
+        $project = Project::create($params);
+        event(new ProjectCreated($project));
+        return $project;
     }
 
     public function search($query) {
