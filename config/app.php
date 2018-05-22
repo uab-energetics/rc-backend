@@ -137,6 +137,7 @@ return [
     */
 
     'providers' => [
+        \App\Providers\RabbitMQProvider::class,
 
         /*
          * Laravel Framework Service Providers...
