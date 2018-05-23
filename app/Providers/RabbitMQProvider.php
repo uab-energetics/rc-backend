@@ -32,7 +32,7 @@ class RabbitMQProvider extends ServiceProvider {
             );
             $channel = $connection->channel();
             foreach (config('rabbitmq.exchanges') as $exchange => $type) {
-                $channel->exchange_declare($exchange, $type);
+                $channel->exchange_declare($exchange, $type, false, false, false);
             }
             return new RabbitMQService($channel);
         });

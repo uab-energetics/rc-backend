@@ -20,4 +20,17 @@ class RabbitMQService {
     public function __construct(AMQPChannel $channel) {
         $this->channel = $channel;
     }
+
+    static function projectCreated($project_id, $user_id) {
+        return [
+            RABBITMQ_RESOURCE_CREATED, 
+                [
+                    'resourceType' => 'project',
+                    'resourceID' => $project_id,
+                    // 'parentType' => null,
+                    // 'parentID' => null,
+                    'ownerID' => $user_id,
+                ]
+            ];
+    }
 }

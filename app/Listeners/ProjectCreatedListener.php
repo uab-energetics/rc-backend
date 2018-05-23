@@ -31,12 +31,7 @@ class ProjectCreatedListener {
         $this->projectService->addResearcher($project->getKey(), $owner->getKey(), true);
 
         // publish to rabbitmq
-        $this->rabbitmqService->publishMessage(RABBITMQ_RESOURCE_CREATED, [
-            'resourceType' => 'project',
-            'resourceID' => $project->getKey(),
-            'parentType' => null,
-            'parentID' => null,
-            'owner' => $owner->uuid,
-        ]);
+        $event = RabbitMQService::projectCreated($project->getKey(), $owner->uuid);
+        $this->rabbitmqService->publishMessage(...$event);
     }
 }
