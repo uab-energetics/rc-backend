@@ -8,7 +8,7 @@ RUN mkdir -p /.config/psysh /.composer && \
 RUN apt-get update -y && apt-get install -y openssl mysql-client zip unzip && \
     docker-php-ext-install pdo pdo_mysql mbstring bcmath
 
-WORKDIR /var/www/app
+WORKDIR /app
 
 COPY composer.json composer.lock ./
 RUN export COMPOSER_ALLOW_SUPERUSER=1 && \
@@ -18,3 +18,5 @@ COPY . .
 
 RUN export COMPOSER_ALLOW_SUPERUSER=1 && \
     composer dump-autoload -o
+
+ENTRYPOINT composer dump-autoload -o && php artisan serve --host 0.0.0.0 --port 8000
