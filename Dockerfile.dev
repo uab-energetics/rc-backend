@@ -19,4 +19,4 @@ COPY . .
 RUN export COMPOSER_ALLOW_SUPERUSER=1 && \
     composer dump-autoload -o
 
-ENTRYPOINT composer dump-autoload -o && php artisan serve --host 0.0.0.0 --port 8000
+CMD composer dump-autoload -o && php artisan serve --host 0.0.0.0 --port 8000
