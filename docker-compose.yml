@@ -16,15 +16,22 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     volumes:
-      - ./:/var/www/app
-      # CAREFUL WITH THIS. if you move the project, this line will break. TODO - fix it
-      - ../rc-auth/.keys/pub:/.keys/pub
+      - ../.keys/rc-auth.key.pub:/.keys/rc-auth.key.pub
+      - ./app:/app/app
+      - ./tests:/app/tests
+      - ./config:/app/config
+      - ./database:/app/database
+      - ./resources:/app/resources
+      - ./routes:/app/routes
     environment:
-      - DB_HOST=rc-backend-db
-      - DB_PORT=3306
-      - COMPOSER_ALLOW_SUPERUSER=1
-      - JWT_PUBLIC_KEY=/.keys/pub/rc-auth.pub
-      - JWT_ALGORITHM=RS256
+      DB_HOST: rc-backend-db
+      DB_PORT: 3306
+      JWT_PUBLIC_KEY: /.keys/rc-auth.key.pub
+      AUTH_API_SECRET: secret
+      RABBITMQ_HOST: rc-rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
     env_file: .env.api
     ports:
       - 8000:8000
