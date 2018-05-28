@@ -17,12 +17,7 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - ../.keys/rc-auth.key.pub:/.keys/rc-auth.key.pub
-      - ./app:/app/app
-      - ./tests:/app/tests
-      - ./config:/app/config
-      - ./database:/app/database
-      - ./resources:/app/resources
-      - ./routes:/app/routes
+      - .:/app
     environment:
       DB_HOST: rc-backend-db
       DB_PORT: 3306
@@ -36,7 +31,6 @@ services:
     ports:
       - 8000:8000
     user: ${UID:-0}:${GID:-0}
-    entrypoint: php artisan serve --host 0.0.0.0 --port 8000
 
   rc-backend-db:
     container_name: rc-backend-db-dev

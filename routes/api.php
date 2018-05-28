@@ -192,8 +192,6 @@ Route::get('/ping', function() {
     return response()->json(['msg' => 'pong!']);
 });
 
-echo config('jwt.public');
-
 Route::group(['middleware' => 'rocco.jwt-auth'], function(){
     Route::get('/me', function(Request $request) {
         return response()->json(Auth::user());

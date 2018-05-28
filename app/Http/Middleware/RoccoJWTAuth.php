@@ -23,19 +23,21 @@ class RoccoJWTAuth
      */
     public function handle(Request $request, Closure $next)
     {
-        $public_key_path = config('rocco-jwt-auth.public_key');
+        if(config('rocco-jwt-auth.no-jwt-middleware', false)) {
+            $next();
+        }
+
+        $public_key = config('rocco-jwt-auth.public_key');
         $algorithm_type = config('rocco-jwt-auth.algorithm');
         $user_id_field = config('rocco-jwt-auth.user_id_field');   // the property on the user model
         $jwt_user_id = config('rocco-jwt-auth.jwt_user_id');       // the property on the JWT corresponding to the user model
 
-        if(!($public_key_path && $algorithm_type && $user_id_field && $jwt_user_id))
+        if(!($public_key && $algorithm_type && $user_id_field && $jwt_user_id))
             throw new \Exception("Missing required configuration for JWT middleware");
 
         $token = $request->bearerToken();
         if(!$token)
             return response()->json([ 'msg' => 'token not set in Authorization: Bearer ... token' ], 401);
-
-        $public_key = file_get_contents($public_key_path);
 
         try {
             $decoded = JWT::decode($token, $public_key, [$algorithm_type]);

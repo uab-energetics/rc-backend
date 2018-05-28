@@ -5,42 +5,48 @@ namespace Tests\Feature;
 use App\User;
 use Firebase\JWT\JWT;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RoccoJWTAuthTest extends TestCase
 {
     public function testJWTRoute() {
 
-        // no token
+        config([
+            'rocco-jwt-auth.public_key' => file_get_contents(__DIR__ . '/rc-auth.pub' ),
+            'user_id_field' => 'id',
+            'jwt_user_id' => 'uuid',
+        ]);
+
+        // TEST SECURED ROUTE WITH NO TOKEN PROVIDED
         $this->get('/me')->assertStatus(401);
 
+        // CREATE A VALID JWT
         $private_key = file_get_contents(__DIR__ . '/rc-auth.pem');
-
         $user = factory(User::class)->create();
-
         $token = [
             "iss" => "example.org",
             "aud" => "example.com",
             "iat" => 1356999524,
             "nbf" => 1357000000,
         ];
-
         $jwt = JWT::encode($token, $private_key, 'RS256');
 
-        // because there is no user with the correct ID
+        // EXPECT A 500 BEFORE THE USER IS IN THE DATABASE
         $this->get('/me', [
             'Authorization' => "Bearer $jwt"
         ])->assertStatus(500);
 
-        // ** NOTE ** - 'uuid' is a config param. This test would fail if config('custom.jwt_auth.jwt_user_id') !== 'uuid'
-        $token['uuid'] = $user->id;
+
+        // set the user in the jwt
+        $token['uuid'] = $user->uuid;
         $jwt = JWT::encode($token, $private_key, 'RS256');
 
-        // now we're good
-        $this->get('/me', [
+        // SEND A REQUEST WITH A VALID JWT
+        $response = $this->get('/me', [
             'Authorization' => "Bearer $jwt"
-        ])->assertStatus(200);
+        ]);
+
+        $response->assertStatus(200);
+
     }
 
 }
