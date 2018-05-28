@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f364277b369f1a48028270546208db45",
+    "content-hash": "b7fc851bd834f5af77630d0e1f81937a",
     "packages": [
         {
             "name": "barryvdh/laravel-cors",
@@ -869,6 +869,67 @@
             "time": "2018-03-06T10:46:03+00:00"
         },
         {
+            "name": "enqueue/laravel-queue",
+            "version": "0.8.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-enqueue/laravel-queue.git",
+                "reference": "55be58155949017384ecd0e8c04e5aef8e1b2e9a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-enqueue/laravel-queue/zipball/55be58155949017384ecd0e8c04e5aef8e1b2e9a",
+                "reference": "55be58155949017384ecd0e8c04e5aef8e1b2e9a",
+                "shasum": ""
+            },
+            "require": {
+                "enqueue/amqp-tools": "^0.8",
+                "illuminate/queue": "^5.4",
+                "php": ">=5.6",
+                "queue-interop/amqp-interop": "^0.7",
+                "queue-interop/queue-interop": "^0.6"
+            },
+            "require-dev": {
+                "enqueue/enqueue": "^0.8@dev",
+                "enqueue/null": "^0.8@dev",
+                "enqueue/test": "^0.8@dev",
+                "phpunit/phpunit": "~5.5"
+            },
+            "suggest": {
+                "enqueue/simple-client": "If you want to use enqueue client and cli commands"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Enqueue\\LaravelQueue\\EnqueueServiceProvider"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-master": "0.8.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Enqueue\\LaravelQueue\\": "src/"
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Laravel Queue Extension. It uses Enqueue transports",
+            "keywords": [
+                "laravel",
+                "messaging",
+                "queue"
+            ],
+            "time": "2018-03-29T09:07:28+00:00"
+        },
+        {
             "name": "erusev/parsedown",
             "version": "1.6.4",
             "source": {
@@ -1417,71 +1478,6 @@
                 "laravel"
             ],
             "time": "2018-01-18T13:27:23+00:00"
-        },
-        {
-            "name": "laravel/scout",
-            "version": "v3.0.12",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/laravel/scout.git",
-                "reference": "0d97152e9006481e1608ad4286e53acf20a3c110"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/laravel/scout/zipball/0d97152e9006481e1608ad4286e53acf20a3c110",
-                "reference": "0d97152e9006481e1608ad4286e53acf20a3c110",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/bus": "~5.4",
-                "illuminate/contracts": "~5.4",
-                "illuminate/database": "~5.4",
-                "illuminate/pagination": "~5.4",
-                "illuminate/queue": "~5.4",
-                "illuminate/support": "~5.4",
-                "php": ">=5.6.4"
-            },
-            "require-dev": {
-                "algolia/algoliasearch-client-php": "^1.10",
-                "mockery/mockery": "~0.9",
-                "phpunit/phpunit": "~5.0"
-            },
-            "suggest": {
-                "algolia/algoliasearch-client-php": "Required to use the Algolia engine (^1.10)."
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.0-dev"
-                },
-                "laravel": {
-                    "providers": [
-                        "Laravel\\Scout\\ScoutServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Laravel\\Scout\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Taylor Otwell",
-                    "email": "taylor@laravel.com"
-                }
-            ],
-            "description": "Laravel Scout provides a driver based solution to searching your Eloquent models.",
-            "keywords": [
-                "algolia",
-                "laravel",
-                "search"
-            ],
-            "time": "2017-12-07T22:15:01+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -3985,58 +3981,6 @@
                 "environment"
             ],
             "time": "2016-09-01T10:05:43+00:00"
-        },
-        {
-            "name": "yab/laravel-scout-mysql-driver",
-            "version": "v2.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/YABhq/laravel-scout-mysql-driver.git",
-                "reference": "506cff642765c314f00339c02c5dc31931f849bb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/YABhq/laravel-scout-mysql-driver/zipball/506cff642765c314f00339c02c5dc31931f849bb",
-                "reference": "506cff642765c314f00339c02c5dc31931f849bb",
-                "shasum": ""
-            },
-            "require": {
-                "laravel/framework": "5.3.*|5.4.*|5.5.*",
-                "laravel/scout": "^2.0|^3.0",
-                "php": ">=5.6.4"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Yab\\MySQLScout\\Providers\\MySQLScoutServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Yab\\MySQLScout\\": "src/"
-                },
-                "files": [
-                    "src/helpers.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Matt Lantz",
-                    "email": "matt@yabhq.com"
-                },
-                {
-                    "name": "Damian Crisafulli",
-                    "email": "damian.crisafulli@troyweb.com"
-                }
-            ],
-            "description": "MySQL driver for Laravel Scout.",
-            "time": "2017-09-20T10:09:31+00:00"
         }
     ],
     "packages-dev": [
@@ -4252,6 +4196,71 @@
                 "test"
             ],
             "time": "2016-01-20T08:20:44+00:00"
+        },
+        {
+            "name": "laravel/scout",
+            "version": "v3.0.12",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/scout.git",
+                "reference": "0d97152e9006481e1608ad4286e53acf20a3c110"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/scout/zipball/0d97152e9006481e1608ad4286e53acf20a3c110",
+                "reference": "0d97152e9006481e1608ad4286e53acf20a3c110",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/bus": "~5.4",
+                "illuminate/contracts": "~5.4",
+                "illuminate/database": "~5.4",
+                "illuminate/pagination": "~5.4",
+                "illuminate/queue": "~5.4",
+                "illuminate/support": "~5.4",
+                "php": ">=5.6.4"
+            },
+            "require-dev": {
+                "algolia/algoliasearch-client-php": "^1.10",
+                "mockery/mockery": "~0.9",
+                "phpunit/phpunit": "~5.0"
+            },
+            "suggest": {
+                "algolia/algoliasearch-client-php": "Required to use the Algolia engine (^1.10)."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Scout\\ScoutServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Scout\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Laravel Scout provides a driver based solution to searching your Eloquent models.",
+            "keywords": [
+                "algolia",
+                "laravel",
+                "search"
+            ],
+            "time": "2017-12-07T22:15:01+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -5720,6 +5729,58 @@
                 "validate"
             ],
             "time": "2016-11-23T20:04:58+00:00"
+        },
+        {
+            "name": "yab/laravel-scout-mysql-driver",
+            "version": "v2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/YABhq/laravel-scout-mysql-driver.git",
+                "reference": "506cff642765c314f00339c02c5dc31931f849bb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/YABhq/laravel-scout-mysql-driver/zipball/506cff642765c314f00339c02c5dc31931f849bb",
+                "reference": "506cff642765c314f00339c02c5dc31931f849bb",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "5.3.*|5.4.*|5.5.*",
+                "laravel/scout": "^2.0|^3.0",
+                "php": ">=5.6.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Yab\\MySQLScout\\Providers\\MySQLScoutServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Yab\\MySQLScout\\": "src/"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matt Lantz",
+                    "email": "matt@yabhq.com"
+                },
+                {
+                    "name": "Damian Crisafulli",
+                    "email": "damian.crisafulli@troyweb.com"
+                }
+            ],
+            "description": "MySQL driver for Laravel Scout.",
+            "time": "2017-09-20T10:09:31+00:00"
         }
     ],
     "aliases": [],
