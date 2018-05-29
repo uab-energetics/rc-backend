@@ -1,23 +1,36 @@
 <?php
 
 use App\Messaging\RabbitConsumer;
+use App\Messaging\RabbitMessage;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
-$connection = new AMQPStreamConnection('rabbitmq', 5672, 'guest', 'guest');
+$connection;
+
+try {
+    $connection = new AMQPStreamConnection(
+        config('rabbitmq.connection.host'),
+        config('rabbitmq.connection.port'),
+        config('rabbitmq.connection.user'),
+        config('rabbitmq.connection.password')
+    );
+} catch (Exception $e) {
+    print("Could not connect to RabbitMQ");
+}
+
 $channel = $connection->channel();
+$bindings = config('rabbitmq.bindings');
+
 $consumer = new RabbitConsumer($channel);
 
 function bindToEvent (RabbitConsumer $consumer) {
-    return function ($exchange, $queue, $laravel_event) use ($consumer) {
-        $consumer->registerListener($exchange, $queue, function($data) use ($laravel_event) {
-            event($laravel_event, $data);
+    return function ($exchange, $queue, $rabbit_event) use ($consumer) {
+        $consumer->registerListener($exchange, $queue, function(RabbitMessage $msg) use ($rabbit_event) {
+            event(new $rabbit_event($msg));
         });
     };
 }
 
 $bind = bindToEvent($consumer);
-
-$bindings = require __DIR__ . '/bindings.php';
 
 foreach ($bindings as $binding) {
     $bind(
@@ -27,4 +40,9 @@ foreach ($bindings as $binding) {
     );
 }
 
+print("Listening for RabbitMQ Messages" . PHP_EOL);
 $consumer->listen();
+
+print("Done listening. Closing connection". PHP_EOL);
+$channel->close();
+$connection->close();

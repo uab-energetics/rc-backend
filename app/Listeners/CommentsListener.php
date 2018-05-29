@@ -9,7 +9,6 @@ use Pusher\Pusher;
 
 class CommentsListener
 {
-
     private $pusher;
 
     public function __construct(Pusher $pusher) {

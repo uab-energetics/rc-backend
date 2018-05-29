@@ -15,4 +15,6 @@ return [
         'resource.created' => 'fanout',
     ],
 
+    'bindings' => []
+
 ];
