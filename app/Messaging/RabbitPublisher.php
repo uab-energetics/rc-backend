@@ -14,9 +14,6 @@ class RabbitPublisher {
     }
 
     public function publishEvent($exchange, $payload) {
-        // TODO - validate the exchange
-        $this->channel->exchange_declare($exchange, 'fanout', false, true, false);
-
         $msg = new AMQPMessage(
             json_encode($payload),
             [ 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT]

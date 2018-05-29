@@ -4,21 +4,24 @@
 namespace App\Services\RabbitMQ;
 
 
+use App\Messaging\RabbitPublisher;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 
 class RabbitMQService {
 
     public function publishMessage($exchange, $messageData) {
-        $message = new AMQPMessage(json_encode($messageData));
-        $this->channel->basic_publish($message, $exchange);
+        $this->publisher->publishEvent($exchange, $messageData);
     }
 
-    /** @var AMQPChannel  */
+    /** @var RabbitPublisher  */
+    protected $publisher;
+    /** @var AMQPChannel */
     protected $channel;
 
     public function __construct(AMQPChannel $channel) {
-        $this->channel = $channel;
+        $this->publisher = $channel;
+        $this->publisher = new RabbitPublisher($channel);
     }
 
     static function projectCreated($project_id, $user_id) {

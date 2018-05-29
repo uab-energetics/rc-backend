@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\RabbitMQ;
 
+use App\Messaging\RabbitPublisher;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use Tests\TestCase;
 
-class RabbitMQTest extends TestCase
-{
+class PublishTest extends TestCase {
 
     const CONFIG = [
         'rabbitmq.bindings' => [
@@ -19,16 +19,15 @@ class RabbitMQTest extends TestCase
         ]
     ];
 
-
-
     /** @var AMQPStreamConnection */
     public $connection;
     /** @var AMQPChannel */
     private $channel;
 
-    public function setUp()
-    {
+    public function setUp() {
         parent::setUp();
+
+        config(self::CONFIG);
 
         $this->connection = new AMQPStreamConnection(
             config('rabbitmq.connection.host'),
@@ -37,21 +36,29 @@ class RabbitMQTest extends TestCase
             config('rabbitmq.connection.password')
         );
         $this->channel = $this->connection->channel();
+        foreach (self::CONFIG['rabbitmq.bindings'] as $binding) {
+            $exchange = $binding['exchange'];
+            $this->channel->exchange_declare($exchange, 'fanout', false, true, false);
+        }
     }
 
-    public function tearDown()
-    {
+    public function tearDown() {
         parent::tearDown();
         $this->channel->close();
         $this->connection->close();
     }
 
-    public function testCanBindQueue() {
-        $exchange_name = 'test_exchange';
-        $this->channel->exchange_declare($exchange_name, 'fanout', false, false, false);
-        [$queue_name, ,] = $this->channel->queue_declare('test_queue', false, false, true, false);
 
-        $this->channel->queue_bind($queue_name, $exchange_name);
+    /**
+     * NOTE - this function does nothing more than publish to an exchange, and must be run in collaboration with the 'testListener.php' script
+     */
+    public function testPublishConsume() {
+        $publisher = new RabbitPublisher($this->channel);
+        $publisher->publishEvent(self::CONFIG['rabbitmq.bindings'][0]['exchange'], [
+            'user' => [
+                'name' => 'Chris Rocco'
+            ]
+        ]);
         $this->assertTrue(true);
     }
 
