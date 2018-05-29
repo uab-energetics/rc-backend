@@ -1,4 +1,4 @@
-FROM php:7.1-zts-stretch
+FROM php:7.1
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -7,8 +7,6 @@ RUN mkdir -p /.config/psysh /.composer && \
 
 RUN apt-get update -y && apt-get install -y openssl mysql-client zip unzip && \
     docker-php-ext-install pdo pdo_mysql mbstring bcmath
-
-RUN pecl install pthreads
 
 WORKDIR /app
 
