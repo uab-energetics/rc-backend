@@ -1,8 +1,6 @@
 <?php
 
-use Tests\Feature\RabbitMQ\PublishTest;
+use Tests\Feature\RabbitMQ\RabbitMQTest;
 
-
-config(PublishTest::CONFIG);
-
+config(RabbitMQTest::CONFIG);
 Artisan::call('rabbitmq:listen');
