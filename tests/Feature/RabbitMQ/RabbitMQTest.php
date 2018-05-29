@@ -43,6 +43,10 @@ class RabbitMQTest extends TestCase {
         $this->connection->close();
     }
 
+
+    /**
+     * NOTE - this function does nothing more than publish to an exchange, and must be run in collaboration with the 'testListener.php' script
+     */
     public function testPublishConsume() {
         $publisher = new RabbitPublisher($this->channel);
         $publisher->publishEvent('test.created', [
@@ -52,15 +56,5 @@ class RabbitMQTest extends TestCase {
         ]);
         $this->assertTrue(true);
     }
-
-//    public function testBindQueue() {
-//        $exchange_name = 'test_exchange';
-//        $this->channel->exchange_declare($exchange_name, 'fanout', false, false, false);
-//        [$queue_name,,] = $this->channel->queue_declare('test_queue', false, false, true, false);
-//
-//        $this->channel->queue_bind($queue_name, $exchange_name);
-//
-//        $this->assertTrue(true);
-//    }
 
 }
