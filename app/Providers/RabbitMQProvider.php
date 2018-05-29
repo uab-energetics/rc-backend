@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Messaging\RabbitPublisher;
 use App\Services\RabbitMQ\RabbitMQService;
 use Illuminate\Support\ServiceProvider;
 use PhpAmqpLib\Channel\AMQPChannel;
@@ -30,9 +31,13 @@ class RabbitMQProvider extends ServiceProvider {
                 config('rabbitmq.connection.user'),
                 config('rabbitmq.connection.password')
             );
+            register_shutdown_function(function() use ($connection) {
+                $connection->close();
+            });
             $channel = $connection->channel();
+            $publisher = new RabbitPublisher($channel);
             foreach (config('rabbitmq.exchanges') as $exchange => $type) {
-                $channel->exchange_declare($exchange, $type, false, false, false);
+                $channel->exchange_declare($exchange, $type, false, true, false);
             }
             return new RabbitMQService($channel);
         });

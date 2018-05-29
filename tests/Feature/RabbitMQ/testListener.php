@@ -1,16 +1,8 @@
 <?php
 
-use Tests\Feature\RabbitMQ\DummyEvent;
+use Tests\Feature\RabbitMQ\PublishTest;
 
 
-config([
-    'rabbitmq.bindings' => [
-        [
-            'exchange' => 'test.created',
-            'queue' => 'testingQueue',
-            'event' => DummyEvent::class
-        ]
-    ]
-]);
+config(PublishTest::CONFIG);
 
 Artisan::call('rabbitmq:listen');
