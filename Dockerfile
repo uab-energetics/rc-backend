@@ -25,4 +25,4 @@ RUN export COMPOSER_ALLOW_SUPERUSER=1 && \
 
 EXPOSE 80
 
-ENTRYPOINT ["sh", "./start.sh"]
+ENTRYPOINT ["sh", "./scripts/start.sh"]
