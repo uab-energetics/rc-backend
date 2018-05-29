@@ -9,8 +9,6 @@
         "barryvdh/laravel-cors": "^0.10.0",
         "barryvdh/laravel-ide-helper": "^2.4",
         "doctrine/dbal": "^2.6",
-        "enqueue/amqp-lib": "^0.8.23",
-        "enqueue/laravel-queue": "^0.8.4",
         "fideloper/proxy": "~3.3",
         "firebase/php-jwt": "^5.0",
         "guzzlehttp/guzzle": "^6.3",
