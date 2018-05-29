@@ -44,3 +44,10 @@ services:
       - MYSQL_ROOT_PASSWORD=secret
     ports:
       - 33061:3306
+
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    container_name: rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
