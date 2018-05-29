@@ -2,12 +2,22 @@
 
 namespace Tests\Feature\RabbitMQ;
 
-use App\Messaging\RabbitPublisher;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use Tests\TestCase;
 
-class RabbitMQTest extends TestCase {
+class RabbitMQTest extends TestCase
+{
+
+    const CONFIG = [
+        'rabbitmq.bindings' => [
+            [
+                'exchange' => 'test-ex',
+                'queue' => 'test-qu',
+                'event' => DummyEvent::class
+            ]
+        ]
+    ];
 
 
 
@@ -16,7 +26,8 @@ class RabbitMQTest extends TestCase {
     /** @var AMQPChannel */
     private $channel;
 
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
 
         $this->connection = new AMQPStreamConnection(
@@ -28,7 +39,8 @@ class RabbitMQTest extends TestCase {
         $this->channel = $this->connection->channel();
     }
 
-    public function tearDown() {
+    public function tearDown()
+    {
         parent::tearDown();
         $this->channel->close();
         $this->connection->close();
@@ -42,7 +54,5 @@ class RabbitMQTest extends TestCase {
         $this->channel->queue_bind($queue_name, $exchange_name);
         $this->assertTrue(true);
     }
-
-
 
 }
