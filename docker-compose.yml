@@ -12,27 +12,47 @@ services:
 
   rc-backend:
     container_name: rc-backend-dev
+    restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile.dev
     volumes:
-      - ../.keys/rc-auth.key.pub:/.keys/rc-auth.key.pub
+      - .keys:/.keys
       - .:/app
     environment:
       DB_HOST: rc-backend-db
       DB_PORT: 3306
-      JWT_PUBLIC_KEY: /.keys/rc-auth.key.pub
+      JWT_PUBLIC_KEY: /.keys/jwt.pub
       AUTH_API_SECRET: secret
       RABBITMQ_HOST: rc-rabbitmq
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: guest
       RABBITMQ_PASSWORD: guest
     env_file: .env.api
-    tty: true
-    stdin_open: true
     ports:
       - 8000:8000
     user: ${UID:-0}:${GID:-0}
+
+  rc-backend-queue-worker:
+    container_name: rc-backend-queue-worker
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .keys:/.keys
+      - .:/app
+    environment:
+      DB_HOST: rc-backend-db
+      DB_PORT: 3306
+      JWT_PUBLIC_KEY: /.keys/jwt.pub
+      AUTH_API_SECRET: secret
+      RABBITMQ_HOST: rc-rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+    env_file: .env.api
+    command: php artisan rabbitmq:listen
 
   rc-backend-db:
     container_name: rc-backend-db-dev

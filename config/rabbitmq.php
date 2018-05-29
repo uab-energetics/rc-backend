@@ -15,6 +15,12 @@ return [
         'resource.created' => 'fanout',
     ],
 
-    'bindings' => []
+    'bindings' => [
+        [
+            'exchange' => 'test-exchange',
+            'queue' => 'test-queue',
+            'event' => \Tests\Feature\RabbitMQ\DummyEvent::class
+        ]
+    ]
 
 ];
