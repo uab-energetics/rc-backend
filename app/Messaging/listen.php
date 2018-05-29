@@ -25,8 +25,7 @@ $consumer = new RabbitConsumer($channel);
 function bindToEvent (RabbitConsumer $consumer) {
     return function ($exchange, $queue, $rabbit_event) use ($consumer) {
         $consumer->registerListener($exchange, $queue, function(RabbitMessage $msg) use ($rabbit_event) {
-//            event(new $rabbit_event($msg));
-            print("true");
+            event(new $rabbit_event($msg));
             return true;
         });
     };

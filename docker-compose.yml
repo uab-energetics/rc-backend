@@ -28,6 +28,8 @@ services:
       RABBITMQ_USER: guest
       RABBITMQ_PASSWORD: guest
     env_file: .env.api
+    tty: true
+    stdin_open: true
     ports:
       - 8000:8000
     user: ${UID:-0}:${GID:-0}

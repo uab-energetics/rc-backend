@@ -17,11 +17,8 @@ class RabbitConsumer {
         list($queue_name, , ) = $this->channel->queue_declare($queue, false, false, true, false);
         $this->channel->queue_bind($queue_name, $exchange);
         $this->channel->basic_consume($queue_name, '', false, false, false, false, function($msg) use ($callback) {
-            $ack = function () use ($msg) {
-                $this->channel->basic_ack($msg);
-            };
             $data = json_decode($msg->body, true);
-            $rabbitMsg = new RabbitMessage($data, $ack);
+            $rabbitMsg = new RabbitMessage($data, $msg);
             $callback($rabbitMsg);
         });
     }

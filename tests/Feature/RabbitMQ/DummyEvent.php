@@ -12,7 +12,7 @@ class DummyEvent {
 
     public function __construct(RabbitMessage $msg) {
         print("Received Message! \n");
-        print(json_encode($msg->data, JSON_PRETTY_PRINT) . PHP_EOL);
+        print(json_encode($msg->getPayload(), JSON_PRETTY_PRINT) . PHP_EOL);
         $msg->ack();
     }
 }

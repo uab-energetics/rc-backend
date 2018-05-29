@@ -3,15 +3,20 @@
 namespace App\Messaging;
 
 class RabbitMessage {
-    public $data;
-    public $ack;
+    private $data;
+    private $msg;
 
-    public function __construct($data, \Closure $ack) {
+    public function __construct($data, $msg) {
         $this->data = $data;
-        $this->ack = $ack;
+        $this->msg = $msg;
     }
 
     public function ack() {
-        $this->ack();
+        $msg = $this->msg;
+        $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+    }
+
+    public function getPayload() {
+        return $this->data;
     }
 }
