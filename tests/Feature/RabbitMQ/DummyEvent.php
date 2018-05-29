@@ -8,7 +8,6 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class DummyEvent {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public function __construct(RabbitMessage $msg) {
         print("Received Message! \n");

@@ -1,5 +1,7 @@
 <?php
 
+use App\Events\UserCreatedExternal;
+
 return [
 
     'connection' => [
@@ -12,9 +14,20 @@ return [
     // will be declared upon channel creation.
     // name => type
     'exchanges' => [
-        'resource.created' => 'fanout',
+        'resources.created' => 'fanout',
+        'users.created' => 'fanout',
+    ],
+    // declared as persistent by default
+    'queues' => [
+        'process-new-user',
     ],
 
-    'bindings' => []
+    'bindings' => [
+        [
+            'exchange' => 'users.created',
+            'queue' => 'process-new-user',
+            'event' => UserCreatedExternal::class
+        ]
+    ]
 
 ];

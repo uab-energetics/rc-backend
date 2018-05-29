@@ -9,6 +9,7 @@ use App\Events\FormDeleted;
 use App\Events\FormQuestionRemoved;
 use App\Events\ProjectCreated;
 use App\Events\UserCreated;
+use App\Events\UserCreatedExternal;
 use App\Events\UserDeleted;
 use App\Events\UserUpdated;
 use App\Listeners\CommentsListener;
@@ -17,6 +18,7 @@ use App\Listeners\FormDeletedListener;
 use App\Listeners\FormQuestionRemovedListener;
 use App\Listeners\ProjectCreatedListener;
 use App\Listeners\RunConflictScan;
+use App\Listeners\UserCreatedExternalListener;
 use App\Listeners\UserCreatedListener;
 use App\Listeners\UserDeletedListener;
 use App\Listeners\UserUpdatedListener;
@@ -56,6 +58,12 @@ class EventServiceProvider extends ServiceProvider {
         ],
         ProjectCreated::class => [
             ProjectCreatedListener::class,
+        ],
+
+
+        //EXTERNAL EVENTS
+        UserCreatedExternal::class => [
+            UserCreatedExternalListener::class,
         ],
     ];
 
