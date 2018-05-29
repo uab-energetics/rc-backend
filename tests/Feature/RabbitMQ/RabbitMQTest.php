@@ -53,14 +53,14 @@ class RabbitMQTest extends TestCase {
         $this->assertTrue(true);
     }
 
-//    public function testBindQueue() {
-//        $exchange_name = 'test_exchange';
-//        $this->channel->exchange_declare($exchange_name, 'fanout', false, false, false);
-//        [$queue_name,,] = $this->channel->queue_declare('test_queue', false, false, true, false);
-//
-//        $this->channel->queue_bind($queue_name, $exchange_name);
-//
-//        $this->assertTrue(true);
-//    }
+    public function testBindQueue() {
+        $exchange_name = 'test_exchange';
+        $this->channel->exchange_declare($exchange_name, 'fanout', false, false, false);
+        [$queue_name,,] = $this->channel->queue_declare('test_queue', false, false, true, false);
+
+        $this->channel->queue_bind($queue_name, $exchange_name);
+
+        $this->assertTrue(true);
+    }
 
 }
