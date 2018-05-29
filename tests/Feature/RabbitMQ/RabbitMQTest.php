@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\RabbitMQ;
 
+use App\Messaging\RabbitPublisher;
 use App\Services\RabbitMQ\RabbitMQService;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -29,6 +30,22 @@ class RabbitMQTest extends TestCase {
         $channel->close();
     }
 
+    public function testPublishConsume() {
+        $connection = $this->connection;
+        $channel = $connection->channel();
+
+        $publisher = new RabbitPublisher($channel);
+
+        $publisher->publishEvent('users.created', [
+            'user' => [
+                'name' => 'Chris Rocco'
+            ]
+        ]);
+
+
+        $this->assertTrue(true);
+    }
+
     public function testBindQueue() {
         $channel = $this->connection->channel();
 
@@ -37,6 +54,9 @@ class RabbitMQTest extends TestCase {
         [$queue_name,,] = $channel->queue_declare('test_queue', false, false, true, false);
 
         $channel->queue_bind($queue_name, $exchange_name);
+
+        $channel->close();
+        $this->assertTrue(true);
     }
 
     /** @var AMQPStreamConnection */
