@@ -45,9 +45,9 @@ services:
     ports:
       - 33061:3306
 
-  rabbitmq:
+  rc-rabbitmq:
     image: "rabbitmq:3-management"
-    container_name: rabbitmq
+    container_name: rc-rabbitmq-dev
     ports:
       - "15672:15672"
       - "5672:5672"
