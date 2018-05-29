@@ -58,6 +58,9 @@ class RoccoJWTAuth
 
         $user = $exists_users[0];
         Auth::setUser($user);
+        $request->setUserResolver(function () use ($user) {
+            return $user;
+        });
 
         return $next($request);
     }
