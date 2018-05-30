@@ -45,7 +45,17 @@ class RoccoJWTAuth
             return response()->json([ 'msg' => 'token expired' ], 401);
         }
 
-        $exists_users = User::where($user_id_field, ((array)$decoded)[$jwt_user_id])->get();
+        // casting a stdclass to an array is shallow
+        $token_arr = json_decode(json_encode($decoded), true);
+        $user_id = array_get($token_arr, $jwt_user_id);
+        if ($user_id === null) {
+            return response()->json([
+                'status' => 'USER_ID_NOT_FOUND',
+                'msg' => "The provided token does not contain $jwt_user_id",
+                'token' => $token_arr,
+            ], 400);
+        }
+        $exists_users = User::where($user_id_field, $user_id)->get();
         if(count($exists_users) === 0)
             return response()->json([
                 'msg' => 'Token is valid, but user is not in database',
