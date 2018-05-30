@@ -14,5 +14,5 @@ script:
 after_success:
   - docker --version
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-  - docker build -t chrisrocco/rc-api .
-  - docker push chrisrocco/rc-api
+  - docker build -t chrisrocco/rc-api:$TRAVIS_BRANCH .
+  - docker push chrisrocco/rc-api:$TRAVI_BRANCH
