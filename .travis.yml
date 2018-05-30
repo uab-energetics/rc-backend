@@ -15,4 +15,4 @@ after_success:
   - docker --version
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
   - docker build -t chrisrocco/rc-backend:$TRAVIS_BRANCH .
-  - docker push chrisrocco/rc-backend:$TRAVI_BRANCH
+  - docker push chrisrocco/rc-backend:$TRAVIS_BRANCH
