@@ -27,8 +27,8 @@ class FormService {
         return $form;
     }
 
-    public function search($query) {
-        return Form::search($query)->paginate(getPaginationLimit())->toArray()['data'];
+    public function search($search) {
+        return search(Form::query(), $search, Form::searchable);
     }
 
     public function updateForm(Form $form, $params) {

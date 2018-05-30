@@ -4,7 +4,6 @@ namespace App;
 
 use App\Traits\SearchableColumns;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Scout\Searchable;
 
 class Publication extends Model {
 

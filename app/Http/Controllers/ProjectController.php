@@ -44,7 +44,7 @@ class ProjectController extends Controller {
     public function search(Request $request, ProjectService $projectService) {
         $validator = simpleSearchValidator($request->all());
         if ($validator->fails()) return invalidParamMessage($validator);
-        return $projectService->search($request->search);
+        return $projectService->search($request->search)->get();
     }
 
     public function delete(Project $project, ProjectService $projectService) {

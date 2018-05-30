@@ -6,13 +6,8 @@ use App\Models\Question;
 use App\Traits\SearchableColumns;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Laravel\Scout\Searchable;
 
 class Form extends Model {
-
-    use Searchable, SearchableColumns {
-        SearchableColumns::toSearchableArray insteadof Searchable;
-    }
 
     use SoftDeletes;
 

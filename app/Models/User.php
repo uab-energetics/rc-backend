@@ -2,17 +2,12 @@
 
 namespace App;
 
-use App\Traits\SearchableColumns;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Scout\Searchable;
 
 class User extends Authenticatable {
     use Notifiable;
 
-    use Searchable, SearchableColumns {
-        SearchableColumns::toSearchableArray insteadof Searchable;
-    }
 
     protected $fillable = [
         'name', 'email', 'password', 'image', 'location', 'website', 'theme', 'bio', 'department'

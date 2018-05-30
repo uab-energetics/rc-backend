@@ -52,7 +52,7 @@ class FormController extends Controller {
             'search' => 'string|nullable'
         ]);
 
-        return $this->formService->search($request->search);
+        return $this->formService->search($request->search)->get();
     }
 
     public function update (Form $form, Request $request) {

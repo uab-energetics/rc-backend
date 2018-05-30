@@ -8,8 +8,8 @@ use App\Publication;
 
 class PublicationService {
 
-    public function search($query) {
-        return Publication::search($query)->paginate(getPaginationLimit());
+    public function search($search) {
+        return search(Publication::query(), $search, Publication::searchable);
     }
 
     public function makePublication($params) {

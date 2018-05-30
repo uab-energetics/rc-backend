@@ -22,8 +22,9 @@ class UserService {
             ->firstOrFail();
     }
 
-    public function search($query) {
-        return User::search($query)->paginate(getPaginationLimit())->toArray()['data'];
+    public function search($search) {
+        $query = User::query();
+        return search($query, $search, User::searchable);
     }
 
     public function make($params) {

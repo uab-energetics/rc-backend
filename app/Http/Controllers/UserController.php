@@ -13,7 +13,7 @@ class UserController extends Controller {
     public function search(Request $request, UserService $userService) {
         $validator = simpleSearchValidator($request->all());
         if ($validator->fails()) return invalidParamMessage($validator);
-        return $userService->search($request->search);
+        return $userService->search($request->search)->get();
     }
 
     public function retrieveResearcherProjects(Request $request, UserService $userService) {

@@ -4,19 +4,17 @@ namespace App;
 
 use App\Traits\SearchableColumns;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Scout\Searchable;
 
 class Project extends Model {
 
-    use Searchable, SearchableColumns {
-        SearchableColumns::toSearchableArray insteadof Searchable;
-    }
 
     protected $table = "projects";
 
     protected $fillable = ['name', 'description'];
 
-    protected $searchable = ['name', 'description'];
+    protected $searchable = self::searchable;
+
+    const searchable = ['name', 'description'];
 
     public function forms() {
         return $this->belongsToMany(Form::class, 'project_form', 'project_id', 'form_id');
