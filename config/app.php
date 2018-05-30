@@ -180,7 +180,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
-        Yab\MySQLScout\Providers\MySQLScoutServiceProvider::class,
 
         \App\Providers\PusherProvider::class
 
