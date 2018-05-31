@@ -4,17 +4,29 @@ use App\Messaging\RabbitConsumer;
 use App\Messaging\RabbitMessage;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
-$connection;
+$connection = null;
+$remainingTries = config('rabbitmq.connection.retries');
+$sleepTime = config('rabbitmq.connection.wait_time');
 
-try {
-    $connection = new AMQPStreamConnection(
-        config('rabbitmq.connection.host'),
-        config('rabbitmq.connection.port'),
-        config('rabbitmq.connection.user'),
-        config('rabbitmq.connection.password')
-    );
-} catch (Exception $e) {
-    print("Could not connect to RabbitMQ");
+print("Trying to connect to RabbitMQ..." . PHP_EOL);
+while ($connection === null && $remainingTries > 0) {
+    try {
+        $remainingTries--;
+        $connection = new AMQPStreamConnection(
+            config('rabbitmq.connection.host'),
+            config('rabbitmq.connection.port'),
+            config('rabbitmq.connection.user'),
+            config('rabbitmq.connection.password')
+        );
+    } catch (Exception $e) {
+        print("Could not connect to RabbitMQ. $remainingTries tries remaining..." . PHP_EOL);
+        sleep($sleepTime);
+    }
+}
+
+if ($remainingTries <= 0) {
+    print("Failed to connect to RabbitMQ. Shutting Down." . PHP_EOL);
+    exit(1);
 }
 
 $channel = $connection->channel();

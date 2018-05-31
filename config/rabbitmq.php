@@ -9,6 +9,9 @@ return [
         'port' => env(      'RABBITMQ_PORT', 5672),
         'user' => env(      'RABBITMQ_USER', 'guest'),
         'password' => env(  'RABBITMQ_PASSWORD', 'guest'),
+
+        'retries' => 5, // number of retries when connecting
+        'wait_time' => 3, // time to wait between tries
     ],
 
     // will be declared upon channel creation.
