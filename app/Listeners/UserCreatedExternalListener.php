@@ -19,8 +19,8 @@ class UserCreatedExternalListener {
     public function handle(UserCreatedExternal $event) {
         $params = $event->params;
         DB::beginTransaction();
-            $uuid = $params['uuid'];
-            $existing = $this->userService->retrieveByUuid($uuid);
+            $email = $params['email'];
+            $existing = $this->userService->retrieveByEmail($email);
             if ($existing === null) {
                 $this->userService->make($params);
             }

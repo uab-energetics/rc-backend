@@ -16,6 +16,12 @@ class UserService {
         return User::findOrFail($user_id);
     }
 
+    public function retrieveByEmail($email) {
+        return User::query()
+            ->where('email', '=', $email)
+            ->first();
+    }
+
     public function retrieveByUuid($uuid) {
         return User::query()
             ->where('uuid', '=', $uuid)
