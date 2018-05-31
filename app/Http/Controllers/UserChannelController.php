@@ -19,7 +19,7 @@ class UserChannelController extends Controller {
     public function updated(Request $request) {
         $request->validate(static::$updateRules);
         DB::beginTransaction();
-            $user = $this->userService->retrieveByUuid($request->uuid);
+            $user = $this->userService->retrieveByUuidOrFail($request->uuid);
             $this->userService->update($user, $request->all());
         DB::commit();
         return okMessage();
@@ -28,7 +28,7 @@ class UserChannelController extends Controller {
     public function deleted(Request $request) {
         $request->validate(static::$deleteRules);
         DB::beginTransaction();
-            $user = $this->userService->retrieveByUuid($request->uuid);
+            $user = $this->userService->retrieveByUuidOrFail($request->uuid);
             $this->userService->delete($user);
         DB::commit();
         return okMessage();

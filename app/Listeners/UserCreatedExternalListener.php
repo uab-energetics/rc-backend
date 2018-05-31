@@ -19,7 +19,11 @@ class UserCreatedExternalListener {
     public function handle(UserCreatedExternal $event) {
         $params = $event->params;
         DB::beginTransaction();
-            $this->userService->make($params);
+            $uuid = $params['_id'];
+            $existing = $this->userService->retrieveByUuid($uuid);
+            if ($existing === null) {
+                $this->userService->make($params);
+            }
         DB::commit();
         $event->message->ack();
     }

@@ -19,6 +19,12 @@ class UserService {
     public function retrieveByUuid($uuid) {
         return User::query()
             ->where('uuid', '=', $uuid)
+            ->first();
+    }
+
+    public function retrieveByUuidOrFail($uuid) {
+        return User::query()
+            ->where('uuid', '=', $uuid)
             ->firstOrFail();
     }
 
