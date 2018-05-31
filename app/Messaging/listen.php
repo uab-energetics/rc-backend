@@ -5,13 +5,12 @@ use App\Messaging\RabbitMessage;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 $connection = null;
-$remainingTries = config('rabbitmq.connection.retries');
+$retries = config('rabbitmq.connection.retries');
 $sleepTime = config('rabbitmq.connection.wait_time');
 
 print("Trying to connect to RabbitMQ..." . PHP_EOL);
-while ($connection === null && $remainingTries > 0) {
+while ($connection === null && $retries > 0) {
     try {
-        $remainingTries--;
         $connection = new AMQPStreamConnection(
             config('rabbitmq.connection.host'),
             config('rabbitmq.connection.port'),
@@ -19,12 +18,13 @@ while ($connection === null && $remainingTries > 0) {
             config('rabbitmq.connection.password')
         );
     } catch (Exception $e) {
-        print("Could not connect to RabbitMQ. $remainingTries tries remaining..." . PHP_EOL);
+        print("Could not connect to RabbitMQ. $retries tries remaining..." . PHP_EOL);
+        $retries--;
         sleep($sleepTime);
     }
 }
 
-if ($remainingTries <= 0) {
+if ($retries <= 0) {
     print("Failed to connect to RabbitMQ. Shutting Down." . PHP_EOL);
     exit(1);
 }
