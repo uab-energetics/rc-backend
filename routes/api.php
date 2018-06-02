@@ -64,6 +64,9 @@ Route::group(['middleware' => ['rocco.jwt-auth']], function () {
     Route::get(     'users/encodings', "$user_ctrl@retrieveEncodings");
     Route::get(     'users/tasks',  "$user_ctrl@retrieveTasks");
     Route::get(     'users/forms',  "$user_ctrl@retrieveForms");
+    Route::get('/me', function(Request $request) {
+        return response()->json(Auth::user());
+    });
 
     // publications
     Route::post(    'publications/', "$publications_ctrl@create");
@@ -196,27 +199,4 @@ Route::group(['prefix' => 'channels', 'middleware' => ['rc.auth']], function () 
 
 Route::get('/ping', function() {
     return response()->json(['msg' => 'pong!']);
-});
-
-Route::group(['middleware' => 'rocco.jwt-auth'], function(){
-    Route::get('/me', function(Request $request) {
-        return response()->json(Auth::user());
-    });
-});
-
-/**
-*  ===========================================
-*  MAILABLE PREVIEWS
-*  ===========================================
- *
- * These will be removed in production
- *
-*/
-
-Route::get('/mailables/invite-to-project', function(){
-    return new \App\Mail\InvitedToProject([
-        'user' => "Chris Rocco",
-        'project' => "Dummy Project",
-        'callback' => 'localhost:8000'
-    ]);
 });
