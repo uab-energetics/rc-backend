@@ -4,4 +4,4 @@ docker run --interactive --tty \
    --workdir /app \
    --volume $PWD:/app \
    --user $(id -u):$(id -g) \
-   composer $@
+   vectorapps/php $@
