@@ -105,7 +105,7 @@ class EncodingService {
         ]);
         $response->saveSelections( getOrDefault($params['selections'], []) );
 
-        return Encoding::find($encoding_id)->toArray();
+        return Response::find($response->getKey());
     }
 
     function deleteBranch($encoding_id, $branch_id){
