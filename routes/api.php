@@ -27,11 +27,19 @@ use App\Http\Controllers\QuestionController;
 
 
 
-
+function deprecated($msg = "This endpoint has been deprecated") {
+    return function () use ($msg) {
+        return response()->json([
+            'status' => 'DEPRECATED_ENDPOINT',
+            'msg' => $msg
+        ], 403);
+    };
+};
 
 Route::group(['prefix' => 'auth'], function () {
-    Route::post('login', AuthController::class."@login");
-    Route::post('register', AuthController::class."@register");
+    $msg = "This functionality has been moved to the authentication service";
+    Route::post('login', deprecated($msg));
+    Route::post('register', deprecated($msg));
 });
 
 
