@@ -20,9 +20,7 @@ use App\Project;
 use App\Publication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use \Firebase\JWT\JWT;
 
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\QuestionController;
 
 
