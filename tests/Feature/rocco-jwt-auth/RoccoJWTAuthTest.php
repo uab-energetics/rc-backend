@@ -31,13 +31,13 @@ class RoccoJWTAuthTest extends TestCase
         $jwt = JWT::encode($token, $private_key, 'RS256');
 
         // EXPECT A 500 BEFORE THE USER IS IN THE DATABASE
-        $this->get('/me', [
+        $res = $this->get('/me', [
             'Authorization' => "Bearer $jwt"
-        ])->assertStatus(500);
+        ])->assertStatus(400)->assertJsonFragment(['status' => 'USER_ID_NOT_FOUND']);
 
 
         // set the user in the jwt
-        $token['uuid'] = $user->uuid;
+        $token['user']['_id'] = $user->uuid;
         $jwt = JWT::encode($token, $private_key, 'RS256');
 
         // SEND A REQUEST WITH A VALID JWT
