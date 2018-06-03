@@ -88,6 +88,11 @@ class ProjectFormController extends Controller {
         return okMessage("Successfully removed encoder");
     }
 
+    public function requestMyTasks(Project $project, Form $form, Request $request) {
+        $user = $request->user();
+        return $this->requestTasks($project, $form, $user, $request);
+    }
+
     public function requestTasks(Project $project, Form $form, User $encoder, Request $request) {
         $request->validate(['count' => 'nullable|integer']);
         return $this->service->requestTasks($project, $form, $encoder, $request->count);
