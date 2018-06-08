@@ -181,7 +181,8 @@ return [
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
 
-        \App\Providers\PusherProvider::class
+        \App\Providers\PusherProvider::class,
+        \App\Providers\PubRepoServiceProvider::class,
 
     ],
 

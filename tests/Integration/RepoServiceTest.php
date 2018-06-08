@@ -4,12 +4,12 @@
 namespace Tests\Integration;
 
 
-use App\Services\Repositories\PublicationRepoService;
+use App\Services\Repositories\PubRepoService;
 use Tests\TestCase;
 
 class RepoServiceTest extends TestCase {
 
-    /** @var PublicationRepoService */
+    /** @var PubRepoService */
     private $service;
     /** @var array */
     private $repo;
@@ -18,7 +18,7 @@ class RepoServiceTest extends TestCase {
 
     public function setUp() {
         parent::setUp();
-        $this->service = new PublicationRepoService('http://rc-publications');
+        $this->service = app()->make(PubRepoService::class);
         $repo = $this->service->createRepo(self::PROJECT_ID, "Main Repository");
 
 

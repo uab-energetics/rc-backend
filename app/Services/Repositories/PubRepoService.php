@@ -10,14 +10,13 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-class PublicationRepoService {
+class PubRepoService {
 
     /**
      * @param $project_id
      * @param $display_name
      * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \HttpException
+     * @throws \GuzzleHttp\Exception\RequestException
      */
     public function createRepo($project_id, $display_name) {
         $url = $this->host . "/projects/$project_id/pub-repos";
@@ -25,12 +24,25 @@ class PublicationRepoService {
         return $repo_data;
     }
 
+    /**
+     * @param $project_id
+     * @param $repo_id
+     * @return array
+     * @throws \GuzzleHttp\Exception\RequestException
+     */
     public function deleteRepo($project_id, $repo_id) {
         $url = $this->host . "/projects/$project_id/pub-repos/$repo_id";
         return simpleDelete($url);
     }
 
 
+    /**
+     * @param $project_id
+     * @param $repo_id
+     * @param $publications
+     * @return array
+     * @throws \GuzzleHttp\Exception\RequestException
+     */
     public function addPublications($project_id, $repo_id, $publications) {
         $url = $this->host . "/projects/$project_id/pub-repos/$repo_id/publications";
         return simplePost($url, ['publications' => $publications]);

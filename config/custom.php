@@ -7,5 +7,8 @@ return [
 
     'auth_api_secret' => env('AUTH_API_SECRET'),
 
+    'publication_service' => [
+        'host' => env('PUBLICATION_SERVICE_HOST')
+    ]
 
 ];

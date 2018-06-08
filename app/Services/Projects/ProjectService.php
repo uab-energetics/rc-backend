@@ -14,6 +14,7 @@ use App\ProjectResearcher;
 use App\Publication;
 use App\Services\Forms\FormService;
 use App\Services\ProjectForms\ProjectFormService;
+use App\Services\Repositories\PubRepoService;
 use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -21,6 +22,7 @@ class ProjectService {
 
     public function makeProject($params, User $user) {
         $project = Project::create($params);
+        $this->makePublicationRepo($project);
         event(new ProjectCreated($project, $user));
         return $project;
     }
@@ -162,6 +164,18 @@ class ProjectService {
                 $this->removeEncoder($project, $user);
             }
         }
+    }
+
+    /**
+     * @param PubRepoService $service
+     * @param Project $project
+     * @throws RequestException
+     */
+    public function makePublicationRepo(Project $project) {
+        $service = app()->make(PubRepoService::class);
+        $repo = $service->createRepo($project->getKey(), "Main Repository");
+        $project->repo_uuid = $repo['id'];
+        $project->save();
     }
 
     private function getResearcherEdge($project_id, $user_id) {
