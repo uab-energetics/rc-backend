@@ -24,6 +24,7 @@ services:
       DB_PORT: 3306
       JWT_PUBLIC_KEY: /.keys/jwt.pub
       AUTH_API_SECRET: secret
+      PUBLICATION_SERVICE_HOST: http://rc-publications
       RABBITMQ_HOST: rc-rabbitmq
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: guest
@@ -47,6 +48,7 @@ services:
       DB_PORT: 3306
       JWT_PUBLIC_KEY: /.keys/jwt.pub
       AUTH_API_SECRET: secret
+      PUBLICATION_SERVICE_HOST: http://rc-publications
       RABBITMQ_HOST: rc-rabbitmq
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: guest
