@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\External;
 
-use App\Events\UserCreatedExternal;
+use App\Events\External\UserCreatedExternal;
 use App\Services\Users\UserService;
 use Illuminate\Support\Facades\DB;
 

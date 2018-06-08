@@ -4,6 +4,7 @@
 namespace App\Services\Publications;
 
 
+use App\ExternalPublicationMap;
 use App\Publication;
 use Ramsey\Uuid\Uuid;
 
@@ -30,6 +31,24 @@ class PublicationService {
 
     public function deletePublication(Publication $publication) {
         $publication->delete();
+    }
+
+    public function retrieveByUuid($uuid) {
+        return Publication::where('uuid', '=', $uuid)->first();
+    }
+
+    public function addExternalID(Publication $publication, $external_id) {
+        return ExternalPublicationMap::upsert([
+            'publication_id' => $publication->getKey(),
+            'external_id' => strval($external_id),
+        ]);
+    }
+
+    public function removeExternalID(Publication $publication, $external_id) {
+        return ExternalPublicationMap::query()
+            ->where('publication_id', '=', $publication->getKey())
+            ->where('external_id', '=', $external_id)
+            ->delete();
     }
 
 }

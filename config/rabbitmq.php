@@ -1,6 +1,7 @@
 <?php
 
-use App\Events\UserCreatedExternal;
+use App\Events\External\PublicationsAddedExternal;
+use App\Events\External\UserCreatedExternal;
 
 return [
 
@@ -19,10 +20,14 @@ return [
     'exchanges' => [
         'resources.created' => 'fanout',
         'users.created' => 'fanout',
+        'pub-repos.pubs-added' => 'fanout',
+        'pub-repos.pubs-removed' => 'fanout',
     ],
     // declared as persistent by default
     'queues' => [
         'process-new-user',
+        'process-new-publications',
+        'process-removed-publications',
     ],
 
     'bindings' => [
@@ -30,7 +35,17 @@ return [
             'exchange' => 'users.created',
             'queue' => 'process-new-user',
             'event' => UserCreatedExternal::class
-        ]
+        ],
+        [
+            'exchange' => 'pub-repos.pubs-added',
+            'queue' => 'process-new-publications',
+            'event' => PublicationsAddedExternal::class
+        ],
+//        [
+//            'exchange' => 'pub-repos.pubs-removed',
+//            'queue' => 'process-removed-publications',
+////            'event' =>
+//        ]
     ]
 
 ];

@@ -33,6 +33,11 @@ class ProjectFormService {
         return $projectForm;
     }
 
+    public function retrieveByRepoId($repo_id) {
+        return ProjectForm::query()
+            ->where('repo_uuid', '=', $repo_id);
+    }
+
     public function handleFormDeleted(Form $form) {
         $projectForms = $this->getProjectFormsFromForm($form)->get();
         foreach ($projectForms as $projectForm) {
@@ -192,6 +197,13 @@ class ProjectFormService {
         $projectForm->save();
     }
 
+    public function addPublicationsByRepoId($repo_id, $publications) {
+        $projectForms = $this->retrieveByRepoId($repo_id)->get();
+        foreach ($projectForms as $projectForm) {
+            $this->doAddPublications($projectForm, $publications);
+        }
+    }
+
     protected function doDelete(ProjectForm $projectForm) {
         $this->doRemoveAllPublications($projectForm);
         $this->doRemoveAllEncoders($projectForm);
@@ -211,6 +223,12 @@ class ProjectFormService {
     protected function doRemovePublications(ProjectForm $projectForm, $publications) {
         foreach ($publications as $publication) {
             $this->doRemovePublication($publication);
+        }
+    }
+
+    protected function doAddPublications(ProjectForm $projectForm, $publications, $priority = null) {
+        foreach ($publications as $publication) {
+            $this->doAddPublication($projectForm, $publication, $priority);
         }
     }
 
@@ -325,14 +343,15 @@ class ProjectFormService {
     }
 
 
-    /** @var Project */
-    protected $project;
 
     /** @var TaskService  */
     protected $taskService;
+    /** @var PubRepoService  */
+    protected $pubRepoService;
 
-    public function __construct(TaskService $taskService) {
+    public function __construct(TaskService $taskService, PubRepoService $pubRepoService) {
         $this->taskService = $taskService;
+        $this->pubRepoService = $pubRepoService;
     }
 
     const SQL_PAPER_QUEUE = "

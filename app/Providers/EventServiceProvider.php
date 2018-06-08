@@ -5,20 +5,22 @@ namespace App\Providers;
 use App\Events\CommentUpdate;
 use App\Events\EncodingChanged;
 use App\Events\EncodingCreated;
+use App\Events\External\PublicationsAddedExternal;
 use App\Events\FormDeleted;
 use App\Events\FormQuestionRemoved;
 use App\Events\ProjectCreated;
 use App\Events\UserCreated;
-use App\Events\UserCreatedExternal;
+use App\Events\External\UserCreatedExternal;
 use App\Events\UserDeleted;
 use App\Events\UserUpdated;
 use App\Listeners\CommentsListener;
 use App\Listeners\EncodingCreatedListener;
+use App\Listeners\External\PublicationsAddedExternalListener;
 use App\Listeners\FormDeletedListener;
 use App\Listeners\FormQuestionRemovedListener;
 use App\Listeners\ProjectCreatedListener;
 use App\Listeners\RunConflictScan;
-use App\Listeners\UserCreatedExternalListener;
+use App\Listeners\External\UserCreatedExternalListener;
 use App\Listeners\UserCreatedListener;
 use App\Listeners\UserDeletedListener;
 use App\Listeners\UserUpdatedListener;
@@ -64,6 +66,9 @@ class EventServiceProvider extends ServiceProvider {
         //EXTERNAL EVENTS
         UserCreatedExternal::class => [
             UserCreatedExternalListener::class,
+        ],
+        PublicationsAddedExternal::class => [
+            PublicationsAddedExternalListener::class,
         ],
     ];
 

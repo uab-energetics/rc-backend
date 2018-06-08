@@ -27,6 +27,11 @@ class ProjectService {
         return $project;
     }
 
+    public function retrieveByRepoId($repo_id) {
+        return Project::query()
+            ->where('repo_uuid', '=', $repo_id);
+    }
+
     public function search($search) {
         return search(Project::query(), $search, Project::searchable);
     }
@@ -118,12 +123,29 @@ class ProjectService {
         return $this->projectFormService->makeProjectForm($project, $form);
     }
 
-    public function addPublication(Project $project, Publication $publication) {
+    public function addPublicationsByRepoId($repo_id, $publications) {
+        $projects = $this->retrieveByRepoId($repo_id)->get();
+        foreach ($projects as $project) {
+            $this->addPublications($project, $publications, false);
+        }
+    }
+
+    public function addPublications(Project $project, $publications, $auto_inherit = true) {
+        /** @var Publication $publication */
+        foreach ($publications as $publication) {
+            $this->addPublication($project, $publication, $auto_inherit);
+        }
+    }
+
+    public function addPublication(Project $project, Publication $publication, $auto_inherit = true) {
         $edge = ProjectPublication::upsert([
             'project_id' => $project->getKey(),
             'publication_id' => $publication->getKey(),
         ]);
 
+        if ($auto_inherit === false) {
+            return $edge;
+        }
         $forms = $project->forms()->where('project_form.inherit_publications', '=', true)->get();
         foreach ($forms as $form) {
             $this->projectFormService->addPublication($project, $form, $publication);
