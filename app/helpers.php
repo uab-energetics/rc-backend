@@ -1,5 +1,7 @@
 <?php
 
+use GuzzleHttp\Client;
+
 function getOrDefault(&$var, $default) {
     return isset($var) ? $var : $default;
 }
@@ -96,4 +98,36 @@ function simpleSearch($query, $term, $columns) {
     for ($i = 1; $i < count($columns); $i++)
         $query->orWhere($columns[$i], 'like', "%$term%");
     return $query;
+}
+
+function simplePost($url, $reqBody) {
+    $client = new Client();
+    try {
+        $res = $client->post($url, [
+            'json' => $reqBody
+        ]);
+    } catch (\GuzzleHttp\Exception\RequestException $e) {
+        $res = validateFailedRequest($e);
+    }
+    $body = $res->getBody()->getContents();
+    return json_decode($body, true);
+}
+
+function simpleDelete($url) {
+    $client = new Client();
+    try {
+        $res = $client->delete($url);
+    } catch (\GuzzleHttp\Exception\RequestException $e) {
+        $res = validateFailedRequest($e);
+    }
+    $body = $res->getBody()->getContents();
+    return json_decode($body, true);
+}
+
+function validateFailedRequest (\GuzzleHttp\Exception\RequestException $exception) {
+    $res = $exception->getResponse();
+    if ($res->getHeader('content-type') !== 'application/json') {
+        throw $exception;
+    }
+    return $res;
 }
