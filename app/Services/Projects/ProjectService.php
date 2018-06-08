@@ -115,10 +115,7 @@ class ProjectService {
     }
 
     public function addForm (Project $project, Form $form) {
-        return ProjectForm::upsert([
-            'project_id' => $project->getKey(),
-            'form_id' => $form->getKey(),
-        ]);
+        return $this->projectFormService->makeProjectForm($project, $form);
     }
 
     public function addPublication(Project $project, Publication $publication) {

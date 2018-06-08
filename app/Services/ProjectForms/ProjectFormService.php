@@ -13,11 +13,25 @@ use App\ProjectEncoder;
 use App\ProjectForm;
 use App\Publication;
 use App\Services\Encodings\TaskService;
+use App\Services\Repositories\PubRepoService;
 use App\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ProjectFormService {
+
+    public function makeProjectForm(Project $project, Form $form) {
+        $projectForm = ProjectForm::upsert([
+            'project_id' => $project->getKey(),
+            'form_id' => $form->getKey(),
+        ]);
+
+        if ($projectForm->repo_uuid === null) {
+            $this->makePublicationRepo($projectForm);
+        }
+
+        return $projectForm;
+    }
 
     public function handleFormDeleted(Form $form) {
         $projectForms = $this->getProjectFormsFromForm($form)->get();
@@ -168,6 +182,14 @@ class ProjectFormService {
             'form_id' => $projectForm->form_id,
         ]);
         return $task;
+    }
+
+    public function makePublicationRepo(ProjectForm $projectForm) {
+        $service = app()->make(PubRepoService::class);
+        $name = $projectForm->form->name . ' Repository';
+        $repo = $service->createRepo($projectForm->getKey(), $name);
+        $projectForm->repo_uuid = $repo['id'];
+        $projectForm->save();
     }
 
     protected function doDelete(ProjectForm $projectForm) {
