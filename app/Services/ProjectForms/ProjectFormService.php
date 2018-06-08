@@ -204,6 +204,16 @@ class ProjectFormService {
         }
     }
 
+    public function removePublicationsByRepoId($repo_id, $publication_ids) {
+        $projectForms = $this->retrieveByRepoId($repo_id)->get();
+        foreach ($projectForms as $projectForm) {
+            FormPublication::query()
+                ->where('project_form_id', $projectForm->getKey())
+                ->whereIn('publication_id', $publication_ids)
+                ->delete();
+        }
+    }
+
     protected function doDelete(ProjectForm $projectForm) {
         $this->doRemoveAllPublications($projectForm);
         $this->doRemoveAllEncoders($projectForm);

@@ -17,6 +17,7 @@ use App\Services\ProjectForms\ProjectFormService;
 use App\Services\Repositories\PubRepoService;
 use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Collection;
 
 class ProjectService {
 
@@ -130,6 +131,16 @@ class ProjectService {
         }
     }
 
+    public function removePublicationsByRepoId($repo_id, $publication_ids) {
+        $projects = $this->retrieveByRepoId($repo_id)->get();
+        foreach ($projects as $project) {
+            ProjectPublication::query()
+                ->where('project_id', $project->getKey())
+                ->whereIn('publication_id', $publication_ids)
+                ->delete();
+        }
+    }
+
     public function addPublications(Project $project, $publications, $auto_inherit = true) {
         /** @var Publication $publication */
         foreach ($publications as $publication) {
@@ -154,7 +165,7 @@ class ProjectService {
         return $edge;
     }
 
-    public function removePublication(Project $project, Publication $publication) {
+    public function removePublication(Project $project, Publication $publication, $auto_inherit = true) {
         $edge = ProjectPublication::query()
             ->where('project_id', '=', $project->getKey())
             ->where('publication_id', '=', $publication->getKey())
@@ -162,6 +173,9 @@ class ProjectService {
         if ($edge === null) return false;
         $edge->delete();
 
+        if ($auto_inherit === false) {
+            return true;
+        }
         $forms = $project->forms()->without(['rootCategory', 'questions'])->where('project_form.inherit_publications', '=', true)->get();
         foreach ($forms as $form) {
             $this->projectFormService->removePublication($project, $form, $publication);

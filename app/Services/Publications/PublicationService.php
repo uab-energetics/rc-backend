@@ -37,6 +37,11 @@ class PublicationService {
         return Publication::where('uuid', '=', $uuid)->first();
     }
 
+    public function retrieveExternalIds($external_ids) {
+        return ExternalPublicationMap::query()
+            ->whereIn('external_id', $external_ids);
+    }
+
     public function addExternalID(Publication $publication, $external_id) {
         return ExternalPublicationMap::upsert([
             'publication_id' => $publication->getKey(),
@@ -45,8 +50,7 @@ class PublicationService {
     }
 
     public function removeExternalID(Publication $publication, $external_id) {
-        return ExternalPublicationMap::query()
-            ->where('publication_id', '=', $publication->getKey())
+        $publication->externalIds()
             ->where('external_id', '=', $external_id)
             ->delete();
     }

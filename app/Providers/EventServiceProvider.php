@@ -6,6 +6,7 @@ use App\Events\CommentUpdate;
 use App\Events\EncodingChanged;
 use App\Events\EncodingCreated;
 use App\Events\External\PublicationsAddedExternal;
+use App\Events\External\PublicationsRemovedExternal;
 use App\Events\FormDeleted;
 use App\Events\FormQuestionRemoved;
 use App\Events\ProjectCreated;
@@ -16,6 +17,7 @@ use App\Events\UserUpdated;
 use App\Listeners\CommentsListener;
 use App\Listeners\EncodingCreatedListener;
 use App\Listeners\External\PublicationsAddedExternalListener;
+use App\Listeners\External\PublicationsRemovedExternalListener;
 use App\Listeners\FormDeletedListener;
 use App\Listeners\FormQuestionRemovedListener;
 use App\Listeners\ProjectCreatedListener;
@@ -69,6 +71,9 @@ class EventServiceProvider extends ServiceProvider {
         ],
         PublicationsAddedExternal::class => [
             PublicationsAddedExternalListener::class,
+        ],
+        PublicationsRemovedExternal::class => [
+            PublicationsRemovedExternalListener::class,
         ],
     ];
 

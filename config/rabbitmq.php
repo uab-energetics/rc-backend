@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\External\PublicationsAddedExternal;
+use App\Events\External\PublicationsRemovedExternal;
 use App\Events\External\UserCreatedExternal;
 
 return [
@@ -41,11 +42,11 @@ return [
             'queue' => 'process-new-publications',
             'event' => PublicationsAddedExternal::class
         ],
-//        [
-//            'exchange' => 'pub-repos.pubs-removed',
-//            'queue' => 'process-removed-publications',
-////            'event' =>
-//        ]
+        [
+            'exchange' => 'pub-repos.pubs-removed',
+            'queue' => 'process-removed-publications',
+            'event' => PublicationsRemovedExternal::class,
+        ]
     ]
 
 ];
