@@ -9,8 +9,8 @@ class Publication extends Model {
 
     protected $table = 'publications';
 
-    protected $fillable = ['name', 'source_id', 'embedding_url'];
+    protected $fillable = ['name', 'source_id', 'embedding_url', 'uuid'];
 
-    const searchable = ['name', 'source_id', 'embedding_url'];
+    const searchable = ['name', 'source_id', 'embedding_url', 'uuid'];
 
 }

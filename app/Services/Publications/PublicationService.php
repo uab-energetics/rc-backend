@@ -5,6 +5,7 @@ namespace App\Services\Publications;
 
 
 use App\Publication;
+use Ramsey\Uuid\Uuid;
 
 class PublicationService {
 
@@ -13,6 +14,9 @@ class PublicationService {
     }
 
     public function makePublication($params) {
+        if (isset($params['uuid']) === false) {
+            $params['uuid'] = Uuid::uuid1()->toString();
+        }
         return Publication::create($params);
     }
 
