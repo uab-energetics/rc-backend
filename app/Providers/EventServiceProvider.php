@@ -16,13 +16,13 @@ use App\Events\UserDeleted;
 use App\Events\UserUpdated;
 use App\Listeners\CommentsListener;
 use App\Listeners\EncodingCreatedListener;
-use App\Listeners\External\PublicationsAddedExternalListener;
-use App\Listeners\External\PublicationsRemovedExternalListener;
+use App\Listeners\External\ExternalPublicationsAdded;
+use App\Listeners\External\ExternalPublicationsRemoved;
 use App\Listeners\FormDeletedListener;
 use App\Listeners\FormQuestionRemovedListener;
 use App\Listeners\ProjectCreatedListener;
 use App\Listeners\RunConflictScan;
-use App\Listeners\External\UserCreatedExternalListener;
+use App\Listeners\External\ExternalUserCreated;
 use App\Listeners\UserCreatedListener;
 use App\Listeners\UserDeletedListener;
 use App\Listeners\UserUpdatedListener;
@@ -62,18 +62,6 @@ class EventServiceProvider extends ServiceProvider {
         ],
         ProjectCreated::class => [
             ProjectCreatedListener::class,
-        ],
-
-
-        //EXTERNAL EVENTS
-        UserCreatedExternal::class => [
-            UserCreatedExternalListener::class,
-        ],
-        PublicationsAddedExternal::class => [
-            PublicationsAddedExternalListener::class,
-        ],
-        PublicationsRemovedExternal::class => [
-            PublicationsRemovedExternalListener::class,
         ],
     ];
 

@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Listeners\External;
+namespace App\Services\RabbitMQ\Handlers;
 
-use App\Events\External\PublicationsAddedExternal;
-use App\Events\External\PublicationsRemovedExternal;
-use App\Publication;
 use App\Services\ProjectForms\ProjectFormService;
 use App\Services\Projects\ProjectService;
 use App\Services\Publications\PublicationService;
+use App\Services\RabbitMQ\Core\RabbitMessage;
+use App\Services\RabbitMQ\Core\RabbitMessageHandler;
 use Illuminate\Support\Facades\DB;
 
-class PublicationsRemovedExternalListener {
+class ExternalPublicationsRemoved implements RabbitMessageHandler {
 
     /** @var PublicationService  */
     protected $publicationService;
@@ -29,11 +28,13 @@ class PublicationsRemovedExternalListener {
     }
 
 
-    public function handle(PublicationsRemovedExternal $event) {
-        $repo_id = $event->repo_id;
+    public function handle(RabbitMessage $message) {
+        $params = $message->payload();
+        $repo_id = $params['repoID'];
         $external_ids = array_map(function ($id) {
             return strval($id);
-        }, $event->publication_ids);
+        }, $params['publicationIDs']);
+
         DB::beginTransaction();
 
         $idMaps = $this->publicationService->retrieveExternalIds($external_ids);
@@ -43,6 +44,6 @@ class PublicationsRemovedExternalListener {
         $this->projectFormService->removePublicationsByRepoId($repo_id, $publication_ids);
 
         DB::commit();
-        $event->message->ack();
+        $message->acknowledge();
     }
 }

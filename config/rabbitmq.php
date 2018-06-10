@@ -1,8 +1,9 @@
 <?php
 
-use App\Events\External\PublicationsAddedExternal;
-use App\Events\External\PublicationsRemovedExternal;
-use App\Events\External\UserCreatedExternal;
+
+use App\Services\RabbitMQ\Handlers\ExternalPublicationsAdded;
+use App\Services\RabbitMQ\Handlers\ExternalPublicationsRemoved;
+use App\Services\RabbitMQ\Handlers\ExternalUserCreated;
 
 return [
 
@@ -16,37 +17,66 @@ return [
         'wait_time' => 5, // time to wait between tries
     ],
 
-    // will be declared upon channel creation.
-    // name => type
-    'exchanges' => [
-        'resources.created' => 'fanout',
-        'users.created' => 'fanout',
-        'pub-repos.pubs-added' => 'fanout',
-        'pub-repos.pubs-removed' => 'fanout',
+    // see \App\Services\RabbitMQ\Core\RabbitMQOptions for options and defaults
+    'default_overrides' => [
+        'exchange_declare' => [
+            'durable' => true,
+            'auto_delete' => false,
+        ],
+        'queue_declare' => [
+            'durable' => true,
+            'auto_delete' => false,
+        ],
+        'queue_bind' => [],
+        'basic_consume' => [],
+        'basic_publish' => [],
     ],
-    // declared as persistent by default
+
+    'exchanges' => [
+        'resources.created' => [ 'type' => 'fanout' ],
+        'users.created' => [ 'type' => 'fanout' ],
+        'services.events' => [
+            'type' => 'topic',
+            'durable' => false,
+        ],
+    ],
+
     'queues' => [
-        'process-new-user',
-        'process-new-publications',
-        'process-removed-publications',
+        'process-new-user' => [],
+        'process-new-publications' => [],
+        'process-removed-publications' => [],
     ],
 
     'bindings' => [
         [
             'exchange' => 'users.created',
             'queue' => 'process-new-user',
-            'event' => UserCreatedExternal::class
         ],
         [
-            'exchange' => 'pub-repos.pubs-added',
+            'exchange' => 'services.events',
+            'routing_key' => 'pub-repos.*.pubs-added',
             'queue' => 'process-new-publications',
-            'event' => PublicationsAddedExternal::class
         ],
         [
-            'exchange' => 'pub-repos.pubs-removed',
+            'exchange' => 'services.events',
+            'routing_key' => 'pub-repos.*.pubs-removed',
             'queue' => 'process-removed-publications',
-            'event' => PublicationsRemovedExternal::class,
         ]
+    ],
+
+    'handlers' => [
+        [
+            'queue' => 'process-new-user',
+            'handler' => ExternalUserCreated::class
+        ],
+        [
+            'queue' => 'process-new-publications',
+            'handler' => ExternalPublicationsAdded::class
+        ],
+        [
+            'queue' => 'process-removed-publications',
+            'handler' => ExternalPublicationsRemoved::class
+        ],
     ]
 
 ];

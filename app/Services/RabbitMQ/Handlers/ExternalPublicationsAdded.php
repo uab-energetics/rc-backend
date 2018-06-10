@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Listeners\External;
+namespace App\Services\RabbitMQ\Handlers;
 
-use App\Events\External\PublicationsAddedExternal;
-use App\Publication;
 use App\Services\ProjectForms\ProjectFormService;
 use App\Services\Projects\ProjectService;
 use App\Services\Publications\PublicationService;
+use App\Services\RabbitMQ\Core\RabbitMessage;
+use App\Services\RabbitMQ\Core\RabbitMessageHandler;
 use Illuminate\Support\Facades\DB;
 
-class PublicationsAddedExternalListener {
+class ExternalPublicationsAdded implements RabbitMessageHandler {
 
     /** @var PublicationService  */
     protected $publicationService;
@@ -28,9 +28,11 @@ class PublicationsAddedExternalListener {
     }
 
 
-    public function handle(PublicationsAddedExternal $event) {
-        $repo_id = $event->repo_id;
-        $external_pubs = $event->publications;
+    public function handle(RabbitMessage $message) {
+        $params = $message->payload();
+        $repo_id = $params['repoID'];
+        $external_pubs = $params['publications'];
+
         DB::beginTransaction();
 
         $publications = [];
@@ -48,7 +50,7 @@ class PublicationsAddedExternalListener {
         $this->projectFormService->addPublicationsByRepoId($repo_id, $publications);
 
         DB::commit();
-        $event->message->ack();
+        $message->acknowledge();
     }
 
     private function transformExternalPub($external) {

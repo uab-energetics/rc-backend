@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\RabbitMQ;
 
-use App\Services\RabbitMQ\RabbitMQService;
+use App\Services\RabbitMQ\Core\RabbitMQService;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
