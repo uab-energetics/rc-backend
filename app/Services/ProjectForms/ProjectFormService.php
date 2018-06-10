@@ -192,7 +192,7 @@ class ProjectFormService {
     public function makePublicationRepo(ProjectForm $projectForm) {
         $service = app()->make(PubRepoService::class);
         $name = $projectForm->form->name . ' Repository';
-        $repo = $service->createRepo($projectForm->getKey(), $name);
+        $repo = $service->createRepo($projectForm->project_id, $name);
         $projectForm->repo_uuid = $repo['id'];
         $projectForm->save();
     }
