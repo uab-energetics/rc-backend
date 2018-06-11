@@ -24,7 +24,6 @@ class RabbitMQService {
         $handler = app()->make($handlerClass);
         $options['queue'] = $queue;
         $callback = function (AMQPMessage $msg) use ($handler) {
-            print("Handling message");
             $rabbitMsg = $this->makeRabbitMessage($msg);
             $handler->handle($rabbitMsg);
         };

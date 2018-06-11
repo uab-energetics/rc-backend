@@ -189,6 +189,14 @@ class ProjectFormService {
         $projectForm->save();
     }
 
+    public function handleRepoDeleted($repo_id) {
+        $projectForms = $this->retrieveByRepoId($repo_id)->get();
+        foreach($projectForms as $projectForm) {
+            $projectForm->repo_uuid = null;
+            $projectForm->save();
+        }
+    }
+
     public function addPublicationsByRepoId($repo_id, $publications) {
         $projectForms = $this->retrieveByRepoId($repo_id)->get();
         foreach ($projectForms as $projectForm) {

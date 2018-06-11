@@ -196,6 +196,14 @@ class ProjectService {
         $project->save();
     }
 
+    public function handleRepoDeleted($repo_id) {
+        $projects = $this->retrieveByRepoId($repo_id)->get();
+        foreach($projects as $project) {
+            $project->repo_uuid = null;
+            $project->save();
+        }
+    }
+
     private function getResearcherEdge($project_id, $user_id) {
         return ProjectResearcher::query()
             ->where('project_id', '=', $project_id)
