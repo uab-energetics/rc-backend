@@ -25,8 +25,6 @@ class PubRepoDeleted implements RabbitMessageHandler {
         $params = $message->payload();
         $repo_id = $params['repoID'];
 
-        print("$repo_id deleted" . PHP_EOL);
-
         DB::beginTransaction();
 
         $this->projectService->handleRepoDeleted($repo_id);
