@@ -20,14 +20,13 @@ class RabbitMQListen extends Command {
         while ($service === null && $retries > 0) {
             try {
                 $service = app()->make(RabbitMQService::class);
-            } catch (AMQPConnectionException $e) {
+            } catch (\ErrorException $e) {
                 print("Could not connect to RabbitMQ. $retries tries remaining..." . PHP_EOL);
                 $retries--;
                 sleep($sleepTime);
             } catch (\Exception $e) {
                 print("Miscellaneous error. Quitting..." . PHP_EOL);
-                print ($e->getMessage() . PHP_EOL);
-                print ($e->getTraceAsString() . PHP_EOL);
+                print ($e->getFile().':'.$e->getLine().':'.get_class($e).' - '.$e->getMessage().PHP_EOL);
                 exit(1);
             }
         }
