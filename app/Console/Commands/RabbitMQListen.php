@@ -6,8 +6,7 @@ use App\Services\RabbitMQ\RabbitMQService;
 use Illuminate\Console\Command;
 use PhpAmqpLib\Exception\AMQPConnectionException;
 
-class AMQPListen extends Command
-{
+class RabbitMQListen extends Command {
     protected $signature = 'rabbitmq:listen';
 
     protected $description = 'Starts a queue worker for RabbitMQ';
@@ -42,6 +41,6 @@ class AMQPListen extends Command
         print("Listening for RabbitMQ Messages" . PHP_EOL);
         $service->listen();
 
-        print("Done listening. Closing connection". PHP_EOL);
+        print("Done listening. Closing connection" . PHP_EOL);
     }
 }
