@@ -127,7 +127,7 @@ class ProjectService {
     public function addPublicationsByRepoId($repo_id, $publications) {
         $projects = $this->retrieveByRepoId($repo_id)->get();
         foreach ($projects as $project) {
-            $this->addPublications($project, $publications, false);
+            $this->addPublications($project, $publications);
         }
     }
 
@@ -141,31 +141,22 @@ class ProjectService {
         }
     }
 
-    public function addPublications(Project $project, $publications, $auto_inherit = true) {
+    public function addPublications(Project $project, $publications) {
         /** @var Publication $publication */
         foreach ($publications as $publication) {
-            $this->addPublication($project, $publication, $auto_inherit);
+            $this->addPublication($project, $publication);
         }
     }
 
-    public function addPublication(Project $project, Publication $publication, $auto_inherit = true) {
+    public function addPublication(Project $project, Publication $publication) {
         $edge = ProjectPublication::upsert([
             'project_id' => $project->getKey(),
             'publication_id' => $publication->getKey(),
         ]);
-
-        if ($auto_inherit === false) {
-            return $edge;
-        }
-        $forms = $project->forms()->where('project_form.inherit_publications', '=', true)->get();
-        foreach ($forms as $form) {
-            $this->projectFormService->addPublication($project, $form, $publication);
-        }
-
         return $edge;
     }
 
-    public function removePublication(Project $project, Publication $publication, $auto_inherit = true) {
+    public function removePublication(Project $project, Publication $publication) {
         $edge = ProjectPublication::query()
             ->where('project_id', '=', $project->getKey())
             ->where('publication_id', '=', $publication->getKey())
@@ -173,13 +164,6 @@ class ProjectService {
         if ($edge === null) return false;
         $edge->delete();
 
-        if ($auto_inherit === false) {
-            return true;
-        }
-        $forms = $project->forms()->without(['rootCategory', 'questions'])->where('project_form.inherit_publications', '=', true)->get();
-        foreach ($forms as $form) {
-            $this->projectFormService->removePublication($project, $form, $publication);
-        }
         return true;
     }
 
@@ -205,6 +189,7 @@ class ProjectService {
      * @throws RequestException
      */
     public function makePublicationRepo(Project $project) {
+        /** @var PubRepoService $service */
         $service = app()->make(PubRepoService::class);
         $repo = $service->createRepo($project->getKey(), "Main Repository");
         $project->repo_uuid = $repo['id'];
