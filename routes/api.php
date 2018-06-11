@@ -30,7 +30,7 @@ function deprecated($msg = "This endpoint has been deprecated") {
         return response()->json([
             'status' => 'DEPRECATED_ENDPOINT',
             'msg' => $msg
-        ], 403);
+        ], 410);
     };
 };
 
@@ -85,10 +85,10 @@ Route::group(['middleware' => ['rocco.jwt-auth']], function () {
     Route::get(     'projects/{project}/forms', "$projects_ctrl@retrieveForms");
     Route::post(    'projects/{project}/forms', FormController::class."@create");
     Route::get(     'projects/{project}/publications', "$projects_ctrl@retrievePublications");
-    Route::post(    'projects/{project}/publications', "$publications_ctrl@createInProject");
-    Route::post(    'projects/{project}/publications/csv', "$publications_ctrl@uploadFromCSV");
-    Route::post(    'projects/{project}/publications/{publication}', "$projects_ctrl@addPublication");
-    Route::delete(  'projects/{project}/publications/{publication}', "$projects_ctrl@removePublication");
+    Route::post(    'projects/{project}/publications', deprecated());
+    Route::post(    'projects/{project}/publications/csv', deprecated());
+    Route::post(    'projects/{project}/publications/{publication}', deprecated());
+    Route::delete(  'projects/{project}/publications/{publication}', deprecated());
     Route::get(     'projects/{project}/encoders', "$projects_ctrl@searchEncoders");
     Route::get(     'projects/{project}/researchers', "$projects_ctrl@searchResearchers");
     Route::post(    'projects/{project}/researchers', "$projects_ctrl@addResearcher");
@@ -98,12 +98,12 @@ Route::group(['middleware' => ['rocco.jwt-auth']], function () {
 
     Route::get(     'projects/{project}/forms/{form}', $proj_form_ctrl."@getSettings");
     Route::put(     'projects/{project}/forms/{form}', $proj_form_ctrl."@updateSettings");
-    Route::get(     'projects/{project}/forms/{form}/inherit-project-publications', $proj_form_ctrl."@inheritProjectPublications");
+    Route::get(     'projects/{project}/forms/{form}/inherit-project-publications', deprecated());
     Route::get(     'projects/{project}/forms/{form}/inherit-project-encoders', $proj_form_ctrl."@inheritProjectEncoders");
     Route::get(     'projects/{project}/forms/{form}/publications', $proj_form_ctrl."@searchPublications");
-    Route::post(    'projects/{project}/forms/{form}/publications/{publication}', $proj_form_ctrl."@addPublication");
-    Route::post(    'projects/{project}/forms/{form}/publications', $proj_form_ctrl."@addPublications");
-    Route::delete(  'projects/{project}/forms/{form}/publications/{publication}', $proj_form_ctrl."@removePublication");
+    Route::post(    'projects/{project}/forms/{form}/publications/{publication}', deprecated());
+    Route::post(    'projects/{project}/forms/{form}/publications', deprecated());
+    Route::delete(  'projects/{project}/forms/{form}/publications/{publication}', deprecated());
     Route::get(     'projects/{project}/forms/{form}/encoders', $proj_form_ctrl."@searchEncoders");
     Route::post(    'projects/{project}/forms/{form}/encoders/{user}', $proj_form_ctrl."@addEncoder");
     Route::post(    'projects/{project}/forms/{form}/encoders', $proj_form_ctrl."@addEncoders");
