@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class ProjectForm extends UniqueJunction {
     protected $table = "project_form";
 
-    protected $fillable = ['project_id', 'form_id', 'task_target_encoder', 'task_target_publication', 'auto_enroll', 'inherit_publications'];
+    protected $fillable = ['project_id', 'form_id', 'task_target_encoder', 'task_target_publication', 'auto_enroll'];
 
     /** @return string[] */
     public function uniqueColumns() {

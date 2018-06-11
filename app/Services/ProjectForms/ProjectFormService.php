@@ -74,14 +74,6 @@ class ProjectFormService {
             ->get();
     }
 
-    public function inheritProjectPublications(Project $project, Form $form) {
-        $projectForm = $this->getProjectForm($project, $form);
-        foreach($project->publications()->get() as $publication) {
-            $this->doAddPublication($projectForm, $publication);
-        }
-        return true;
-    }
-
     public function inheritProjectEncoders(Project $project, Form $form) {
         $projectForm = $this->getProjectForm($project, $form);
         foreach($project->encoders()->get() as $encoder) {

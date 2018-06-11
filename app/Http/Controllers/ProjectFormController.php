@@ -22,7 +22,6 @@ class ProjectFormController extends Controller {
             'task_target_encoder' => 'integer|min:0',
             'task_target_publication' => 'integer|min:0',
             'auto_enroll' => 'boolean',
-            'inherit_publications' => 'boolean',
         ]);
         return $this->service->updateSettings($project, $form, $request->all());
     }
