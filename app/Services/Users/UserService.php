@@ -89,9 +89,18 @@ class UserService {
                 },
                 'publication'
             ]);
-        $filtered = $this->taskService->filterTasksByStatus($query, $status);
-        $searched = $this->taskService->filterTasksByKeyword($query, $search);
-        return $searched;
+        $this->taskService->filterTasksByStatus($query, $status);
+        $this->taskService->filterTasksByKeyword($query, $search);
+        return $query;
+    }
+
+    public function nextTasks(User $user) {
+        return $user->tasks()
+            ->with('publication')
+            ->where('complete', '!=', true)
+            ->orderBy('encoding_id', 'desc')
+            ->limit(3)
+            ->get();
     }
 
     public function getFormsEncoder(User $user) {

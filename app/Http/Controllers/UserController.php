@@ -40,6 +40,11 @@ class UserController extends Controller {
         return paginate($userService->getTasks($user, $request->status, $request->search));
     }
 
+    public function retrieveNextTasks(Request $request, UserService $userService) {
+        $user = $request->user();
+        return $userService->nextTasks($user);
+    }
+
     public function retrieveForms(Request $request, UserService $userService) {
         $user = $request->user();
         return $userService->getFormsEncoder($user);

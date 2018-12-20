@@ -63,6 +63,7 @@ Route::group(['middleware' => ['rocco.jwt-auth']], function () {
     Route::get(     'users/projects/researcher', "$user_ctrl@retrieveResearcherProjects");
     Route::get(     'users/encodings', "$user_ctrl@retrieveEncodings");
     Route::get(     'users/tasks',  "$user_ctrl@retrieveTasks");
+    Route::get(     'users/tasks/next',  "$user_ctrl@retrieveNextTasks");
     Route::get(     'users/forms',  "$user_ctrl@retrieveForms");
     Route::get('/me', function(Request $request) {
         return response()->json(Auth::user());
