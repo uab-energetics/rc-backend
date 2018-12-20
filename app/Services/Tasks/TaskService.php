@@ -4,6 +4,7 @@
 namespace App\Services\Encodings;
 
 
+use App\Encoding;
 use App\EncodingTask;
 use App\Exceptions\TaskAlreadyStartedException;
 use App\Form;
@@ -48,7 +49,7 @@ class TaskService {
         $task->encoding_id = $encoding->getKey();
         $task->save();
 
-        return $encoding;
+        return Encoding::find($encoding->id);
     }
 
     public function updateCompletion(EncodingTask $task, $complete) {
