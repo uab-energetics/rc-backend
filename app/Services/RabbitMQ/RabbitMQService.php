@@ -23,8 +23,9 @@ class RabbitMQService {
     public function registerHandler($queue, $handlerClass, $options = []) {
         $handler = app()->make($handlerClass);
         $options['queue'] = $queue;
-        $callback = function (AMQPMessage $msg) use ($handler) {
+        $callback = function (AMQPMessage $msg) use ($handler, $handlerClass) {
             $rabbitMsg = $this->makeRabbitMessage($msg);
+            echo "$handlerClass: " .json_encode($rabbitMsg->payload(), JSON_PRETTY_PRINT) . PHP_EOL;
             $handler->handle($rabbitMsg);
         };
         return $this->consumer->registerCallback($callback, $options);
