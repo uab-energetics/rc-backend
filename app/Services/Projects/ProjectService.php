@@ -168,7 +168,10 @@ class ProjectService {
     }
 
     public function getForms(Project $project) {
-        return $project->forms()->without(['rootCategory', 'questions'])->get();
+        return $project->forms()
+            ->with('projectForms')
+            ->without(['rootCategory', 'questions'])
+            ->get();
     }
 
     public function handleUserDeleted(User $user) {

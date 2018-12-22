@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Question;
+use App\ProjectForm;
 use App\Traits\SearchableColumns;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -28,6 +29,10 @@ class Form extends Model {
 
     public function encodings() {
         return $this->hasMany(Encoding::class, 'form_id');
+    }
+
+    public function projectForms() {
+        return $this->hasMany(ProjectForm::class, 'form_id');
     }
 
     const searchable = ['name', 'description', 'type', 'published'];
