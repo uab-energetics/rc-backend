@@ -170,6 +170,7 @@ class ProjectService {
     public function getForms(Project $project) {
         return $project->forms()
             ->with('projectForms')
+            ->withPivot('repo_uuid')
             ->without(['rootCategory', 'questions'])
             ->get();
     }
