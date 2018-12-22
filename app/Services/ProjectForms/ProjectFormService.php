@@ -192,9 +192,17 @@ class ProjectFormService {
     public function handleRepoDeleted($repo_id) {
         $projectForms = $this->retrieveByRepoId($repo_id)->get();
         foreach($projectForms as $projectForm) {
+            $this->dropAllPublications($projectForm);
             $projectForm->repo_uuid = null;
             $projectForm->save();
         }
+    }
+
+    public function dropAllPublications(ProjectForm $projectForm) {
+        FormPublication::query()
+            ->where('project_form_id', '=', $projectForm->id)
+            ->delete();
+        $this->taskService->dropPendingTasksByProjectForm($projectForm);
     }
 
     public function addPublicationsByRepoId($repo_id, $publications) {
@@ -211,6 +219,7 @@ class ProjectFormService {
                 ->where('project_form_id', $projectForm->getKey())
                 ->whereIn('publication_id', $publication_ids)
                 ->delete();
+            $this->taskService->dropPendingTasksByProjectFormAndPublications($projectForm, $publication_ids);
         }
     }
 

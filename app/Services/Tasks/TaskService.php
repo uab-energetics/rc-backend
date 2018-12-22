@@ -8,7 +8,7 @@ use App\Encoding;
 use App\EncodingTask;
 use App\Exceptions\TaskAlreadyStartedException;
 use App\Form;
-use App\ProjectEncoding;
+use App\ProjectForm;
 use App\Publication;
 use Illuminate\Database\Query\Builder;
 
@@ -16,6 +16,21 @@ class TaskService {
 
     public function make($params) {
         return EncodingTask::upsert($params);
+    }
+
+    public function dropPendingTasksByProjectForm(ProjectForm $projectForm) {
+        $this->pendingTasksByProjectForm($projectForm)
+            ->delete();
+    }
+
+    public function dropPendingTasksByProjectFormAndPublications(ProjectForm $projectForm, $publication_ids) {
+        $this->pendingTasksByProjectForm($projectForm)
+            ->whereIn('publication_id', $publication_ids)
+            ->delete();
+    }
+
+    public function pendingTasksByProjectForm(ProjectForm $projectForm) {
+        return $this->getTaskQueryFilter(TASK_PENDING)->filter($projectForm->tasks());
     }
 
     public function filterTasksByStatus($query, $status = null) {
