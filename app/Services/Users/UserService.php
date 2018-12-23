@@ -98,7 +98,7 @@ class UserService {
         return $user->tasks()
             ->with('publication')
             ->where('complete', '!=', true)
-            ->orderBy('encoding_id', 'desc')
+            ->orderBy('encoding_id', 'asc')
             ->limit(3)
             ->get();
     }
