@@ -92,6 +92,12 @@ class Handler extends ExceptionHandler
                 'msg' => "This task already has an encoding"
             ], 400);
         }
+        if ($e instanceof RepoNotFoundException) {
+            return response()->json([
+                'status' => 'REPO_NOT_FOUND',
+                'msg' => $e->getMessage()
+            ], $e->getCode());
+        }
 
         return $this->prepareJsonResponse($request, $e);
     }

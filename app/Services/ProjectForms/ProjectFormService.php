@@ -13,6 +13,7 @@ use App\ProjectEncoder;
 use App\ProjectForm;
 use App\Publication;
 use App\Services\Encodings\TaskService;
+use App\Services\Publications\PublicationService;
 use App\Services\Repositories\PubRepoService;
 use App\User;
 use Illuminate\Support\Collection;
@@ -121,6 +122,11 @@ class ProjectFormService {
     public function removePublications(Project $project, Form $form, $publications) {
         $projectForm = $this->getProjectForm($project, $form);
         $this->doRemovePublications($projectForm, $publications);
+    }
+
+    public function updateRepo(Project $project, Form $form, $repo_uuid) {
+        $projectForm = $this->getProjectForm($project, $form);
+        $this->doUpdateRepo($projectForm, $repo_uuid);
     }
 
     public function removeCurrentRepo(Project $project, Form $form) {
@@ -246,6 +252,15 @@ class ProjectFormService {
         foreach ($publications as $publication) {
             $this->doRemovePublication($projectForm, $publication);
         }
+    }
+
+    protected function doUpdateRepo(ProjectForm $projectForm, $repo_uuid) {
+        $this->doRemoveCurrentRepo($projectForm);
+        $external_pubs = $this->pubRepoService->getPublications($projectForm->project_id, $repo_uuid);
+        $projectForm->repo_uuid = $repo_uuid;
+        $projectForm->save();
+        $publications = $this->publicationService->addExternalPublications($external_pubs);
+        $this->doAddPublications($projectForm, $publications);
     }
 
     protected function doRemoveCurrentRepo(ProjectForm $projectForm) {
@@ -376,10 +391,13 @@ class ProjectFormService {
     protected $taskService;
     /** @var PubRepoService  */
     protected $pubRepoService;
+    /** @var PublicationService  */
+    protected $publicationService;
 
-    public function __construct(TaskService $taskService, PubRepoService $pubRepoService) {
+    public function __construct(TaskService $taskService, PubRepoService $pubRepoService, PublicationService $publicationService) {
         $this->taskService = $taskService;
         $this->pubRepoService = $pubRepoService;
+        $this->publicationService = $publicationService;
     }
 
     const SQL_PAPER_QUEUE = "

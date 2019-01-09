@@ -55,4 +55,29 @@ class PublicationService {
             ->delete();
     }
 
+    public function addExternalPublications($external_pubs) {
+        $publications = [];
+        foreach ($external_pubs as $external_pub) {
+            [$params, $external_id] = $this->transformExternalPub($external_pub);
+            $existing = $this->retrieveByUuid($params['uuid']);
+            if ($existing === null) {
+                $existing = $this->makePublication($params);
+            }
+            $publications[] = $existing;
+            $this->addExternalID($existing, $external_id);
+        }
+        return $publications;
+    }
+
+    public function transformExternalPub($external) {
+        $id = $external['id'];
+        $internal = [
+            'uuid' => $external['uuid'],
+            'source_id' => $external['sourceID'],
+            'embedding_url' => $external['embeddingURL'],
+            'name' => $external['title'],
+        ];
+        return [$internal, $id];
+    }
+
 }

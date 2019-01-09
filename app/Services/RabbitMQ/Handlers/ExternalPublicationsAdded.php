@@ -35,17 +35,7 @@ class ExternalPublicationsAdded implements RabbitMessageHandler {
 
         DB::beginTransaction();
 
-        $publications = [];
-        foreach ($external_pubs as $external_pub) {
-            [$params, $external_id] = $this->transformExternalPub($external_pub);
-            $existing = $this->publicationService->retrieveByUuid($params['uuid']);
-            if ($existing === null) {
-                $existing = $this->publicationService->makePublication($params);
-            }
-            $publications[] = $existing;
-            $this->publicationService->addExternalID($existing, $external_id);
-
-        }
+        $publications = $this->publicationService->addExternalPublications($external_pubs);
         $this->projectService->addPublicationsByRepoId($repo_id, $publications);
         $this->projectFormService->addPublicationsByRepoId($repo_id, $publications);
 
@@ -53,14 +43,4 @@ class ExternalPublicationsAdded implements RabbitMessageHandler {
         $message->acknowledge();
     }
 
-    private function transformExternalPub($external) {
-        $id = $external['id'];
-        $internal = [
-            'uuid' => $external['uuid'],
-            'source_id' => $external['sourceID'],
-            'embedding_url' => $external['embeddingURL'],
-            'name' => $external['title'],
-        ];
-        return [$internal, $id];
-    }
 }

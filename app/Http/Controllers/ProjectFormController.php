@@ -69,6 +69,16 @@ class ProjectFormController extends Controller {
         return okMessage("Successfully removed publication");
     }
 
+    public function updateRepo(Project $project, Form $form, Request $request) {
+        $request->validate([
+            'repo_uuid' => 'string|required'
+        ]);
+        DB::beginTransaction();
+        $this->service->updateRepo($project, $form, $request->repo_uuid);
+        DB::commit();
+        return okMessage("Successfully updated repository");
+    }
+
     public function removeCurrentRepo(Project $project, Form $form) {
         DB::beginTransaction();
         $this->service->removeCurrentRepo($project, $form);

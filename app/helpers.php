@@ -100,6 +100,16 @@ function simpleSearch($query, $term, $columns) {
     return $query;
 }
 
+function simpleGet($url) {
+    $client = new Client();
+    try {
+        $res = $client->get($url);
+    } catch (\GuzzleHttp\Exception\RequestException $e) {
+        $res = $e->getResponse();
+    }
+    return $res;
+}
+
 function simplePost($url, $reqBody) {
     $client = new Client();
     try {

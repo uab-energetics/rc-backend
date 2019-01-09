@@ -111,6 +111,7 @@ Route::group(['middleware' => ['rocco.jwt-auth']], function () {
     Route::delete(  'projects/{project}/forms/{form}/encoders/{user}', $proj_form_ctrl."@removeEncoder");
     Route::post(    'projects/{project}/forms/{form}/encoders/{encoder}/request-tasks', $proj_form_ctrl."@requestTasks");
     Route::post(    'projects/{project}/forms/{form}/request-my-tasks', $proj_form_ctrl."@requestMyTasks");
+    Route::put(     'projects/{project}/forms/{form}/repository', $proj_form_ctrl."@updateRepo");
     Route::delete(  'projects/{project}/forms/{form}/repository', $proj_form_ctrl."@removeCurrentRepo");
 
 
