@@ -120,7 +120,12 @@ class ProjectFormService {
 
     public function removePublications(Project $project, Form $form, $publications) {
         $projectForm = $this->getProjectForm($project, $form);
-        $this->doRemovePublications($publications);
+        $this->doRemovePublications($projectForm, $publications);
+    }
+
+    public function removeCurrentRepo(Project $project, Form $form) {
+        $projectForm = $this->getProjectForm($project, $form);
+        $this->doRemoveCurrentRepo($projectForm);
     }
 
     public function addEncoders(Project $project, Form $form, $encoders) {
@@ -192,9 +197,7 @@ class ProjectFormService {
     public function handleRepoDeleted($repo_id) {
         $projectForms = $this->retrieveByRepoId($repo_id)->get();
         foreach($projectForms as $projectForm) {
-            $this->dropAllPublications($projectForm);
-            $projectForm->repo_uuid = null;
-            $projectForm->save();
+            $this->doRemoveCurrentRepo($projectForm);
         }
     }
 
@@ -241,8 +244,14 @@ class ProjectFormService {
 
     protected function doRemovePublications(ProjectForm $projectForm, $publications) {
         foreach ($publications as $publication) {
-            $this->doRemovePublication($publication);
+            $this->doRemovePublication($projectForm, $publication);
         }
+    }
+
+    protected function doRemoveCurrentRepo(ProjectForm $projectForm) {
+        $this->dropAllPublications($projectForm);
+        $projectForm->repo_uuid = null;
+        $projectForm->save();
     }
 
     protected function doAddPublications(ProjectForm $projectForm, $publications, $priority = null) {

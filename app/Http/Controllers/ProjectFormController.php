@@ -10,6 +10,7 @@ use App\Services\Publications\PublicationService;
 use App\Services\Users\UserService;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProjectFormController extends Controller {
 
@@ -66,6 +67,13 @@ class ProjectFormController extends Controller {
     public function removePublication(Project $project, Form $form, Publication $publication) {
         $this->service->removePublication($project, $form, $publication);
         return okMessage("Successfully removed publication");
+    }
+
+    public function removeCurrentRepo(Project $project, Form $form) {
+        DB::beginTransaction();
+        $this->service->removeCurrentRepo($project, $form);
+        DB::commit();
+        return okMessage("Successfully removed current repository");
     }
 
     public function addEncoder(Project $project, Form $form, User $user) {
