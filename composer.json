@@ -21,7 +21,8 @@
         "ramsey/uuid": "^3.7",
         "sentry/sentry": "^1.8",
         "sentry/sentry-laravel": "^0.8.0",
-        "tymon/jwt-auth": "^0.5.12"
+        "tymon/jwt-auth": "^0.5.12",
+      "ext-json": "*"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
