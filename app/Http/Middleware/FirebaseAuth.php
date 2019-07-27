@@ -6,14 +6,19 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Kreait\Firebase\Auth\UserRecord;
+use App\Services\FirebaseService;
+use Throwable;
+use App\Services\Users\UserService;
 
 class FirebaseAuth
 {
     public $firebase;
+    public $userService;
 
-    public function __construct(FirebaseService $firebase)
+    public function __construct(FirebaseService $firebase, UserService $userService)
     {
         $this->firebase = $firebase->firebase;
+        $this->userService = $userService;
     }
 
     public function handle(Request $request, Closure $next)
@@ -24,11 +29,15 @@ class FirebaseAuth
         */
         try {
             $idTokenString = $request->bearerToken();
-            $verifiedIdToken = $this->firebase->getAuth()->verifyToken($idTokenString);
-        } catch (InvalidToken $e) {
-            return $request->status(401)->json([
-                'msg' => $e->getMessage()
-            ]);
+            if ($idTokenString === null) {
+                return response()->json(['msg' => 'No auth token provided'], 401);
+            }
+            $verifiedIdToken = $this->firebase->getAuth()->verifyIdToken($idTokenString);
+        } catch (Throwable $e) {
+            return response()->json([
+                'msg' => 'Invalid auth token.',
+                'error' => $e->getMessage()
+            ], 401);
         }
         $uid = $verifiedIdToken->getClaim('sub');
         /** @var UserRecord */
@@ -41,6 +50,7 @@ class FirebaseAuth
         $user = $this->userService->retrieveByEmail($firebaseUser->email);
         if ($user === null) {
             $user = $this->userService->make([
+                'uuid' => $firebaseUser->uid,
                 'name' => $firebaseUser->displayName,
                 'email' => $firebaseUser->email,
                 'image' => $firebaseUser->photoUrl

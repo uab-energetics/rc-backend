@@ -4,7 +4,6 @@ namespace App\Http;
 
 use App\Http\Middleware\AuthorizeUserAPI;
 use App\Http\Middleware\RoccoJWTAuth;
-use App\Http\Middleware\SentryUserContext;
 use App\Http\Middleware\Validator;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use App\Http\Middleware\FirebaseAuth;

@@ -41,6 +41,12 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('register', deprecated($msg));
 });
 
+// Secured by firebase auth middleware.
+Route::group(['middleware' => ['firebase-auth']], function () {
+    Route::post('secure', function() {
+        return response()->json([ 'msg' => 'You are authenticated!' ]);
+    });
+});
 
 Route::group(['middleware' => ['rocco.jwt-auth']], function () {
 
