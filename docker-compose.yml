@@ -2,6 +2,9 @@ version: '3.3'
 
 volumes:
   rc-backend-dbdata:
+  # Holds Google Cloud Platform service account credentials.
+  gcloud-accounts:
+    external: true
 
 networks:
   default:
@@ -9,7 +12,6 @@ networks:
       name: research-coder
 
 services:
-
   rc-backend:
     container_name: rc-backend-dev
     restart: unless-stopped
@@ -19,6 +21,7 @@ services:
     volumes:
       - .keys:/.keys
       - .:/app
+      - gcloud-accounts:/gcloud-accounts
     environment:
       DB_HOST: rc-backend-db
       DB_PORT: 3306
