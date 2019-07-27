@@ -7,6 +7,7 @@ use App\Http\Middleware\RoccoJWTAuth;
 use App\Http\Middleware\SentryUserContext;
 use App\Http\Middleware\Validator;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use App\Http\Middleware\FirebaseAuth;
 
 class Kernel extends HttpKernel
 {
@@ -58,6 +59,7 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'firebase-auth' => FirebaseAuth::class,
         'rocco.jwt-auth' => RoccoJWTAuth::class,
         'rc.auth' => AuthorizeUserAPI::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
