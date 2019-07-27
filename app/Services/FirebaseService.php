@@ -12,6 +12,9 @@ class FirebaseService
     function __construct()
     {
         $credentialsFile = env('GOOGLE_APPLICATION_CREDENTIALS');
-        $this->firebase = ServiceAccount::fromJsonFile($credentialsFile);
+        $serviceAccount = ServiceAccount::fromJsonFile($credentialsFile);
+        $this->firebase = (new Factory)
+            ->withServiceAccount($serviceAccount)
+            ->create();
     }
 }
