@@ -24,7 +24,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\QuestionController;
 
 
-
 function deprecated($msg = "This endpoint has been deprecated")
 {
     return function () use ($msg) {
@@ -35,20 +34,7 @@ function deprecated($msg = "This endpoint has been deprecated")
     };
 };
 
-Route::group(['prefix' => 'auth'], function () {
-    $msg = "This functionality has been moved to the authentication service";
-    Route::post('login', deprecated($msg));
-    Route::post('register', deprecated($msg));
-});
-
-// Secured by firebase auth middleware.
 Route::group(['middleware' => ['firebase-auth']], function () {
-    Route::post('secure', function() {
-        return response()->json([ 'msg' => 'You are authenticated!' ]);
-    });
-});
-
-Route::group(['middleware' => ['rocco.jwt-auth']], function () {
 
     $user_ctrl = UserController::class;
     $forms_ctrl = FormController::class;
@@ -61,6 +47,11 @@ Route::group(['middleware' => ['rocco.jwt-auth']], function () {
     $proj_form_ctrl = ProjectFormController::class;
     $questions_ctrl = QuestionController::class;
     $categories_ctrl = CategoryController::class;
+
+    // Debugging purposes only.
+    Route::post('secure', function() {
+        return response()->json([ 'msg' => 'You are authenticated!' ]);
+    });
 
     // users
     Route::put('/my-profile', "$user_ctrl@updateProfile");
