@@ -4,8 +4,7 @@ COPY vhost.conf /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/app
 
-COPY composer.json ./
-COPY composer.lock ./
+COPY composer.* ./
 RUN export COMPOSER_ALLOW_SUPERUSER=1 && \
     composer install --no-scripts --no-autoloader --no-dev
 

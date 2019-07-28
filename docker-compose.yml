@@ -2,6 +2,9 @@ version: '3.3'
 
 volumes:
   rc-backend-dbdata:
+  # Holds Google Cloud Platform service account credentials.
+  gcloud-accounts:
+    external: true
 
 networks:
   default:
@@ -9,7 +12,6 @@ networks:
       name: research-coder
 
 services:
-
   rc-backend:
     container_name: rc-backend-dev
     restart: unless-stopped
@@ -17,8 +19,8 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     volumes:
-      - .keys:/.keys
       - .:/app
+      - gcloud-accounts:/gcloud-accounts
     environment:
       DB_HOST: rc-backend-db
       DB_PORT: 3306
@@ -34,28 +36,6 @@ services:
       - 8000:8000
     user: ${UID:-0}:${GID:-0}
 
-  rc-backend-queue-worker:
-    container_name: rc-backend-queue-worker
-    restart: unless-stopped
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    volumes:
-      - .keys:/.keys
-      - .:/app
-    environment:
-      DB_HOST: rc-backend-db
-      DB_PORT: 3306
-      JWT_PUBLIC_KEY: /.keys/jwt.pub
-      AUTH_API_SECRET: secret
-      PUBLICATION_SERVICE_HOST: http://rc-publications
-      RABBITMQ_HOST: rc-rabbitmq
-      RABBITMQ_PORT: 5672
-      RABBITMQ_USER: guest
-      RABBITMQ_PASSWORD: guest
-    env_file: .env.api
-    command: php artisan rabbitmq:listen
-
   rc-backend-db:
     container_name: rc-backend-db-dev
     image: mysql:5.7
@@ -68,10 +48,3 @@ services:
       - MYSQL_ROOT_PASSWORD=secret
     ports:
       - 33061:3306
-
-  rc-rabbitmq:
-    image: "rabbitmq:3-management"
-    container_name: rc-rabbitmq-dev
-    ports:
-      - "15672:15672"
-      - "5672:5672"

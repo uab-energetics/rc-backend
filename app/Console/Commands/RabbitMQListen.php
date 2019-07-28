@@ -1,5 +1,12 @@
 <?php
 
+
+/**
+ * This file was created to respond to user created events from the custom auth service.
+ * However, we have since moved to Firebase authentication, so this file should be removed at some point.
+ * We need to improve test coverage to safely delete it..
+ */
+
 namespace App\Console\Commands;
 
 use App\Services\RabbitMQ\RabbitMQService;
